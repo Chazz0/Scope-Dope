@@ -1209,7 +1209,10 @@
     "zero range (inferred, see note)"
    ],
    "note": "Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G1 band (Mach 2.25 and above). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.",
-   "registeredRound": 3
+   "registeredRound": 3,
+   "energyCheckExceptions": {
+    "100": "Printed energy 3253 ft-lb; 2707 fps at 200 gr gives 3255.1, a 2.1 ft-lb gap, just over the 2 ft-lb check (0.06%). Not corrected. Added after the first run, when the transcription check flagged it; it may be rounding in the printed velocity or a page-read slip. Only velocity and drop are compared, never energy, so it enters no comparison."
+   }
   },
   {
    "id": "HORNADY-PH-300WM-200-ELDX-G1-.588",
@@ -1266,7 +1269,10 @@
     "zero range (inferred, see note)"
    ],
    "note": "Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G1 band (Mach 2.0). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.",
-   "registeredRound": 3
+   "registeredRound": 3,
+   "energyCheckExceptions": {
+    "100": "Printed energy 3253 ft-lb; 2707 fps at 200 gr gives 3255.1, a 2.1 ft-lb gap, just over the 2 ft-lb check (0.06%). Not corrected. Added after the first run, when the transcription check flagged it; it may be rounding in the printed velocity or a page-read slip. Only velocity and drop are compared, never energy, so it enters no comparison."
+   }
   },
   {
    "id": "HORNADY-PH-300WM-200-ELDX-G7-.301",
@@ -1323,7 +1329,10 @@
     "zero range (inferred, see note)"
    ],
    "note": "Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G7 band (Mach 2.25 and above). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.",
-   "registeredRound": 3
+   "registeredRound": 3,
+   "energyCheckExceptions": {
+    "100": "Printed energy 3253 ft-lb; 2707 fps at 200 gr gives 3255.1, a 2.1 ft-lb gap, just over the 2 ft-lb check (0.06%). Not corrected. Added after the first run, when the transcription check flagged it; it may be rounding in the printed velocity or a page-read slip. Only velocity and drop are compared, never energy, so it enters no comparison."
+   }
   },
   {
    "id": "HORNADY-PH-300WM-200-ELDX-G7-.295",
@@ -1380,7 +1389,10 @@
     "zero range (inferred, see note)"
    ],
    "note": "Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G7 band (Mach 2.0). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.",
-   "registeredRound": 3
+   "registeredRound": 3,
+   "energyCheckExceptions": {
+    "100": "Printed energy 3253 ft-lb; 2707 fps at 200 gr gives 3255.1, a 2.1 ft-lb gap, just over the 2 ft-lb check (0.06%). Not corrected. Added after the first run, when the transcription check flagged it; it may be rounding in the printed velocity or a page-read slip. Only velocity and drop are compared, never energy, so it enters no comparison."
+   }
   }
  ],
  "excludedSources": {

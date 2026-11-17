@@ -413,10 +413,18 @@ test('the documented 100 of 103 breakdown equals what the runner produces, and e
   assert.deepStrictEqual(by2(() => true), [108, 101]);
   assert.deepStrictEqual(by2(x => x.atmosphere === 'ICAO'), [54, 49]);
   assert.deepStrictEqual(by2(x => x.atmosphere === 'HORNADY_ABERDEEN'), [54, 52]);
-  assert.deepStrictEqual(by(() => true), [211, 201]);
+  // Round 3 (Stage 13: Hornady 300 Win Mag 200 gr ELD-X, registered before it was run): 4 datasets x 2 atmospheres x 5 ranges.
+  const by3 = (f) => by(x => x.kind === 'dataset' && /^HORNADY-PH-300WM-200-ELDX-/.test(x.id) && f(x));
+  assert.deepStrictEqual(by3(() => true), [40, 38]);
+  assert.deepStrictEqual(by3(x => x.atmosphere === 'ICAO'), [20, 18]);
+  assert.deepStrictEqual(by3(x => x.atmosphere === 'HORNADY_ABERDEEN'), [20, 20]);
+  assert.deepStrictEqual(by(() => true), [251, 239]);
   const sens = out.filter(x => x.kind === 'sensitivity');
   assert.strictEqual(sens.length, 5); assert.ok(sens.every(x => x.pass));
-  const failed = counted.filter(x => !ok(x)).map(x => x.id + ' ' + x.atmosphere + ' ' + x.range);
+  const failedAll = counted.filter(x => !ok(x)).map(x => x.id + ' ' + x.atmosphere + ' ' + x.range);
+  // The two round-3 misses are listed here explicitly, not hidden: both are ICAO 500 yd velocity, -1.24% and -1.27% against a 1% tolerance.
+  assert.deepStrictEqual(failedAll.filter(f => /^HORNADY-PH-300WM-200-ELDX-/.test(f)), ['HORNADY-PH-300WM-200-ELDX-G1-.588 ICAO 500', 'HORNADY-PH-300WM-200-ELDX-G7-.295 ICAO 500']);
+  const failed = failedAll.filter(f => !/^HORNADY-PH-300WM-200-ELDX-/.test(f));
   assert.deepStrictEqual(failed.filter(f => !f.startsWith('FEDERAL-GM308M-168-G7')), ['HORNADY-ROUNDNOSE-180-G1-0.241 ICAO 400', 'HORNADY-ROUNDNOSE-180-G1-0.241 ICAO 500', 'HORNADY-CORR-TEST3 ICAO 500']);
   assert.deepStrictEqual(failed.filter(f => f.startsWith('FEDERAL-GM308M-168-G7')), [
     'FEDERAL-GM308M-168-G7-AVG ICAO 300', 'FEDERAL-GM308M-168-G7-AVG ICAO 400', 'FEDERAL-GM308M-168-G7-AVG ICAO 500',
@@ -470,8 +478,10 @@ test('engine inputs are unchanged relative to the Stage 5 base commit', () => {
 
 test('close-out round: the 10 failures are classified, diagnostic is reproducible, criteria status stays honest', () => {
   const dg = JSON.parse(runTool('diagnose-failures.js', '--json'));
-  assert.strictEqual(dg.out.length, 10);
-  assert.strictEqual(dg.out.filter(x => x.id.startsWith('FEDERAL-GM308M-168-G7')).length, 7);
+  const orig = dg.out.filter(x => !/^HORNADY-PH-300WM-200-ELDX-/.test(x.id));   // the original 10; the 2 round-3 misses are asserted in the breakdown test
+  assert.strictEqual(orig.length, 10);
+  assert.strictEqual(dg.out.filter(x => /^HORNADY-PH-300WM-200-ELDX-/.test(x.id)).length, 2);
+  assert.strictEqual(orig.filter(x => x.id.startsWith('FEDERAL-GM308M-168-G7')).length, 7);
   const g1 = dg.cross.find(c => c.atmosphere === 'HORNADY_ABERDEEN');
   assert.ok(Math.abs(g1.fittedG1BC - 0.4615) < 0.001);
   assert.ok(g1.residualVelocityPct.every(r => Math.abs(r) <= 0.05));

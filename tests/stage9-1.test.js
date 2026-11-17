@@ -5,6 +5,7 @@ const fs = require('fs'), path = require('path'), { execFileSync } = require('ch
 const { loadAssess } = require('./helpers/load-assess');
 const { baseInputs } = require('./helpers/load-solver');
 const root = path.join(__dirname, '..');
+const { withoutRound3 } = require('./helpers/refs-pin');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const { assessResult } = loadAssess();
 const base = (o) => ({ ...baseInputs(), v0nom: 2650, windMph: 0, headMph: 0, ...(o || {}) });
@@ -44,9 +45,10 @@ test('the calculation block is byte-identical to Stage 9, Stage 8 and Stage 5; m
   for (const rev of [STAGE9, STAGE8, '9f37df7', '9ab52a6']) assert.strictEqual(grab(html), grab(show(rev, 'index.html')), rev);
   assert.ok(grab(html).length > 1000); assert.match(grab(html), /1\.25 \* \(stability\(inp\) \+ 1\.2\) \* Math\.pow\(s\.t, 1\.83\)/);
   assert.match(html, /const MODEL_VERSION = '1\.0\.0';/);
-  for (const f of ['tests/golden/baseline.json', 'tests/helpers/load-solver.js', 'tests/solver.test.js', 'tests/validation/references.json', 'docs/MODEL_SOURCES.md']) {
+  for (const f of ['tests/golden/baseline.json', 'tests/helpers/load-solver.js', 'tests/solver.test.js', 'docs/MODEL_SOURCES.md']) {
     assert.strictEqual(execFileSync('git', ['diff', STAGE9, '--stat', '--', f], { cwd: root, encoding: 'utf8' }).trim(), '', f);
   }
+  assert.deepStrictEqual(withoutRound3(fs.readFileSync(path.join(root, 'tests/validation/references.json'), 'utf8')), withoutRound3(show(STAGE9, 'tests/validation/references.json')), 'earlier reference data');
 });
 
 test('the new messages never call a result accurate, verified, guaranteed or safe', () => {
