@@ -2,6 +2,7 @@
 // Browser tests for the Stage 6 transparency panel. Run: node tests/browser/transparency.check.js
 const http = require('http'), fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
+const { completeScope } = require('./helpers/scope-setup');
 const ROOT = path.join(__dirname, '..', '..');
 const server = http.createServer((req, res) => {
   const f = path.join(ROOT, req.url.split('?')[0] === '/' ? 'index.html' : req.url.split('?')[0]);
@@ -13,7 +14,7 @@ let browser, base; const tests = []; const test = (n, f) => tests.push({ n, f })
 async function open() {
   const ctx = await browser.newContext({ viewport: { width: 400, height: 860 }, serviceWorkers: 'block' });
   const page = await ctx.newPage(); page.errors = []; page.on('pageerror', e => page.errors.push(e.message));
-  await page.goto(base + '/index.html'); await page.waitForTimeout(150); return { ctx, page };
+  await page.goto(base + '/index.html'); await page.waitForTimeout(150); await completeScope(page); return { ctx, page };
 }
 const set = async (page, id, v) => {
   if (['v0'].includes(id)) await page.click('#tabRifle'); await page.fill('#' + id, String(v)); await page.dispatchEvent('#' + id, 'change'); await page.waitForTimeout(80); };

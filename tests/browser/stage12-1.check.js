@@ -3,6 +3,7 @@
 // Documented limits: 15 to 800 grains (see docs/STAGE12_1_WEIGHT_VALIDATION.md). Read-only: drives index.html.
 const http = require('http'), fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
+const { completeScope } = require('./helpers/scope-setup');
 const ROOT = path.join(__dirname, '..', '..');
 const server = http.createServer((req, res) => {
   const f = path.join(ROOT, req.url.split('?')[0] === '/' ? 'index.html' : req.url.split('?')[0]);
@@ -16,14 +17,14 @@ async function open(seed, w = 400, h = 860) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: 'block' });
   const page = await ctx.newPage(); page.errors = []; page.on('pageerror', e => page.errors.push(e.message));
   if (seed) await page.addInitScript(s => { if (!sessionStorage.getItem('__s')) { for (const k of Object.keys(s)) localStorage.setItem(k, s[k]); sessionStorage.setItem('__s', '1'); } }, seed);
-  await page.goto(base + '/index.html'); await page.waitForTimeout(150); return { ctx, page };
+  await page.goto(base + '/index.html'); await page.waitForTimeout(150); if (!seed) await completeScope(page); return { ctx, page };
 }
 const val = (p, id) => p.$eval('#' + id, e => e.value);
 const txt = (p, sel) => p.$eval(sel, e => e.textContent);
 const typeWt = async (p, v) => { await p.click('#tabRifle'); await p.fill('#wt', String(v)); await p.dispatchEvent('#wt', 'input'); await p.dispatchEvent('#wt', 'change'); await p.waitForTimeout(100); };
 const hud = async (p) => { await p.click('#tabHud'); await p.waitForTimeout(80); return { dial: (await txt(p, '#elevClicks')).trim(), notice: await txt(p, '#notice') }; };
 const flagged = (p, id) => p.$eval('#' + id, e => e.classList.contains('bad') && e.getAttribute('aria-invalid') === 'true');
-const rifle = (name, extra) => Object.assign({ pname: name, preset: 'p308', cname: '', model: 'G1', bc: '0.462', wt: '168', diam: '0.308', v0: '2650', v0src: 'user', bcsrc: 'factory', bcwt: '168', vref: '59', vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', temp: '59', press: '', humidity: '50', alt: '0', lat: '' }, extra || {});
+const rifle = (name, extra) => Object.assign({ pname: name, preset: 'p308', cname: '', model: 'G1', bc: '0.462', wt: '168', diam: '0.308', v0: '2650', v0src: 'user', bcsrc: 'factory', bcwt: '168', vref: '59', vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', eUnit: 'TRUE_MOA', eClick: '0.25', eCf: '1', wUnit: 'TRUE_MOA', wClick: '0.25', wCf: '1', temp: '59', press: '', humidity: '50', alt: '0', lat: '' }, extra || {});
 const seedOne = (r) => ({ 'scopedope.v2': JSON.stringify({ pi: 0, people: [{ name: 'Me', active: 0, profiles: [r] }], session: { dist: '300' } }) });
 const stored = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem('scopedope.v2')));
 const scaled = (bc, from, to) => (bc * to / from).toFixed(3);

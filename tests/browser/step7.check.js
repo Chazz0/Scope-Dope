@@ -3,6 +3,7 @@
 // unit clarity and phone layout. Written before the app change.   Run: node tests/browser/step7.check.js
 const http = require('http'), fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
+const { completeScope } = require('./helpers/scope-setup');
 const ROOT = path.join(__dirname, '..', '..');
 const server = http.createServer((req, res) => {
   const f = path.join(ROOT, req.url.split('?')[0] === '/' ? 'index.html' : req.url.split('?')[0]);
@@ -16,7 +17,7 @@ async function open(seed, w, h) {
   const ctx = await browser.newContext({ viewport: { width: w || 400, height: h || 860 }, serviceWorkers: 'block' });
   const page = await ctx.newPage(); page.errors = []; page.on('pageerror', e => page.errors.push(e.message));
   if (seed) await page.addInitScript((sd) => { if (!sessionStorage.getItem('__seeded')) { for (const k of Object.keys(sd)) localStorage.setItem(k, sd[k]); sessionStorage.setItem('__seeded', '1'); } }, seed);
-  await page.goto(base + '/index.html'); await page.waitForTimeout(150); return { ctx, page };
+  await page.goto(base + '/index.html'); await page.waitForTimeout(150); if (!seed) await completeScope(page); return { ctx, page };
 }
 const go = async (page, tab) => { await page.click('#tab' + tab); await page.waitForTimeout(80); };
 const type = async (page, id, v) => { await page.fill('#' + id, String(v)); await page.waitForTimeout(60); };
@@ -114,8 +115,8 @@ test('separate profiles (people) keep their own rifles and velocities', async ()
 });
 test('profiles saved before Step 7 load unchanged, keep every field, and their velocity is protected', async () => {
   const legacy = { schema: 1, pi: 0, people: [{ name: 'Me', active: 1, profiles: [
-    { pname: 'Old A', preset: 'p308', cname: '', model: 'G1', bc: '0.451', wt: '175', diam: '0.308', v0: '2640', vref: '59', vsens: '0.5', zero: '100', h: '1.6', twist: '11', tdir: 'R', click: 'MOA:0.25', temp: '59', press: '', humidity: '50', alt: '0', lat: '' },
-    { pname: 'Old B', preset: 'p65cm', cname: '', model: 'G7', bc: '0.3', wt: '140', diam: '0.264', v0: '2688', vref: '59', vsens: '0', zero: '200', h: '1.5', twist: '8', tdir: 'R', click: 'MOA:0.25', temp: '59', press: '', humidity: '50', alt: '0', lat: '' }] }],
+    { pname: 'Old A', preset: 'p308', cname: '', model: 'G1', bc: '0.451', wt: '175', diam: '0.308', v0: '2640', vref: '59', vsens: '0.5', zero: '100', h: '1.6', twist: '11', tdir: 'R', click: 'MOA:0.25', eUnit: 'TRUE_MOA', eClick: '0.25', eCf: '1', wUnit: 'TRUE_MOA', wClick: '0.25', wCf: '1', temp: '59', press: '', humidity: '50', alt: '0', lat: '' },
+    { pname: 'Old B', preset: 'p65cm', cname: '', model: 'G7', bc: '0.3', wt: '140', diam: '0.264', v0: '2688', vref: '59', vsens: '0', zero: '200', h: '1.5', twist: '8', tdir: 'R', click: 'MOA:0.25', eUnit: 'TRUE_MOA', eClick: '0.25', eCf: '1', wUnit: 'TRUE_MOA', wClick: '0.25', wCf: '1', temp: '59', press: '', humidity: '50', alt: '0', lat: '' }] }],
     session: { dist: '400', wind: '10', windHr: '3', angle: '0', az: '0', cStart: '100', cEnd: '1000', cStep: '50' } };
   const { ctx, page } = await open({ 'scopedope.v2': JSON.stringify(legacy) }); await go(page, 'Rifle');
   eq([await val(page, 'pname'), await val(page, 'v0'), await val(page, 'bc'), await val(page, 'vsens'), await val(page, 'h')], ['Old B', '2688', '0.3', '0', '1.5']);

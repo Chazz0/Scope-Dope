@@ -4,6 +4,7 @@
 // Run:  node tests/browser/layout.check.js     (needs Playwright with Chromium)
 const http = require('http'), fs = require('fs'), path = require('path');
 const { chromium, devices } = require('playwright');
+const { completeScope } = require('./helpers/scope-setup');
 const ROOT = path.join(__dirname, '..', '..');
 const server = http.createServer((req, res) => {
   const f = path.join(ROOT, req.url.split('?')[0] === '/' ? 'index.html' : req.url.split('?')[0]);
@@ -19,7 +20,7 @@ async function open(w, h, init) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, serviceWorkers: 'block' });
   const page = await ctx.newPage(); page.errors = []; page.on('pageerror', e => page.errors.push(e.message));
   if (init) await page.addInitScript(init);
-  await page.goto(base + '/index.html'); await page.waitForTimeout(200); return { ctx, page };
+  await page.goto(base + '/index.html'); await page.waitForTimeout(200); if (!init) await completeScope(page); return { ctx, page };
 }
 const set = async (page, id, v) => { await page.evaluate(([i, x]) => { const e = document.getElementById(i); e.value = x; e.dispatchEvent(new Event('input', { bubbles: true })); }, [id, v]); await page.waitForTimeout(120); };
 const goto = async (page, h) => { await page.evaluate((x) => { location.hash = x; }, h); await page.waitForTimeout(250); };

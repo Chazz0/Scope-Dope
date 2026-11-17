@@ -3,6 +3,7 @@
 // pressure, stability wording, phone layout. Written before the app changes.   Run: node tests/browser/stage9.check.js
 const http = require('http'), fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
+const { completeScope } = require('./helpers/scope-setup');
 const ROOT = path.join(__dirname, '..', '..');
 const server = http.createServer((req, res) => {
   const f = path.join(ROOT, req.url.split('?')[0] === '/' ? 'index.html' : req.url.split('?')[0]);
@@ -16,7 +17,7 @@ async function open(seed, w, h) {
   const ctx = await browser.newContext({ viewport: { width: w || 400, height: h || 860 }, serviceWorkers: 'block' });
   const page = await ctx.newPage(); page.errors = []; page.on('pageerror', e => page.errors.push(e.message));
   if (seed) await page.addInitScript((sd) => { if (!sessionStorage.getItem('__seeded')) { for (const k of Object.keys(sd)) localStorage.setItem(k, sd[k]); sessionStorage.setItem('__seeded', '1'); } }, seed);
-  await page.goto(base + '/index.html'); await page.waitForTimeout(150); return { ctx, page };
+  await page.goto(base + '/index.html'); await page.waitForTimeout(150); if (!seed) await completeScope(page); return { ctx, page };
 }
 const go = async (page, tab) => { await page.click('#tab' + tab); await page.waitForTimeout(80); };
 const type = async (page, id, v) => { await page.fill('#' + id, String(v)); await page.waitForTimeout(60); };
@@ -31,7 +32,7 @@ const chartIds = (page) => page.$$eval('#cAssessList li', els => els.map(e => e.
 
 
 const FULL = (o) => Object.assign({ pname: 'X', preset: 'p308', cname: '', model: 'G1', bc: '0.462', wt: '168', diam: '0.308', v0: '2650', v0src: 'user', vref: '59',
-  vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', temp: '59', press: '', humidity: '50', alt: '0', lat: '', bcsrc: '' }, o);
+  vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', eUnit: 'TRUE_MOA', eClick: '0.25', eCf: '1', wUnit: 'TRUE_MOA', wClick: '0.25', wCf: '1', temp: '59', press: '', humidity: '50', alt: '0', lat: '', bcsrc: '' }, o);
 const seedOf = (people, session) => ({ 'scopedope.v2': JSON.stringify({ schema: 1, pi: 0, people, session: session || {} }) });
 const FIELDS = ['bc', 'wt', 'diam', 'v0', 'vref', 'vsens', 'zero', 'h', 'twist', 'tdir', 'click', 'temp', 'press', 'humidity', 'alt', 'lat', 'model'];
 const readAll = (page) => page.evaluate((f) => Object.fromEntries(f.map(k => [k, document.getElementById(k).value])), FIELDS);

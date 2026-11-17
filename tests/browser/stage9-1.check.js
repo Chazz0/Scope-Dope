@@ -3,6 +3,7 @@
 // fitted ballistic coefficient when the bullet weight changes. Written before the app changes.   Run: node tests/browser/stage9-1.check.js
 const http = require('http'), fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
+const { completeScope } = require('./helpers/scope-setup');
 const ROOT = path.join(__dirname, '..', '..');
 const { execFileSync } = require('child_process');
 const STAGE9 = '9fca2372faaf4a9cba3e048190d659e738821cab';   // the approved Stage 9 page, for before/after comparison
@@ -19,7 +20,7 @@ async function open(seed, w, h, file) {
   const ctx = await browser.newContext({ viewport: { width: w || 400, height: h || 860 }, serviceWorkers: 'block' });
   const page = await ctx.newPage(); page.errors = []; page.on('pageerror', e => page.errors.push(e.message));
   if (seed) await page.addInitScript((sd) => { if (!sessionStorage.getItem('__seeded')) { for (const k of Object.keys(sd)) localStorage.setItem(k, sd[k]); sessionStorage.setItem('__seeded', '1'); } }, seed);
-  await page.goto(base + '/' + (file || 'index.html')); await page.waitForTimeout(150); return { ctx, page };
+  await page.goto(base + '/' + (file || 'index.html')); await page.waitForTimeout(150); if (!seed && !file) await completeScope(page); return { ctx, page };
 }
 const go = async (page, tab) => { await page.click('#tab' + tab); await page.waitForTimeout(80); };
 const type = async (page, id, v) => { await page.fill('#' + id, String(v)); await page.waitForTimeout(60); };
@@ -35,11 +36,15 @@ const chartIds = (page) => page.$$eval('#cAssessList li', els => els.map(e => e.
 
 
 const FULL = (o) => Object.assign({ pname: 'X', preset: 'p308', cname: '', model: 'G1', bc: '0.462', wt: '168', diam: '0.308', v0: '2650', v0src: 'user', vref: '59',
-  vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', temp: '59', press: '', humidity: '50', alt: '0', lat: '', bcsrc: 'user', bcwt: '168' }, o);
+  vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', eUnit: 'TRUE_MOA', eClick: '0.25', eCf: '1', wUnit: 'TRUE_MOA', wClick: '0.25', wCf: '1', temp: '59', press: '', humidity: '50', alt: '0', lat: '', bcsrc: 'user', bcwt: '168' }, o);
 const seedOf = (people, session) => ({ 'scopedope.v2': JSON.stringify({ schema: 1, pi: 0, people, session: session || {} }) });
 const one = (o, s) => seedOf([{ name: 'One', active: 0, profiles: [FULL(o)] }], s);
 const NUMS = ['#elevClicks', '#windClicks', '#sDrop', '#sVel', '#sEn', '#sTime'];
-const snap = async (page) => { await go(page, 'Hud'); const a = []; for (const s of NUMS) a.push(await txt(page, s)); await go(page, 'Chart'); await page.waitForTimeout(250); a.push(await page.$$eval('#tbody tr', r => r.map(x => x.textContent).join('|'))); return a; };
+// Stage 16: the HUD numbers must be identical; the range card is compared by its physical and calculated columns, because the new page names and orders its columns differently
+// (Calc up mil, Calc up true MOA, Calc wind mil, Calc wind true MOA, then Dial and click columns). Old row: Yd, Drop, Up MOA, Up mil, Up clicks, Wind MOA, Wind clicks, physical.
+const snap = async (page, isNew) => { await go(page, 'Hud'); const a = []; for (const s of NUMS) a.push(await txt(page, s)); await go(page, 'Chart'); await page.waitForTimeout(250);
+  const rows = await page.$$eval('#tbody tr', r => r.map(x => [...x.children].map(td => td.textContent)));
+  a.push(rows.map(c => isNew ? [c[0], c[1], c[3], c[2], c[7], c[5], c[9]].concat(c.slice(10)).join('|') : [c[0], c[1], c[2], c[3], c[4], c[5], c[6]].concat(c.slice(7)).join('|')).join('||')); return a; };
 const low = { bc: '0.243', wt: '55', diam: '0.224', v0: '3240', twist: '16', bcwt: '55', preset: 'p223' };   // estimated stability below 1.0
 
 // ---- 1. Display-only warning when estimated stability is below 1.0 ----
@@ -60,7 +65,7 @@ test('SG<1 no warning for the default load, a fast twist, or twist 0 (no spin dr
 test('SG<1 the numbers shown are identical to the approved Stage 9 page (HUD dials and the whole range card)', async () => {
   for (const [o, s] of [[low, { dist: '500', wind: '10', windHr: '3' }], [Object.assign({}, low, { twist: '20', tempF: '0', temp: '0' }), { dist: '800', wind: '15', windHr: '9' }], [{}, { dist: '600', wind: '8', windHr: '3' }]]) {
     const a = await open(one(o, s)), b = await open(one(o, s), 400, 860, '__stage9.html');
-    eq(await snap(a.page), await snap(b.page), 'values changed for ' + JSON.stringify(o)); await a.ctx.close(); await b.ctx.close();
+    eq(await snap(a.page, true), await snap(b.page, false), 'values changed for ' + JSON.stringify(o)); await a.ctx.close(); await b.ctx.close();
   }
 });
 

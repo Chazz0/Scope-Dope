@@ -7,6 +7,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
+const { completeScope } = require('./helpers/scope-setup');
 
 const ROOT = path.join(__dirname, '..', '..');
 const server = http.createServer((req, res) => {
@@ -26,6 +27,7 @@ async function open(seed) {
   page.on('pageerror', e => page.errors.push(e.message));
   if (seed) await page.addInitScript((sd) => { if (!sessionStorage.getItem('__seeded')) { for (const k of Object.keys(sd)) localStorage.setItem(k, sd[k]); sessionStorage.setItem('__seeded', '1'); } }, seed);
   await page.goto(base + '/index.html'); await page.waitForTimeout(150);
+  if (!seed) await completeScope(page);
   return { ctx, page };
 }
 const text = (page, id) => page.$eval('#' + id, e => e.textContent);
@@ -143,7 +145,7 @@ test('choosing a cartridge preset says which values were replaced and what they 
 });
 
 // ---- Follow-up checks: the coefficient logic must never touch saved values just because they are opened or viewed ----
-const R = (name, e) => Object.assign({ pname: name, preset: 'p308', cname: '', model: 'G1', bc: '0.462', wt: '168', diam: '0.308', v0: '2650', vref: '59', vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', temp: '59', press: '', humidity: '50', alt: '0', lat: '' }, e);
+const R = (name, e) => Object.assign({ pname: name, preset: 'p308', cname: '', model: 'G1', bc: '0.462', wt: '168', diam: '0.308', v0: '2650', vref: '59', vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', eUnit: 'TRUE_MOA', eClick: '0.25', eCf: '1', wUnit: 'TRUE_MOA', wClick: '0.25', wCf: '1', temp: '59', press: '', humidity: '50', alt: '0', lat: '' }, e);
 const odd = () => [
   { name: 'Alex', active: 0, profiles: [R('A', { wt: '190', bc: '0.4625' }), R('B', { preset: 'p65cm', wt: '140', bc: '0.9', model: 'G7' })] },
   { name: 'Sam', active: 0, profiles: [R('C', { preset: 'p223', wt: '55', bc: '0.123', v0: '3240' })] }
@@ -246,7 +248,8 @@ test('moving target is gone: no input, no Lead dial, no Lead text, two equal dia
   const w = await page.$$eval('.dials .dial', d => d.map(x => Math.round(x.getBoundingClientRect().width))); ok(Math.abs(w[0] - w[1]) <= 1, 'dials are equal width: ' + w);
   ok(!/\blead\b/i.test(await page.$eval('body', b => b.innerText)), 'the word Lead does not appear on the HUD');
   await page.click('.tab#tabChart'); await page.waitForTimeout(250);
-  eq(await page.$$eval('#thead th', t => t.map(x => x.textContent)), ['Yd', 'Drop in', 'Up MOA', 'Up mil', 'Up clicks', 'Wind MOA', 'Wind clicks', 'fps', 'ft·lb', 'Time s', 'Mach']);
+  // Stage 16 column names (calculated and dial columns); still no Lead columns
+  eq(await page.$$eval('#thead th', t => t.map(x => x.textContent)), ['Yd', 'Drop in', 'Calc up mil', 'Calc up true MOA', 'Calc wind mil', 'Calc wind true MOA', 'Dial up (true MOA)', 'Up clicks', 'Dial wind (true MOA)', 'Wind clicks', 'fps', 'ft·lb', 'Time s', 'Mach']);
   ok(!/moving target/i.test(await page.$eval('body', b => b.innerText)), 'no mention of moving target anywhere');
   eq(page.errors, []); await ctx.close();
 });
