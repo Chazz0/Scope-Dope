@@ -18,3 +18,7 @@ Stage 3 engine was bit-identical for every field except the removed lead fields.
 Contents of this version: point-mass drag using the G1 or G7 table in `index.html`, RK2
 integration at a 0.5 ms step, moist-air density with an ISA fallback, lag-time crosswind,
 Litz spin drift, first-order Coriolis, and the Miller stability estimate.
+
+## Stage 6 (no model change)
+
+Model version stays 1.0.0. Stage 6 added an advisory transparency panel and no calculation change; the solver block is byte-identical to Stage 5. See `docs/STAGE6_TRANSPARENCY.md`.

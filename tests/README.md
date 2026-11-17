@@ -63,3 +63,5 @@ The code at tag `baseline-before-accuracy-work` is the state before any accuracy
 - `tests/validation.test.js` guards the evidence files and the Tested / Verified / Unverified labels in `docs/MODEL_SOURCES.md`.
 
 None of these show that the ballistics are accurate. See `docs/VALIDATION_REPORT.md` for what was and was not compared.
+
+**Stage 6 update:** `tests/assess.test.js` and `tests/browser/transparency.check.js` cover the advisory transparency panel (see `docs/STAGE6_TRANSPARENCY.md`). They also pin that the calculation block is unchanged.

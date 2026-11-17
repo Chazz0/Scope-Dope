@@ -47,8 +47,8 @@ test('each out-of-envelope input produces a named warning', () => {
   assert.ok(ids(run({ wt: 55, diam: 0.224 })).includes('caliber'));
   assert.ok(ids(run({ tempF: 100 })).includes('temp'));
   assert.ok(ids(run({ tempF: -10 })).includes('temp'));
-  assert.ok(ids(run({ altFt: 8000 })).includes('pressure'));       // estimated pressure far below the compared range
-  assert.ok(!ids(run({ altFt: 8000, pressInHg: 29.9 })).includes('pressure')); // user-entered pressure inside the range
+  assert.ok(ids(run({ altFt: 12000 })).includes('pressure'));       // estimated pressure far below the compared range
+  assert.ok(!ids(run({ altFt: 12000, pressInHg: 29.9 })).includes('pressure')); // user-entered pressure inside the range
   assert.ok(ids(run({ humidity: 95 })).includes('humidity'));
 });
 

@@ -457,7 +457,12 @@ test('measured Doppler comparison is labelled MEASURED, drag-only, and not a phy
 });
 
 test('engine inputs are unchanged relative to the Stage 5 base commit', () => {
-  const diff = execFileSync('git', ['diff', '--stat', '9f37df7', '--', 'index.html', 'tests/golden', 'tests/helpers', 'tests/solver.test.js'], { cwd: root, encoding: 'utf8' });
+  // From Stage 6 on, index.html also holds the advisory ASSESS block, so the whole file is no longer identical. The calculation
+  // engine block must be byte-identical, and the other engine inputs must have an empty diff.
+  const grab = (h) => h.slice(h.indexOf('/*SOLVER_START*/'), h.indexOf('/*SOLVER_END*/'));
+  const then = execFileSync('git', ['show', '9f37df7:index.html'], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 });
+  assert.strictEqual(grab(fs.readFileSync(path.join(root, 'index.html'), 'utf8')), grab(then));
+  const diff = execFileSync('git', ['diff', '--stat', '9f37df7', '--', 'tests/golden', 'tests/helpers/load-solver.js', 'tests/solver.test.js'], { cwd: root, encoding: 'utf8' });
   assert.strictEqual(diff.trim(), '');
   const refs = JSON.parse(fs.readFileSync(path.join(root, 'tests', 'validation', 'references.json'), 'utf8'));
   assert.deepStrictEqual(refs.tolerances, JSON.parse(execFileSync('git', ['show', '9f37df7:tests/validation/references.json'], { cwd: root, encoding: 'utf8' })).tolerances);

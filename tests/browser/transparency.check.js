@@ -15,7 +15,8 @@ async function open() {
   const page = await ctx.newPage(); page.errors = []; page.on('pageerror', e => page.errors.push(e.message));
   await page.goto(base + '/index.html'); await page.waitForTimeout(150); return { ctx, page };
 }
-const set = async (page, id, v) => { await page.fill('#' + id, String(v)); await page.dispatchEvent('#' + id, 'change'); await page.waitForTimeout(80); };
+const set = async (page, id, v) => {
+  if (['v0'].includes(id)) await page.click('#tabRifle'); await page.fill('#' + id, String(v)); await page.dispatchEvent('#' + id, 'change'); await page.waitForTimeout(80); };
 const txt = (page, sel) => page.$eval(sel, e => e.textContent);
 const levels = (page) => page.$$eval('#assessList li', els => els.map(e => e.dataset.level + ':' + e.dataset.id));
 
@@ -44,7 +45,7 @@ test('an entered muzzle velocity outside the compared span warns and is still th
   const { ctx, page } = await open();
   await set(page, 'v0', 1100);
   ok((await levels(page)).includes('warning:muzzle'));
-  ok(/1100/.test(await txt(page, '#chipLoad')) || true);
+  ok((await page.$eval('#v0', e => e.value)) === '1100', 'entered velocity was replaced');
   await ctx.close();
 });
 test('invalid input shows no assessment of a result', async () => {

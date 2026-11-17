@@ -90,6 +90,12 @@ input[type=range]{width:100%; margin:0; accent-color:var(--accent); height:28px}
 .stats dd{margin:0; font:500 16px/1.2 var(--mono); font-variant-numeric:tabular-nums}
 .stats small{font:400 11px var(--body); color:var(--panel-muted); margin-left:4px}
 .notice{margin:0; font-size:13px; line-height:1.45; padding-left:10px; border-left:3px solid var(--panel-accent)}
+.assess{margin:0; font-size:12.5px; line-height:1.45; color:var(--panel-muted)}
+.assess summary{cursor:pointer; padding:6px 0; overflow-wrap:anywhere}
+.assess ul{margin:4px 0 0; padding:0; list-style:none; display:grid; gap:6px}
+.assess li{padding-left:10px; border-left:3px solid var(--panel-muted); overflow-wrap:anywhere}
+.assess li[data-level="warning"]{border-left-color:var(--warn); color:var(--panel-ink,inherit)}
+.assess .tag{font-weight:600}
 
 .toggles{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
 .tog{display:flex; align-items:center; justify-content:space-between; gap:8px; min-width:0; padding:13px 14px; border:1px solid var(--line); border-radius:12px; background:var(--surface); color:var(--ink); font:600 13px/1.25 var(--body); cursor:pointer; text-align:left}
@@ -327,6 +333,7 @@ input[type=range]{height:20px}
               <div><dt>Energy</dt><dd><span id="sEn">0</span><small>ft&middot;lb</small></dd></div>
               <div><dt>Flight time</dt><dd><span id="sTime">0</span><small>s</small></dd></div>
             </dl>
+            <details class="assess" id="assess"><summary id="assessSum">Calculated estimate. Not independently verified.</summary><ul id="assessList"></ul></details>
             <p class="notice" id="notice" hidden></p>
           </section>
 
@@ -739,6 +746,52 @@ function dopeAt(M, inp, rangeYd){
   };
 }
 /*SOLVER_END*/
+
+/*ASSESS_START*/
+// Safety and transparency (Stage 6). Advisory text only. Nothing here feeds the calculation, and it never calls a result
+// accurate or verified. VALIDATED is the span of conditions the reference comparisons covered (manufacturer
+// tables, not measured flight). A test rebuilds it from the reference data file, so it cannot drift from the evidence.
+const VALIDATED = {
+  basis: 'manufacturer ballistic tables (Federal, Hornady), compared in testing; never compared with measured bullet flight',
+  rangeYd: [50, 500], muzzleFps: [2600, 3000], bcG1: [0.241, 0.608], bcG7: [0.224, 0.287], weightGr: [130, 180],
+  diameters: [0.264, 0.308], tempF: [29, 89], pressInHg: [21, 31], humidityPct: [0, 78]
+};
+function assessResult(inp, ctx){
+  const V = VALIDATED, out = [];
+  const add = (level, id, text) => out.push({ level: level, id: id, text: text });
+  const outside = (x, r) => x < r[0] || x > r[1];
+  const rangeYd = ctx && ctx.rangeYd != null ? ctx.rangeYd : null;
+  const pEff = inp.pressInHg != null ? inp.pressInHg : 29.92 * Math.pow(1 - 2.25577e-5 * inp.altFt * 0.3048, 5.25588);
+  // Warnings: the input is outside the conditions the reference comparisons covered.
+  if (rangeYd != null && rangeYd > V.rangeYd[1]) add('warning', 'range', 'Distance ' + rangeYd + ' yd is beyond the ' + V.rangeYd[1] + ' yd covered by reference comparisons. Treat this result with extra caution.');
+  if (outside(inp.v0nom != null ? inp.v0nom : inp.v0, V.muzzleFps)) add('warning', 'muzzle', 'Muzzle velocity ' + Math.round(inp.v0nom != null ? inp.v0nom : inp.v0) + ' fps is outside the ' + V.muzzleFps[0] + ' to ' + V.muzzleFps[1] + ' fps covered by reference comparisons.');
+  const bcr = inp.model === 'G7' ? V.bcG7 : V.bcG1;
+  const bcOut = outside(inp.bc, bcr);
+  if (bcOut) add('warning', 'bc', inp.model + ' coefficient ' + inp.bc + ' is outside the ' + bcr[0] + ' to ' + bcr[1] + ' range compared for ' + inp.model + '.');
+  const calOut = !V.diameters.some(d => Math.abs(d - inp.diam) <= 0.0015) || outside(inp.wt, V.weightGr);
+  if (calOut) add('warning', 'caliber', 'Caliber ' + inp.diam + ' in at ' + inp.wt + ' gr is outside the reference comparisons (compared: ' + V.diameters.join(' and ') + ' in, ' + V.weightGr[0] + ' to ' + V.weightGr[1] + ' gr).');
+  if (outside(inp.tempF, V.tempF)) add('warning', 'temp', 'Temperature ' + Math.round(inp.tempF) + ' F is outside the ' + V.tempF[0] + ' to ' + V.tempF[1] + ' F covered by reference comparisons.');
+  if (outside(pEff, V.pressInHg)) add('warning', 'pressure', (inp.pressInHg != null ? 'Pressure ' : 'Pressure estimated from altitude, ') + pEff.toFixed(1) + ' inHg, is outside the ' + V.pressInHg[0] + ' to ' + V.pressInHg[1] + ' inHg covered by reference comparisons.');
+  if (outside(inp.humidity || 0, V.humidityPct)) add('warning', 'humidity', 'Humidity ' + Math.round(inp.humidity) + '% is outside the ' + V.humidityPct[0] + ' to ' + V.humidityPct[1] + '% covered by reference comparisons.');
+  const refCovered = !bcOut && !calOut;
+  if (!refCovered) add('warning', 'noref', 'No reference comparison covers this load (caliber, weight or coefficient). Nothing in testing checked a load like it.');
+  // Notes: incomplete inputs (what the result assumes or leaves out).
+  if (inp.pressInHg == null) add('notice', 'pressureEst', 'Pressure not entered, so it is estimated from altitude with a standard atmosphere. Enter station pressure for a better estimate.');
+  if (inp.latDeg == null) add('notice', 'noLat', 'Latitude not entered, so Coriolis effect is not included.');
+  if (!(inp.twist > 0)) add('notice', 'noTwist', 'Twist rate is 0, so spin drift is not included.');
+  // Notes: effects that are in use but have no reference comparison.
+  if (Math.abs(inp.windMph || 0) > 0 || Math.abs(inp.headMph || 0) > 0) add('notice', 'wind', 'Wind: no reference table in testing included wind. The wind correction is an estimate that was not checked against reference data.');
+  if (inp.twist > 0) add('notice', 'spin', 'Spin drift is an empirical estimate. Its equation has no verified source and no reference comparison.');
+  if (inp.latDeg != null) add('notice', 'coriolis', 'Coriolis effect follows from first-order theory and was not compared with measurements.');
+  if (inp.angleDeg) add('notice', 'angle', 'Angled shot: no reference comparison covers shooting uphill or downhill.');
+  if (inp.v0nom != null && Math.abs(inp.v0 - inp.v0nom) >= 1) add('notice', 'vtemp', 'Velocity is adjusted for temperature using your own change-per-degree setting. That adjustment was not validated.');
+  add('notice', 'limits', 'Limits of the model: a point-mass trajectory with G1 or G7 drag tables that are not verified against an original source. It has no aerodynamic jump, no powder-temperature model beyond your setting, and a standard atmosphere. It has been compared with manufacturer tables, never with measured bullet flight.');
+  return {
+    badge: 'Calculated estimate. Not independently verified. ' + (refCovered ? 'Compared with manufacturer tables for similar loads, not with measured bullet flight.' : 'No reference data covers this load.'),
+    refCovered: refCovered, findings: out
+  };
+}
+/*ASSESS_END*/
 
 (function(){
   const $ = (id) => document.getElementById(id);
@@ -1267,7 +1320,23 @@ function dopeAt(M, inp, rangeYd){
     $('windArrow').setAttribute('transform', 'rotate(' + (h * 30) + ')');
   }
 
+  function renderAssess(inp){
+    const box = $('assess'), list = $('assessList'), sum = $('assessSum');
+    list.textContent = '';
+    if (inp.bad){ sum.textContent = 'Calculated estimate. Not independently verified. No result until the highlighted fields are fixed.'; box.open = false; return; }
+    const r = assessResult(inp, { rangeYd: inp.distYd });
+    const warns = r.findings.filter(f => f.level === 'warning').length, notes = r.findings.length - warns;
+    sum.textContent = r.badge + ' ' + (warns ? warns + (warns === 1 ? ' warning' : ' warnings') + ', ' : '') + notes + (notes === 1 ? ' note' : ' notes') + '.';
+    for (const f of r.findings){
+      const li = document.createElement('li'); li.dataset.level = f.level; li.dataset.id = f.id;
+      const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = f.level === 'warning' ? 'Warning: ' : 'Note: ';
+      li.appendChild(tag); li.appendChild(document.createTextNode(f.text)); list.appendChild(li);
+    }
+    if (warns && !box.dataset.touched) box.open = true;
+  }
+
   function renderMeta(inp){
+    renderAssess(inp);
     const pr = PRESETS.find(x => x.id === $('preset').value);
     const cal = pr ? pr.name : ($('cname').value.trim() || 'Custom load');
     const name = $('pname').value.trim() || 'My rifle';
@@ -1303,6 +1372,8 @@ function dopeAt(M, inp, rangeYd){
       : 'Coriolis is on for latitude ' + inp.latDeg + '° and a shot toward ' + CARD[Math.round(az / 45) % 8] + '. 0° is north, 90° east.';
     document.querySelectorAll('#distChips .chipbtn').forEach(b => b.setAttribute('aria-pressed', String(parseFloat(b.dataset.v) === inp.distYd)));
   }
+
+  $('assess').addEventListener('toggle', () => { $('assess').dataset.touched = '1'; });
 
   function update(){
     readRange();  // keeps the From / To / Every flags current even when the table is not on screen
