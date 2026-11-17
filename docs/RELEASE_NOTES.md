@@ -17,7 +17,7 @@ A single-page ballistic calculator for rifles. You pick or enter a load, your si
 
 ## What has been tested
 
-- Software behaviour: 160 Node tests and 196 browser checks (saved data, profile workflows, invalid and boundary inputs, desktop and phone layouts, markup in names, backup and restore).
+- Software behaviour: 165 Node tests and 200 browser checks (saved data, profile workflows, invalid and boundary inputs, desktop and phone layouts, markup in names, backup and restore).
 - Calculation guards: the solver, drag tables, reference data, tolerances and golden baseline are pinned and tested for change.
 - The code was compared with a separately written integration of the same equations (agreement to about 0.0002 in on drop). This shows the code does what the equations say. It does not show the equations match real bullets.
 - Comparison with manufacturer trajectory tables (Federal and Hornady) over a limited set of loads and conditions. Manufacturer tables are calculated, so agreement is not proof of real-world accuracy.
