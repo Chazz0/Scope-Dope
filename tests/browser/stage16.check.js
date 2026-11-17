@@ -5,7 +5,9 @@
 const http = require('http'), fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const { chromium } = require('playwright');
 const ROOT = path.join(__dirname, '..', '..');
-const oldHtml = execFileSync('git', ['show', 'main:index.html'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 26 });
+// The previous release is pinned (b72dccb, the Stage 14 state), not 'main', so this check still compares with the pre-Stage-16 app after Stage 16 is merged.
+const PREV = process.env.PREV_REF || 'b72dccb';
+const oldHtml = execFileSync('git', ['show', PREV + ':index.html'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 26 });
 const server = http.createServer((req, res) => {
   const u = req.url.split('?')[0];
   if (u === '/old.html') { res.writeHead(200, { 'Content-Type': 'text/html' }); return res.end(oldHtml); }
