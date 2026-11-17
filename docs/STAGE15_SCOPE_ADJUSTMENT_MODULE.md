@@ -1,5 +1,7 @@
 # Stage 15: scope-adjustment module (standalone)
 
+> **Corrected by the final audit (`STAGE15_FINAL_AUDIT.md`).** The first version of this report said Applied Ballistics documents no click value or separate elevation and windage settings, and did not define shooter MOA. Both were wrong: the 2018 AB Mobile guide lists separate Elevation and Windage Turret Grad, Unit and Correction Factor fields, and the Analytics manual defines IPHY as inches per hundred yards. The audit also corrects the section title and page numbers. Where this report and the audit differ, the audit is right.
+
 **Physical accuracy: NOT DEMONSTRATED.** This module does unit and turret arithmetic on a correction someone else calculated. It does not calculate a trajectory and says nothing about whether any ballistic correction is right. It is **not connected** to the app: no screen, saved rifle, default or calculation uses it.
 
 Files: `lib/scope-adjust.js` (module), `tests/scope-adjust.test.js` (tests), this report. Nothing else changed. `index.html`, the solver, BC and velocity code, reference data and baselines are byte-identical to `main` (a test enforces it).
@@ -16,7 +18,7 @@ The Leica glossary page could not be fetched, so it was not used. The manuals we
 
 | Topic | Applied Ballistics documentation | Module |
 |---|---|---|
-| Tracking factor definition | Quantum 9.0: CF = expected POI shift / actual POI shift; the raw elevation prediction is multiplied by CF. Worked example: 102 yd, 30 MOA dialed, 29.8 in actual, expected 32.04 in, CF about 1.075, 30 MOA is dialed as 32.25 MOA. Analytics 3.2.4: dialed / measured movement (30 / 29 = 1.035), and the program "will scale the calculated drop by this correction factor". | Same. CF = expected shift / actual shift; the calculated correction is **multiplied** by CF. Both worked examples are reproduced by tests. |
+| Tracking factor definition | Quantum 2024 s9.0 "Determining Sight Scale Factor (Tall Target Testing)", p. 25: CF = expected POI shift / actual POI shift; the raw elevation prediction is multiplied by CF. Worked example: 102 yd, 30 MOA dialed, 29.8 in actual, expected 32.04 in, CF about 1.075, 30 MOA is dialed as 32.25 MOA. Analytics s3.2.4 "Advanced Settings", p. 12: dialed / measured movement (30 / 29 = 1.035), and the program "will scale the calculated drop by this correction factor". | Same. CF = expected shift / actual shift; the calculated correction is **multiplied** by CF. Both worked examples are reproduced by tests. |
 | Garmin "Sight Scale Factor" | Garmin glossary: a linear multiplier, actual / expected (turret 10 mil, impact 9 mil gives 0.9). This is the **reciprocal** of the Quantum CF. | **Not used.** The field is named `trackingCorrectionFactor`. A test shows 0.9 is treated as a CF of 0.9 (dial less), never as an SSF. Entering a Garmin value here would give a wrong dial. |
 | Test procedure | 100 yd or m vertical target, zero, dial at least 30 MOA or 10 MIL, measure the shift. Constants (inches per unit per yd or m): yd/MOA 0.01047, yd/MIL 0.03599, m/MOA 0.01145, m/MIL 0.03936. Expected = dialed x range x constant. | Implemented as `trackingCorrectionFactorFromTest`. Rejects a dial below 30 MOA or 10 MIL. The constants are used as published; they agree with exact geometry to 0.1% (0.03599 versus 0.036 for MIL in yards is a 0.03% difference). |
 | MIL, true MOA, shooter MOA | Analytics 7.0: output can be MILS, MOA (True MOA) or IPHY, "Shooters MOA". | Three exact units: `MIL`, `TRUE_MOA`, `SHOOTER_MOA`. The bare word "MOA" is rejected as ambiguous. |
@@ -26,10 +28,10 @@ The Leica glossary page could not be fetched, so it was not used. The manuals we
 
 These are not taken from Applied Ballistics. Nothing in the documents I could read covers them.
 
-- **Click value / turret graduation:** The Quantum manual does not cover it and has no separate elevation or windage click setting. The module takes a click value per axis, required, with no default, limit 0 < click <= 10 units.
+- **Click value / turret graduation:** The Quantum and Analytics manuals do not cover it. The 2018 AB Mobile guide lists separate elevation and windage turret graduations but no allowed range. The module takes a click value per axis, required, with no default, limit 0 < click <= 10 units.
 - **Rounding:** Not stated. The module rounds to the nearest whole click, halves away from zero, and also reports the exact click count, the amount actually dialed, and the remainder.
 - **Valid ranges:** No valid range for a CF or click value is stated. The module accepts a CF from 0.5 to 2.0 and rejects anything else, so a typo cannot silently produce a large dial.
-- **Definitions of the units:** The documents name true MOA and shooter MOA (IPHY) but do not define them. The module uses the standard definitions: true MOA = 1/60 degree, shooter MOA = 1 inch at 100 yd exactly, MIL = 1/1000 radian.
+- **Definitions of the units:** The documents define shooter MOA as IPHY, inches per hundred yards. They name true MOA and MIL without defining them, so the module uses the standard definitions: true MOA = 1/60 degree, MIL = 1/1000 radian.
 - **Shooter MOA in the tracking test:** The published constants cover MOA and MIL only, so the test function rejects `SHOOTER_MOA`.
 - **How Applied Ballistics converts between MIL, MOA and IPHY internally:** not documented. The module uses exact angles.
 
