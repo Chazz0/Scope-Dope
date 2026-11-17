@@ -110,6 +110,9 @@ input[type=number],input[type=text],select{
   border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--ink);
 }
 input[type=text],select{font-family:var(--body)}
+textarea{font:500 13px/1.35 var(--mono); padding:10px 11px; width:100%; min-width:0; resize:vertical; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--ink)}
+textarea:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+#storeMsg{margin:0 0 10px; padding:10px 12px; border:1px solid var(--warn); border-radius:8px; background:var(--surface); color:var(--warn); font:500 13px/1.4 var(--body)}
 input.bad{border-color:var(--warn)}
 input:focus-visible,select:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
 .grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
@@ -290,6 +293,7 @@ input[type=range]{height:20px}
   </header>
 
   <main>
+    <p id="storeMsg" role="alert" hidden></p>
     <!-- HUD -->
     <section id="viewHud" aria-label="HUD">
       <div class="cols">
@@ -505,6 +509,16 @@ input[type=range]{height:20px}
           </div>
           <div class="btnrow"><button type="button" class="btn" id="fitBtn">Match this impact</button></div>
           <p class="hint" id="fitMsg" aria-live="polite"></p>
+        </section>
+
+        <section class="card" aria-labelledby="h-bak">
+          <h2 id="h-bak">Back up and restore</h2>
+          <p class="sub">Your rifles are stored only in this browser. Copy a backup code and keep it somewhere safe. Restoring adds the rifles from a code. It never replaces what you already have.</p>
+          <div class="btnrow"><button type="button" class="btn" id="exportBtn">Show backup code</button></div>
+          <div class="field"><label for="exportCode">Backup code</label><textarea id="exportCode" rows="4" readonly spellcheck="false"></textarea></div>
+          <div class="field"><label for="importCode">Restore from a code</label><textarea id="importCode" rows="4" spellcheck="false" placeholder="Paste a backup code here"></textarea></div>
+          <div class="btnrow"><button type="button" class="btn ghost" id="importBtn">Add rifles from code</button></div>
+          <p class="hint" id="backupMsg" aria-live="polite"></p>
         </section>
       </div>
       <p class="foot" style="margin-top:14px">Dial directions move your point of impact. Follow the arrows on your turrets. These are estimates from a point-mass model with G1 or G7 drag, plus spin drift, Coriolis effect when you enter a latitude, and wind from any clock position. They leave out aerodynamic jump and powder temperature unless you set a velocity change per degree. Fire a few rounds at known distances and true your velocity or coefficient until the card matches your groups.</p>
@@ -775,11 +789,61 @@ function dopeAt(M, inp, rangeYd){
   let last = null;
   let lastRows = [];
 
-  function loadStore(){
+  /* Saved-data protection (Stage 2).
+     SCHEMA numbers the saved format. Anything the app cannot read or would change is first copied,
+     unchanged, to its own key ('scopedope.backup.*' or 'scopedope.damaged.*'). If a copy cannot be made,
+     or storage cannot be read, saving is switched off for the session so stored data is never overwritten. */
+  const SCHEMA = 1;
+  let saveBlocked = false, saveFail = false, loadNote = '';
+  function renderStoreMsg(){
+    const t = saveFail ? 'Your changes are not saved: this device refused to store them. Open Rifle settings and copy a backup code so you do not lose your rifles.' : loadNote;
+    const el = $('storeMsg'); el.textContent = t; el.hidden = !t;
+  }
+  // Keeps an unchanged copy of text under prefix + time. Returns false if it could not be kept.
+  function keepCopy(prefix, text){
     try {
-      const raw = localStorage.getItem('scopedope.v2');
+      for (let i = 0; i < localStorage.length; i++){
+        const k = localStorage.key(i);
+        if (k && k.indexOf(prefix) === 0 && localStorage.getItem(k) === text) return true;
+      }
+      const base = prefix + new Date().toISOString();
+      let k = base, n = 1;
+      while (localStorage.getItem(k) !== null) k = base + '-' + (n++);
+      localStorage.setItem(k, text);
+      return true;
+    } catch (e) { return false; }
+  }
+  function serialize(){ return JSON.stringify({ schema: SCHEMA, pi: pi, people: people, session: store.session }); }
+
+  function loadStore(){
+    let raw;
+    try { raw = localStorage.getItem('scopedope.v2'); }
+    catch (e) {
+      saveBlocked = true;
+      loadNote = 'Your saved rifles could not be read, so nothing will be saved on this device until storage works again. Anything already stored was left untouched.';
+      renderStoreMsg(); return;
+    }
+    const blockSaving = (why) => { saveBlocked = true; loadNote = why + ' Your changes will not be saved this session. What is stored was left exactly as it was.'; };
+    try {
       if (raw){
-        let o = JSON.parse(raw);
+        let o = null, parsed = true;
+        try { o = JSON.parse(raw); } catch (e) { parsed = false; }
+        const known = parsed && o && typeof o === 'object' && (Array.isArray(o.people) || Array.isArray(o.profiles));
+        if (!known){
+          if (keepCopy('scopedope.damaged.', raw)) loadNote = 'Your saved rifles could not be read. A copy of that data was kept on this device, and the app started with defaults.';
+          else blockSaving('Your saved rifles could not be read, and a safety copy could not be made.');
+          if (!parsed){ renderStoreMsg(); return; }
+          o = null;
+        } else {
+          const kept = Array.isArray(o.people) ? o.people.filter(x => x && Array.isArray(x.profiles) && x.profiles.length) : null;
+          const dropped = kept && kept.length !== o.people.length;
+          const newer = typeof o.schema === 'number' && o.schema > SCHEMA;
+          if (o.schema !== SCHEMA || dropped){
+            if (!keepCopy('scopedope.backup.', raw)) blockSaving('A safety copy of your saved rifles could not be made.');
+            else if (newer) loadNote = 'Your saved data was made by a newer version of Scope Dope. A copy was kept and your rifles were loaded.';
+            else if (dropped) loadNote = 'Some saved entries could not be loaded. A copy of everything was kept on this device.';
+          }
+        }
         if (o && Array.isArray(o.people)){
           people = o.people.filter(x => x && Array.isArray(x.profiles) && x.profiles.length);
           if (people.length){
@@ -830,13 +894,70 @@ function dopeAt(M, inp, rangeYd){
     $('windRange').value = s.wind;
     setHr(parseInt(s.windHr, 10) || 3);
   }
+  function syncState(){
+    store.profiles[store.active] = collectProfile();
+    store.session = collectSession();
+    people[pi].profiles = store.profiles; people[pi].active = store.active;
+  }
   function saveAll(){
+    try { syncState(); } catch (e) { return; }
+    if (saveBlocked) return;
     try {
-      store.profiles[store.active] = collectProfile();
-      store.session = collectSession();
-      people[pi].profiles = store.profiles; people[pi].active = store.active;
-      localStorage.setItem('scopedope.v2', JSON.stringify({ pi: pi, people: people, session: store.session }));
-    } catch (e) {}
+      localStorage.setItem('scopedope.v2', serialize());
+      if (saveFail){ saveFail = false; renderStoreMsg(); }
+    } catch (e) {
+      if (!saveFail){ saveFail = true; renderStoreMsg(); }
+    }
+  }
+
+  /* Backup code: export and import of profiles and rifles. Import only ever adds; it never replaces. */
+  function cleanProfile(p){
+    if (!p || typeof p !== 'object' || Array.isArray(p)) return null;
+    const d = profileDefaults('p308'), out = {};
+    PKEYS.forEach(k => {
+      const v = p[k];
+      out[k] = typeof v === 'string' ? v.slice(0, 80) : (typeof v === 'number' && isFinite(v)) ? String(v) : d[k];
+    });
+    return out;
+  }
+  function exportCode(){
+    try { syncState(); } catch (e) {}
+    const text = JSON.stringify({ app: 'scopedope', schema: SCHEMA, exported: new Date().toISOString(), people: people }, null, 1);
+    const box = $('exportCode'); box.value = text; box.focus(); box.select();
+    const rifles = people.reduce((n, p) => n + p.profiles.length, 0);
+    const what = people.length + (people.length === 1 ? ' profile' : ' profiles') + ', ' + rifles + (rifles === 1 ? ' rifle' : ' rifles');
+    $('backupMsg').textContent = 'Backup code ready (' + what + '). Select it and copy it, then keep it somewhere safe, such as a note or an email to yourself.';
+    try { navigator.clipboard.writeText(text).then(() => { $('backupMsg').textContent = 'Backup code copied (' + what + '). Keep it somewhere safe, such as a note or an email to yourself.'; }, () => {}); } catch (e) {}
+  }
+  function importCode(){
+    const msg = (t) => { $('backupMsg').textContent = t; };
+    const invalid = 'That is not a valid Scope Dope backup code. Nothing was imported.';
+    const text = $('importCode').value.trim();
+    if (!text) return msg('Paste a backup code first. Nothing was imported.');
+    if (text.length > 2000000) return msg(invalid);
+    let o; try { o = JSON.parse(text); } catch (e) { return msg(invalid); }
+    if (!o || o.app !== 'scopedope' || !Array.isArray(o.people)) return msg(invalid);
+    if (typeof o.schema === 'number' && o.schema > SCHEMA) return msg('This code was made by a newer version of Scope Dope. Nothing was imported.');
+    const incoming = [];
+    o.people.slice(0, 50).forEach(x => {
+      if (!x || typeof x !== 'object' || !Array.isArray(x.profiles)) return;
+      const profs = x.profiles.slice(0, 200).map(cleanProfile).filter(Boolean);
+      if (profs.length) incoming.push({ name: typeof x.name === 'string' ? x.name.slice(0, 40) : '', profiles: profs, active: (x.active >= 0 && x.active < profs.length) ? x.active : 0 });
+    });
+    if (!incoming.length) return msg('No rifles were found in that code. Nothing was imported.');
+    try { syncState(); } catch (e) {}
+    if (!keepCopy('scopedope.backup.', serialize())) return msg('A safety copy of your current rifles could not be made, so nothing was imported.');
+    const taken = new Set(people.map(p => (p.name || '').toLowerCase()));
+    incoming.forEach((p, i) => {
+      let n = p.name || ('Profile ' + (people.length + i + 1)), c = n, k = 1;
+      while (taken.has(c.toLowerCase())) c = (n.slice(0, 28) + ' (imported' + (k > 1 ? ' ' + k : '') + ')'), k++;
+      taken.add(c.toLowerCase()); p.name = c;
+    });
+    incoming.forEach(p => people.push(p));
+    saveAll(); rebuildPeople();
+    $('importCode').value = '';
+    const rifles = incoming.reduce((n, p) => n + p.profiles.length, 0);
+    msg('Imported ' + incoming.length + (incoming.length === 1 ? ' profile' : ' profiles') + ' with ' + rifles + (rifles === 1 ? ' rifle' : ' rifles') + '. Nothing you already had was changed. Pick them under Saved profiles.');
   }
   function rebuildProfiles(){
     const s = $('profSel'); s.innerHTML = '';
@@ -1368,6 +1489,7 @@ function dopeAt(M, inp, rangeYd){
   });
   $('az').value = '0';
   loadStore();
+  renderStoreMsg();
   if (!people.length) people = [{ name:'Me', profiles: store.profiles, active: store.active }];
   pi = Math.min(pi, people.length - 1);
   people.forEach((p, i) => { if (!p.name) p.name = i ? 'Profile ' + (i + 1) : 'Me'; });
@@ -1387,6 +1509,8 @@ function dopeAt(M, inp, rangeYd){
   $('windDn').addEventListener('click', () => bump('wind', -1, 0, 60));
   $('windUp').addEventListener('click', () => bump('wind', 1, 0, 60));
   $('fitBtn').addEventListener('click', fitTrue);
+  $('exportBtn').addEventListener('click', exportCode);
+  $('importBtn').addEventListener('click', importCode);
   $('newProf').addEventListener('click', newProfile);
   $('delProf').addEventListener('click', deleteProfile);
   $('copyCsv').addEventListener('click', doCopy);

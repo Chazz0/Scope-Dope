@@ -1,7 +1,12 @@
-# Scope Dope tests (Stage 1 baseline)
+# Scope Dope tests (Stage 1 baseline, Stage 2 data protection)
 
-These tests record how the app behaves **today**. They do not change the app.
-Passing them means "the behavior is what it was at the baseline", not "the app is accurate".
+These tests record how the app behaves. They do not change the app.
+Passing them means "the behavior is what was documented", not "the app is accurate".
+
+**Stage 2 update:** the four storage `[known gap]` checks (no backup, damaged data overwritten, silent save
+failure, read failure) were replaced by checks of the fixed behavior, and tests for the schema number,
+backups, damaged-data copies and export/import were added to `tests/browser/storage.check.js`.
+The solver tests and golden baseline are unchanged.
 
 ## Run
 
