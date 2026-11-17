@@ -31,3 +31,6 @@ Profile loading, zero reachability message, fitted velocity and BC labels, stati
 
 ## Stage 9.1 (stability warning, BC confirmation): no model change
 Display and input handling only. Solver block unchanged, model version stays 1.0.0. Physical accuracy: NOT DEMONSTRATED.
+
+## Stage 10 (scientific verification audit): no model change
+Audit only. `index.html`, the solver block, the drag tables, reference data, tolerances and golden baseline are unchanged; model version stays 1.0.0. Findings and a prioritized list of recommended corrections (none implemented) are in `docs/STAGE10_SCIENTIFIC_VERIFICATION.md`. Physical accuracy: NOT DEMONSTRATED.
