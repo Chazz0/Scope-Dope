@@ -8,6 +8,10 @@ failure, read failure) were replaced by checks of the fixed behavior, and tests 
 backups, damaged-data copies and export/import were added to `tests/browser/storage.check.js`.
 The solver tests and golden baseline are unchanged.
 
+**Stage 3 update:** the five input `[known gap]` checks in `tests/browser/inputs.check.js` (silent default for a blank
+coefficient, distance below the minimum calculated as 10 yd, silent coefficient rescale, wind field/slider mismatch,
+silent preset overwrite) were replaced by 15 checks of the fixed behavior. No `[known gap]` checks remain.
+
 ## Run
 
 ```

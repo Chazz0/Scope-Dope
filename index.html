@@ -356,10 +356,10 @@ input[type=range]{height:20px}
                   <label for="wind">Wind speed (mph)</label>
                   <div class="stepper">
                     <button type="button" class="step" id="windDn" aria-label="Wind down 1 mph">&minus;</button>
-                    <input id="wind" type="number" inputmode="decimal" min="0" max="60" step="1" value="10">
+                    <input id="wind" type="number" inputmode="decimal" min="0" max="40" step="1" value="10">
                     <button type="button" class="step" id="windUp" aria-label="Wind up 1 mph">+</button>
                   </div>
-                  <input id="windRange" type="range" min="0" max="30" step="1" value="10" aria-label="Wind speed slider in miles per hour">
+                  <input id="windRange" type="range" min="0" max="40" step="1" value="10" aria-label="Wind speed slider in miles per hour">
                 </div>
                 <p class="hint" id="crossLine"></p>
                 <p class="hint">Tap the hour the wind comes from. 12 is straight at you, 3 is from your right, 9 is from your left.</p>
@@ -452,6 +452,7 @@ input[type=range]{height:20px}
             <div class="field"><label for="v0">Muzzle velocity (fps)</label><input id="v0" type="number" inputmode="numeric" min="500" max="4500" step="10" value="2650"></div>
             <div class="field"><label for="diam">Bullet diameter (in)</label><input id="diam" type="number" inputmode="decimal" min="0.17" max="0.6" step="any" value="0.308"></div>
           </div>
+          <p class="hint" id="loadMsg" aria-live="polite" hidden></p>
           <div class="grid2">
             <div class="field"><label for="vref">Velocity measured at (&deg;F)</label><input id="vref" type="number" inputmode="decimal" min="-40" max="130" step="1" value="59"></div>
             <div class="field"><label for="vsens">Velocity change per &deg;F (fps)</label><input id="vsens" type="number" inputmode="decimal" min="-5" max="10" step="any" value="0"></div>
@@ -762,7 +763,7 @@ function dopeAt(M, inp, rangeYd){
     { id:'p65prc',name:'6.5 PRC',       v0:2960, bc:0.625, wt:143, d:0.264, tw:8 }
   ];
   const RANGES = {
-    dist:[10,2000,400], wind:[0,60,10], angle:[-75,75,0], temp:[-40,130,59], alt:[-500,15000,0],
+    dist:[10,2000,400], wind:[0,40,10], angle:[-75,75,0], temp:[-40,130,59], alt:[-500,15000,0],
     v0:[500,4500,2650], bc:[0.05,1.2,0.462], wt:[15,800,168], h:[0.5,4,1.5], zero:[25,1000,100],
     diam:[0.17,0.6,0.308], twist:[5,20,10], humidity:[0,100,50], az:[0,360,0], tgt:[0,60,0], tgtAng:[0,90,90],
     vsens:[-5,10,0], vref:[-40,130,59]
@@ -783,7 +784,14 @@ function dopeAt(M, inp, rangeYd){
   const sessionDefaults = () => ({ dist:'400', wind:'10', windHr:'3', angle:'0', az:'0', tgt:'0', tgtAng:'90', tgtDir:'LR', cStart:'100', cEnd:'1000', cStep:'50' });
 
   let store = { active:0, profiles:[profileDefaults('p308')], session:sessionDefaults() };
-  let lastWt = 168;
+  // The weight and coefficient last set by you, a profile or a preset. Weight edits scale the coefficient from here.
+  let anchor = { wt: 168, bc: 0.462, bcText: '0.462' };
+  function setAnchor(){
+    const w = parseFloat($('wt').value), b = parseFloat($('bc').value);
+    if (isFinite(w) && w > 0 && isFinite(b) && b > 0) anchor = { wt: w, bc: b, bcText: $('bc').value.trim() };
+  }
+  let lastSelPreset = '';
+  function setLoadMsg(t){ const el = $('loadMsg'); el.textContent = t; el.hidden = !t; }
   let windHr = 3;
   let people = [], pi = 0;
   let last = null;
@@ -881,7 +889,7 @@ function dopeAt(M, inp, rangeYd){
   function applyProfile(p){
     PKEYS.forEach(k => { if (p[k] != null) $(k).value = p[k]; });
     if (!$('preset').value) $('preset').value = 'custom';
-    lastWt = parseFloat($('wt').value) || 168;
+    lastSelPreset = $('preset').value; setAnchor(); setLoadMsg('');
   }
   function applySession(s){
     ['dist','wind','angle','az','cStart','cEnd','cStep'].forEach(k => {
@@ -980,8 +988,23 @@ function dopeAt(M, inp, rangeYd){
   }
   function fint(n){ return Math.round(n).toLocaleString('en-US'); }
 
+  /* Input validation (Stage 3). A field outside its allowed range, or empty, is never swapped for a default
+     or clamped to produce an answer. It is flagged and named, and no result is shown until it is fixed.
+     (The substituted value below is only a placeholder so the rest of this function can finish; it is never displayed as a result.) */
+  const NAMES = { dist:'Distance', wind:'Wind speed', angle:'Angle', temp:'Temperature', alt:'Altitude', v0:'Muzzle velocity', bc:'Ballistic coefficient',
+    wt:'Bullet weight', h:'Scope height', zero:'Zero distance', diam:'Bullet diameter', twist:'Barrel twist', humidity:'Humidity', az:'Shooting direction',
+    vsens:'Velocity change per degree', vref:'Velocity measured at temperature', press:'Pressure', lat:'Latitude' };
+  const UNITS = { dist:' yd', wind:' mph', angle:'°', temp:'°F', alt:' ft', v0:' fps', wt:' gr', h:' in', zero:' yd', diam:' in', twist:' in',
+    humidity:'%', az:'°', vsens:' fps per °F', vref:'°F', press:' inHg', lat:'°' };
+  function problemText(id, raw, lo, hi){
+    const r = String(raw).trim(), u = UNITS[id] || '';
+    const what = r === '' ? 'is empty' : (isFinite(parseFloat(r)) ? 'is ' + r + u : 'is not a number');
+    return (NAMES[id] || id) + ' ' + what + ' (allowed ' + lo + ' to ' + hi + u + ').';
+  }
+  const FIX_LINE = 'Fix the highlighted fields to see this.';
+
   function readInputs(){
-    let bad = 0;
+    const problems = [];
     const num = (id) => {
       const [min, max, def] = RANGES[id];
       const el = $(id);
@@ -989,7 +1012,7 @@ function dopeAt(M, inp, rangeYd){
       const ok = isFinite(v) && v >= min && v <= max;
       el.classList.toggle('bad', !ok);
       el.setAttribute('aria-invalid', ok ? 'false' : 'true');
-      if (!ok){ bad++; v = isFinite(v) ? Math.min(max, Math.max(min, v)) : def; }
+      if (!ok){ problems.push({ id: id, text: problemText(id, el.value, min, max) }); v = isFinite(v) ? Math.min(max, Math.max(min, v)) : def; }
       return v;
     };
     const opt = (id, lo, hi) => {
@@ -997,7 +1020,7 @@ function dopeAt(M, inp, rangeYd){
       if (raw !== ''){
         const v = parseFloat(raw);
         ok = isFinite(v) && v >= lo && v <= hi;
-        if (ok) val = v; else bad++;
+        if (ok) val = v; else problems.push({ id: id, text: problemText(id, raw, lo, hi) });
       }
       el.classList.toggle('bad', !ok);
       el.setAttribute('aria-invalid', ok ? 'false' : 'true');
@@ -1012,7 +1035,12 @@ function dopeAt(M, inp, rangeYd){
     const head = Math.round(spd * Math.cos(rad) * 1000) / 1000;
     const tempF = num('temp');
     const v0nom = num('v0');
-    const v0 = Math.min(4500, Math.max(500, v0nom + num('vsens') * (tempF - num('vref'))));
+    const v0adj = v0nom + num('vsens') * (tempF - num('vref'));
+    const v0 = Math.min(4500, Math.max(500, v0adj));
+    if (v0 !== v0adj && !problems.some(p => p.id === 'v0' || p.id === 'vsens' || p.id === 'temp' || p.id === 'vref')){
+      problems.push({ id: 'vsens', text: 'Velocity at the current temperature is ' + Math.round(v0adj) + ' fps (allowed 500 to 4500 fps). Check the velocity change per degree.' });
+      $('vsens').classList.add('bad'); $('vsens').setAttribute('aria-invalid', 'true');
+    }
     return {
       distYd: num('dist'), windSpd: spd, windHr: windHr, windMph: Math.abs(cross), windFrom: cross >= 0 ? 'R' : 'L', headMph: head,
       angleDeg: num('angle'), azimuth: num('az'), latDeg: latDeg,
@@ -1021,7 +1049,8 @@ function dopeAt(M, inp, rangeYd){
       v0nom: v0nom, v0: v0, bc: num('bc'), wt: num('wt'), h: num('h'), zero: num('zero'),
       diam: num('diam'), twist: num('twist'), model: $('model').value === 'G7' ? 'G7' : 'G1',
       twistDir: $('tdir').value === 'L' ? 'L' : 'R',
-      click: { unit: parts[0], size: parseFloat(parts[1]) }, bad: bad
+      click: { unit: parts[0], size: parseFloat(parts[1]) }, problems: problems,
+      bad: problems.length  // last property: counted after every field above has been read
     };
   }
 
@@ -1043,15 +1072,19 @@ function dopeAt(M, inp, rangeYd){
   }
 
   function renderPanel(M, inp){
-    const d = dopeAt(M, inp, inp.distYd);
+    const d = inp.bad ? null : dopeAt(M, inp, inp.distYd);
     const notes = [];
     const leadOn = inp.tgtMph > 0;
     $('leadDial').hidden = !leadOn;
     $('dials').style.setProperty('--cols', leadOn ? '3' : '2');
     $('dials').classList.toggle('three', leadOn);
-    if (inp.bad) notes.push('Some fields are outside their allowed range. The highlighted fields are held at the nearest allowed value for now.');
     const ids = ['elevClicks','windClicks','leadClicks','sDrop','sVel','sEn','sTime'];
-    if (!d){
+    if (inp.bad){
+      ids.forEach(i => $(i).textContent = '—');
+      $('elevSub').textContent = ''; $('windSub').textContent = ''; $('leadSub').textContent = '';
+      ['elevDir','windDir','leadDir'].forEach(i => { $(i).textContent = 'Check inputs'; $(i).className = 'dir off'; });
+      notes.push('Fix the highlighted fields to see a result. ' + inp.problems.map(p => p.text).join(' '));
+    } else if (!d){
       ids.forEach(i => $(i).textContent = '—');
       $('elevSub').textContent = ''; $('windSub').textContent = ''; $('leadSub').textContent = '';
       ['elevDir','windDir','leadDir'].forEach(i => { $(i).textContent = 'No solution'; $(i).className = 'dir off'; });
@@ -1244,12 +1277,17 @@ function dopeAt(M, inp, rangeYd){
     const pr = PRESETS.find(x => x.id === $('preset').value);
     const cal = pr ? pr.name : ($('cname').value.trim() || 'Custom load');
     const name = $('pname').value.trim() || 'My rifle';
-    $('chipName').textContent = cal + ' · ' + inp.wt + ' gr';
+    const badIds = inp.problems.map(p => p.id);
+    $('chipName').textContent = cal + ' · ' + (badIds.indexOf('wt') >= 0 ? ($('wt').value.trim() || '—') : inp.wt) + ' gr';
     $('chipLoad').textContent = people.length > 1 ? (people[pi].name || 'Profile') + ' · ' + name : name;
     $('cnameField').hidden = $('preset').value !== 'custom';
     const opt = $('profSel').options[store.active];
     if (opt) opt.textContent = name;
     const qo = $('quickProf').options[store.active]; if (qo) qo.textContent = name;
+    if (inp.bad){
+      // Derived lines would be built from placeholder values, so they say what is wrong instead.
+      $('mvLine').textContent = FIX_LINE; $('sgHint').textContent = FIX_LINE; $('crossLine').textContent = FIX_LINE;
+    } else {
     $('mvLine').textContent = Math.abs(inp.v0 - inp.v0nom) >= 1
       ? 'At ' + Math.round(inp.tempF) + '°F the app uses ' + Math.round(inp.v0) + ' fps. Many loads gain 1 to 2 fps per degree.'
       : 'Leave the change at 0 to use the same velocity in every temperature. Many loads gain 1 to 2 fps per degree.';
@@ -1261,11 +1299,12 @@ function dopeAt(M, inp, rangeYd){
     const hw = inp.headMph;
     $('crossLine').innerHTML = '<strong>' + fx(inp.windMph, 1) + ' mph</strong> crosswind from the ' + side +
       (Math.abs(hw) >= 0.05 ? ', <strong>' + fx(Math.abs(hw), 1) + ' mph</strong> ' + (hw > 0 ? 'headwind' : 'tailwind') : '') + '.';
-    $('togWind').firstChild.textContent = 'Wind · ' + inp.windSpd + ' mph at ' + inp.windHr;
+    }
+    $('togWind').firstChild.textContent = 'Wind · ' + (badIds.indexOf('wind') >= 0 ? ($('wind').value.trim() || '—') : inp.windSpd) + ' mph at ' + inp.windHr;
     const azo = $('az').selectedOptions[0];
     $('togShot').firstChild.textContent = 'Shot · ' + (inp.angleDeg === 0 ? 'level' : (inp.angleDeg > 0 ? '+' : MINUS) + Math.abs(inp.angleDeg) + '°') + ' · ' + (azo ? azo.textContent.split(' ')[0] : '');
     const az = ((inp.azimuth % 360) + 360) % 360;
-    $('coriLine').textContent = inp.latDeg == null
+    $('coriLine').textContent = badIds.indexOf('lat') >= 0 ? FIX_LINE : inp.latDeg == null
       ? 'Coriolis is off. Enter your latitude in Rifle settings to turn it on. Shooting direction ' + CARD[Math.round(az / 45) % 8] + '.'
       : 'Coriolis is on for latitude ' + inp.latDeg + '° and a shot toward ' + CARD[Math.round(az / 45) % 8] + '. 0° is north, 90° east.';
     document.querySelectorAll('#distChips .chipbtn').forEach(b => b.setAttribute('aria-pressed', String(parseFloat(b.dataset.v) === inp.distYd)));
@@ -1273,6 +1312,13 @@ function dopeAt(M, inp, rangeYd){
 
   function update(){
     const inp = readInputs();
+    if (inp.bad){
+      // Invalid input: show no result and no range card built from placeholder values. Typed values are still saved as typed.
+      clearTimeout(tableTimer); last = null; lastRows = [];
+      $('tbody').innerHTML = ''; $('cMsg').textContent = 'Fix the highlighted fields to see the range card.';
+      renderPanel(null, inp); renderMeta(inp); saveAll();
+      return;
+    }
     const M = getModel(inp);
     last = { M: M, inp: inp };
     renderPanel(M, inp);
@@ -1296,16 +1342,29 @@ function dopeAt(M, inp, rangeYd){
     if (id === 'profSel' || id === 'quickProf' || id === 'person' || id === 'personName') return;
     if (id === 'windRange') $('wind').value = e.target.value;
     if (id === 'wind') $('windRange').value = e.target.value;
+    if (id === 'bc') setAnchor();
     if (id === 'wt'){
-      const nw = parseFloat(e.target.value), b = parseFloat($('bc').value);
-      if (isFinite(nw) && nw > 0){
-        if (isFinite(b) && lastWt > 0) $('bc').value = (b * nw / lastWt).toFixed(3);
-        lastWt = nw;
+      // The coefficient is scaled from the last weight and coefficient you set yourself (the anchor), never from the
+      // previous keystroke, so typing 1, 9, 0 gives the same result as entering 190 at once.
+      const nw = parseFloat(e.target.value);
+      if (isFinite(nw) && nw > 0 && anchor.wt > 0){
+        if (nw === anchor.wt){ $('bc').value = anchor.bcText; setLoadMsg(''); }
+        else {
+          const nb = (anchor.bc * nw / anchor.wt).toFixed(3);
+          $('bc').value = nb;
+          setLoadMsg('Bullet weight is ' + nw + ' gr, so the ballistic coefficient was scaled to ' + nb + ' (from ' + anchor.bcText + ' at ' + anchor.wt + ' gr). If your bullet has a published coefficient, enter that instead.');
+        }
       }
     }
-    if (id === 'preset'){
+    if (id === 'preset' && sel.value !== lastSelPreset){  // a select fires both input and change; act once per real change
+      lastSelPreset = sel.value;
       const p = PRESETS.find(x => x.id === sel.value);
-      if (p){ $('v0').value = p.v0; $('bc').value = p.bc; $('wt').value = p.wt; $('diam').value = p.d; $('twist').value = p.tw; lastWt = p.wt; $('model').value = 'G1'; }
+      if (p){
+        const was = $('v0').value + ' fps, ' + $('wt').value + ' gr, ' + $('model').value + ' ' + $('bc').value + ', ' + $('diam').value + ' in, 1:' + $('twist').value + ' twist';
+        $('v0').value = p.v0; $('bc').value = p.bc; $('wt').value = p.wt; $('diam').value = p.d; $('twist').value = p.tw; $('model').value = 'G1';
+        setAnchor();
+        setLoadMsg('Loaded ' + p.name + ' starting values: ' + p.v0 + ' fps, ' + p.wt + ' gr, G1 ' + p.bc + ', ' + p.d + ' in, 1:' + p.tw + ' twist. These replaced your entries (' + was + '). Check them against your ammunition.');
+      }
     }
     update();
   }
@@ -1319,6 +1378,7 @@ function dopeAt(M, inp, rangeYd){
       return;
     }
     const inp = readInputs();
+    if (inp.bad){ out.textContent = 'Fix the highlighted fields first. The match uses your other settings, so they must be valid.'; return; }
     inp.angleDeg = 0; inp.latDeg = null; inp.headMph = 0;
     const what = $('fitWhat').value;
     const f = (x) => {
@@ -1341,7 +1401,7 @@ function dopeAt(M, inp, rangeYd){
     const val = (lo + hi) / 2;
     let msg;
     if (what === 'bc'){
-      $('bc').value = val.toFixed(3);
+      $('bc').value = val.toFixed(3); setAnchor();
       msg = 'Coefficient set to ' + val.toFixed(3) + ' (' + inp.model + '). ';
       if (Math.abs(val - inp.bc) / inp.bc > 0.2) msg += 'That is far from the ' + inp.bc.toFixed(3) + ' you had. ';
     } else {
@@ -1506,8 +1566,8 @@ function dopeAt(M, inp, rangeYd){
   $('profSel').addEventListener('change', (e) => switchProfile(parseInt(e.target.value, 10)));
   $('distDn').addEventListener('click', () => bump('dist', -5, 10, 2000));
   $('distUp').addEventListener('click', () => bump('dist', 5, 10, 2000));
-  $('windDn').addEventListener('click', () => bump('wind', -1, 0, 60));
-  $('windUp').addEventListener('click', () => bump('wind', 1, 0, 60));
+  $('windDn').addEventListener('click', () => bump('wind', -1, 0, 40));
+  $('windUp').addEventListener('click', () => bump('wind', 1, 0, 40));
   $('fitBtn').addEventListener('click', fitTrue);
   $('exportBtn').addEventListener('click', exportCode);
   $('importBtn').addEventListener('click', importCode);
