@@ -1,6 +1,10 @@
 # Stage 5 close-out decision record
 
-Status today: **NOT COMPLETE** (1 complete, 1 waived, 6 open). Physical accuracy: **NOT DEMONSTRATED**. This file is a recommendation. It changes no criterion state. Waiving or narrowing a criterion is the owner's decision, and none has been assumed.
+**Decision recorded 2026-11-16 (22:23): the project owner accepted this close-out.** Stage 5 is closed as a limited software and reference-validation milestone: **COMPLETE EXCEPT WAIVED ITEMS** (1 complete, 7 waived, 0 open). The sections below were written as a recommendation before the acceptance and are kept as written, except where marked. Physical accuracy: **NOT DEMONSTRATED**. The text said "NOT COMPLETE (1 complete, 1 waived, 6 open)" until the acceptance; that was the state before it.
+
+Limitations that stay explicit, by the owner's instruction: physical accuracy NOT DEMONSTRATED; G1 and G7 drag tables Unverified; manufacturer comparisons not independently verified; Hornady atmosphere explanation a supported hypothesis, not confirmed; no claim that the app has been proven accurate against actual bullet flight.
+
+Product requirement recorded with the acceptance: the user enters their own measured muzzle velocity for each load, and factory velocities are reference data only and never override it (`docs/STAGE5_COMPLETION.md`).
 
 ## Settled findings (unchanged by this round)
 
@@ -24,7 +28,7 @@ Nothing in rows 1, 3, 4 and 6 can be finished without primary sources or physica
 
 ## Recommendation
 
-**Yes: Stage 5 can be closed as a limited software and reference-validation milestone, with physical accuracy NOT DEMONSTRATED**, provided the owner formally accepts the narrowed scopes above for rows 1 to 4 and 6 (or waives them) and row 5 is either finished or narrowed the same way. Until the owner says so, the status stays NOT COMPLETE. The status line and counts must then be changed in the same commit as the owner's decision, with the waiver recorded the way the reviewer waiver was (who, when, what it leaves unestablished).
+**Recommendation (accepted): Stage 5 can be closed as a limited software and reference-validation milestone, with physical accuracy NOT DEMONSTRATED**, provided the owner formally accepts the narrowed scopes above for rows 1 to 4 and 6 (or waives them) and row 5 is either finished or narrowed the same way. Until the owner says so, the status stays NOT COMPLETE. The status line and counts must then be changed in the same commit as the owner's decision, with the waiver recorded the way the reviewer waiver was (who, when, what it leaves unestablished).
 
 What the closed milestone would honestly say:
 - Software correctness: supported by automated tests.
@@ -32,8 +36,8 @@ What the closed milestone would honestly say:
 - Drag shape: measured Doppler drag at about 100 m agrees within 3% for 21 of 26 values.
 - Not shown: physical accuracy of trajectory, drop, drift, spin drift, Coriolis or atmosphere handling; independent verification of any manufacturer table; the origin of the drag tables; Hornady's atmosphere.
 
-## Proposed waiver wording (for the owner to accept or reject; not in effect)
+## Accepted waiver wording (accepted by the owner 2026-11-16 22:23; in effect)
 
 > Waiver of the unmet parts of Stage 5 criteria 1, 2, 3, 4 and 6 and the altitude part of criterion 5. Stage 5 is closed as a limited software and reference-validation milestone. Unestablished by this waiver: raw-source verification of the Federal and Hornady entries; independent reproduction by someone other than the author; the origin and accuracy of the G1 and G7 tables; Hornady's atmosphere for the LE table; the source of the spin-drift equation; and all physical accuracy. Physical accuracy remains NOT DEMONSTRATED and no report may claim otherwise.
 
-Accepting it needs one reply from the owner. It does not require checking any data.
+Accepting it needed one reply from the owner and did not require checking any data. The reply was given on 2026-11-16 at 22:23.

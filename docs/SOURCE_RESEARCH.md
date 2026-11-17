@@ -1,6 +1,6 @@
 # Source research report (Stage 5, 2026-11-16)
 
-Status: Stage 5 is **NOT COMPLETE** (1 complete, 1 waived, 6 open). Physical accuracy is **NOT DEMONSTRATED**.
+Status: Stage 5 is closed as a limited software and reference-validation milestone, **COMPLETE EXCEPT WAIVED ITEMS** (1 complete, 7 waived, 0 open; owner acceptance 2026-11-16 22:23). Nothing here shows physical accuracy, and no manufacturer table was independently verified. Physical accuracy is **NOT DEMONSTRATED**.
 This report records what was retrieved, how, and what could not be established. Nothing here changes the solver, BCs, drag tables, atmosphere defaults, tolerances or golden baselines.
 
 ## How data was retrieved, and the limit on it

@@ -2,7 +2,7 @@
 
 Status: **NOT DONE.** Optional. The owner has said they will not check data by hand, and this is no longer asked of them: `docs/REFERENCE_DATA_AUDIT.md` is the automated, multi-read corroboration. No entry below has been checked against a raw page by anyone but a page-reading tool.
 
-Where this sits: the owner check and the second-manufacturer reproduction are separate OPEN criteria in `docs/STAGE5_COMPLETION.md` (1 complete, 1 waived, 6 open; status NOT COMPLETE). Completing this sheet would settle only the owner check. It would not make the data independently verified, and physical accuracy stays NOT DEMONSTRATED. The reviewer item is WAIVED and counts as nothing here.
+Where this sits: the owner check and the second-manufacturer reproduction are separate criteria in `docs/STAGE5_COMPLETION.md`, both WAIVED in narrowed form by the owner on 2026-11-16 22:23 (1 complete, 7 waived, 0 open; complete except waived items). Completing this sheet would settle only the owner check. It would not make the data independently verified, and physical accuracy stays NOT DEMONSTRATED. The reviewer item is WAIVED and counts as nothing here.
 
 How to use: open each URL yourself. For every row, write what the page shows in the "Page shows" column and mark Match Y or N. If a value differs, **write down the page value and leave the recorded value alone**. Corrections are made later in a separate commit that cites this sheet, so nothing is silently changed. Cells the source leaves blank or as an image placeholder are meant to stay empty ("none").
 

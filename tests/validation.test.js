@@ -203,7 +203,7 @@ test('a waived criterion carries who waived it, when, and what it leaves unestab
   assert.ok(waived.length >= 1, 'the reviewer criterion should be recorded as waived');
   for (const l of waived) {
     assert.match(l, /WAIVED by the project owner on 20\d\d-\d\d-\d\d/, 'waiver needs who and when: ' + l.slice(0, 60));
-    assert.match(l, /owner-checked only/, 'waiver must say what it leaves unestablished: ' + l.slice(0, 60));
+    assert.match(l, /owner-checked only|Leaves unestablished:/, 'waiver must say what it leaves unestablished: ' + l.slice(0, 60));
   }
   assert.ok(waived.some(l => /independent reviewer reproduced/i.test(l)), 'the reviewer criterion is not the waived one');
 });
@@ -300,10 +300,13 @@ test('the atmosphere finding is labeled a hypothesis and neither atmosphere is d
   assert.match(refs.atmosphereNote, /neither is selected/i);
 });
 
-test('the second-dataset and G-table criteria stay open until the evidence exists', () => {
+test('the second-dataset, G-table and offset criteria are WAIVED (narrowed), never COMPLETE, and say what they leave unestablished', () => {
   const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
   for (const k of ['A second, different manufacturer', 'The origin of the G1 and G7 tables', 'The steady offset']) {
-    assert.match(c, new RegExp('- \\[ \\] ' + k), k + ' must stay open');
+    const line = c.split('\n').find(l => l.includes(k));
+    assert.ok(line.startsWith('- [~] '), k + ' must be WAIVED, not complete');
+    assert.match(line, /Leaves unestablished:/, k);
+    assert.match(line, /WAIVED by the project owner on 2026-11-16 \(22:23\)/, k);
   }
 });
 
@@ -335,7 +338,7 @@ test('the owner check sheet lists every dataset and every entry, and says it has
   }
   assert.match(sheet, /leave the recorded value alone/);
   const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
-  assert.match(c, /- \[ \] The project owner checked every Federal and Hornady reference entry/);
+  assert.match(c, /- \[~\] The project owner checked every Federal and Hornady reference entry/);
   assert.match(c, /265 of 266/);
 });
 
@@ -371,13 +374,13 @@ test('the opening summary and the three achievements read the same in every docu
 test('the second-manufacturer criterion separates registered, checked and reproduced, and is not marked complete', () => {
   const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
   const line = c.split('\n').find(l => l.includes('A second, different manufacturer data set'));
-  assert.ok(line.startsWith('- [ ]'));
+  assert.ok(line.startsWith('- [~]'));
   assert.match(line, /dataset registered and calculations run: done/);
-  assert.match(line, /every source entry checked against the original manufacturer page: OPEN/);
+  assert.match(line, /every source entry checked against the original manufacturer page: not done \(waived\)/);
   assert.match(line, /independent reproduction: not performed/);
   assert.match(line, /not independently verified/);
-  assert.match(c, /Criteria: 1 complete, 1 waived, 6 open\./);
-  assert.match(c, /\*\*Stage 5 status: NOT COMPLETE\*\*/);
+  assert.match(c, /Criteria: 1 complete, 7 waived, 0 open\./);
+  assert.match(c, /\*\*Stage 5 status: COMPLETE EXCEPT WAIVED ITEMS\*\*/);
 });
 
 test('the G-table comparison and the Aberdeen statements carry their qualifications', () => {
@@ -430,7 +433,7 @@ test('Federal is not called verified, and its criterion parts are stated', () =>
   const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
   const line = c.split('\n').find(l => l.includes('A second, different manufacturer data set'));
   assert.match(line, /Federal/); assert.match(line, /not independently verified/); assert.match(line, /independent reproduction: not performed/);
-  assert.ok(line.startsWith('- [ ]'));
+  assert.ok(line.startsWith('- [~]'));
   for (const f of ['docs/MODEL_SOURCES.md', 'docs/VALIDATION_REPORT.md', 'docs/STAGE5_COMPLETION.md', 'docs/OWNER_CHECK_REFERENCE_DATA.md']) {
     assert.doesNotMatch(fs.readFileSync(path.join(root, f), 'utf8'), /Federal[^.\n]{0,60}(is|are|was) (independently )?verified/i, f);
   }
@@ -470,7 +473,7 @@ test('close-out round: the 10 failures are classified, diagnostic is reproducibl
   const fa = JSON.parse(runTool('formula-audit.js', '--json'));
   for (const id of ['COR-H-INTEGRAL', 'SPIN-FORMULA', 'SPIN-AB-LIMIT', 'ATM-PV', 'ATM-VAPOUR-CONC']) assert.ok(fa.find(x => x.id === id && x.pass), id);
   const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
-  assert.match(c, /\*\*Stage 5 status: NOT COMPLETE\*\*/);
+  assert.match(c, /\*\*Stage 5 status: COMPLETE EXCEPT WAIVED ITEMS\*\*/);
   assert.match(c, /Physical accuracy: NOT DEMONSTRATED/);
   const vr = fs.readFileSync(path.join(root, 'docs', 'VALIDATION_REPORT.md'), 'utf8');
   assert.match(vr, /3 consistent with the atmosphere hypothesis \(a supported hypothesis, not a confirmed explanation\)/); assert.match(vr, /0 attributed to a calculation error/);
@@ -489,13 +492,15 @@ test('Federal .308 comparison: the G1 sets use G1 and .462, the G7 .224 sets sta
   assert.match(vr, /Nothing was removed or reclassified/);
 });
 
-test('close-out record keeps the status NOT COMPLETE, labels the hypothesis, and proposes (does not apply) a waiver', () => {
+test('close-out record states the accepted waiver, keeps the five limitations, and labels the hypothesis', () => {
   const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_CLOSEOUT.md'), 'utf8');
-  assert.match(c, /\*\*NOT COMPLETE\*\*/); assert.match(c, /1 complete, 1 waived, 6 open/);
+  assert.match(c, /COMPLETE EXCEPT WAIVED ITEMS\*\* \(1 complete, 7 waived, 0 open\)/);
+  assert.match(c, /owner accepted this close-out/);
   assert.match(c, /supported hypothesis, not a confirmed explanation/);
-  assert.match(c, /Proposed waiver wording[^\n]*not in effect/);
+  assert.match(c, /Accepted waiver wording[^\n]*in effect/);
+  for (const k of ['G1 and G7 drag tables Unverified', 'manufacturer comparisons not independently verified', 'supported hypothesis, not confirmed', 'proven accurate against actual bullet flight']) assert.ok(c.includes(k), k);
   assert.match(c, /Physical accuracy: \*\*NOT DEMONSTRATED\*\*/);
-  assert.match(c, /does not require checking any data/);
+  assert.match(c, /did not require checking any data/);
   assert.doesNotMatch(c, /trajectory accuracy (is|was) (shown|demonstrated)/i);
 });
 
@@ -506,4 +511,25 @@ test('frozen inputs: tolerances, table points, atmospheres and every round 1 dat
   assert.deepStrictEqual(refs.atmospheres, base.atmospheres);
   assert.deepStrictEqual(refs.trajectoryCases, base.trajectoryCases);
   for (const d of base.datasets) { const n = { ...refs.datasets.find(x => x.id === d.id) }; delete n.registeredRound; assert.deepStrictEqual(n, d, d.id); }
+});
+
+test('the app calculates from the user-entered muzzle velocity; factory reference velocities never feed it', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  assert.ok(!/references\.json|tests\/validation|source-reads|measured-doppler/.test(html), 'index.html must not read reference data');
+  assert.ok(html.includes("const v0nom = num('v0');"), 'input must come from the velocity field');
+  assert.ok(html.includes("const v0adj = v0nom + num('vsens') * (tempF - num('vref'));"));
+  assert.match(html, /id="vsens"[^>]*value="0"/, 'temperature velocity adjustment must default to zero');
+  // With the user's own number the engine starts from it, not from a factory figure.
+  const { loadSolver: ls, baseInputs: bi } = require('./helpers/load-solver');
+  const S2 = ls();
+  for (const entered of [2713, 2588]) {
+    const inp = bi({ v0: entered, bc: 0.462, wt: 168, diam: 0.308, h: 1.5, zero: 100 });
+    const d = S2.dopeAt(S2.buildModel(inp, 120), inp, 5);
+    assert.ok(Math.abs(d.vFps - entered) / entered < 0.01, 'velocity at 5 yd should be the entered ' + entered + ', got ' + d.vFps);
+  }
+  const doc = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
+  assert.match(doc, /Muzzle velocity: the user's entered FPS versus factory reference velocities/);
+  assert.match(doc, /Factory velocities[^\n]*never as the app's input/);
+  const ref = JSON.parse(fs.readFileSync(path.join(root, 'tests', 'validation', 'references.json'), 'utf8'));
+  assert.ok(ref.datasets.every(d => typeof d.muzzle.v === 'number'), 'reference velocities stay in the test data only');
 });
