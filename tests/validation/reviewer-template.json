@@ -1,0 +1,76 @@
+{
+ "README": "Fill this in from the ORIGINAL manufacturer page only. Do not look at the project's copy of the numbers first. See docs/REVIEWER_PROTOCOL.md. Leave a value null if the page shows it as missing, N/A or a placeholder, and write exactly what the page shows in rawText.",
+ "reviewer": {
+  "name": "",
+  "relationshipToProject": "",
+  "independent": null
+ },
+ "sawProjectValuesBeforeTranscribing": null,
+ "source": {
+  "url": "https://www.hornadyle.com/rifle-ammunition/140-gr-otm-a",
+  "accessedOn": "",
+  "howAccessed": "",
+  "screenshotFile": ""
+ },
+ "published": {
+  "muzzleVelocityFps": null,
+  "bulletWeightGr": null,
+  "bcG1": null,
+  "bcG7": null,
+  "barrel": "",
+  "statedConditions": ""
+ },
+ "columns": [
+  "Muzzle",
+  "50",
+  "100",
+  "200",
+  "300",
+  "400",
+  "500"
+ ],
+ "table": {
+  "Muzzle": {
+   "velocityFps": null,
+   "energyFtLb": null,
+   "trajectoryIn": null,
+   "rawText": ""
+  },
+  "50": {
+   "velocityFps": null,
+   "energyFtLb": null,
+   "trajectoryIn": null,
+   "rawText": ""
+  },
+  "100": {
+   "velocityFps": null,
+   "energyFtLb": null,
+   "trajectoryIn": null,
+   "rawText": ""
+  },
+  "200": {
+   "velocityFps": null,
+   "energyFtLb": null,
+   "trajectoryIn": null,
+   "rawText": ""
+  },
+  "300": {
+   "velocityFps": null,
+   "energyFtLb": null,
+   "trajectoryIn": null,
+   "rawText": ""
+  },
+  "400": {
+   "velocityFps": null,
+   "energyFtLb": null,
+   "trajectoryIn": null,
+   "rawText": ""
+  },
+  "500": {
+   "velocityFps": null,
+   "energyFtLb": null,
+   "trajectoryIn": null,
+   "rawText": ""
+  }
+ }
+}

@@ -91,3 +91,77 @@ test('transcription check: each Hornady row\'s energy matches its velocity (this
     assert.ok(Math.abs(energy(w.v) - w.e) <= 2, r + ' yd: ' + w.v + ' fps gives ' + energy(w.v).toFixed(1) + ' ft-lb but the copy says ' + w.e + '. Whole-fps rounding allows about 1.');
   }
 });
+
+// ---- Independent-reviewer reproduction and Stage 5 completion (added after the owner's 20:12 requirements) ----
+const tool = (args) => { try { return { code: 0, out: execFileSync('node', [path.join(root, 'tests', 'tools', 'compare-reviewer.js'), ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }) }; } catch (e) { return { code: e.status, out: String(e.stdout || '') + String(e.stderr || '') }; } };
+const fixture = path.join(__dirname, 'validation', 'fixtures', 'FIXTURE-not-a-review.json');
+const template = path.join(__dirname, 'validation', 'reviewer-template.json');
+
+test('the reviewer template is blank, so a reviewer cannot be handed the project values', () => {
+  const t = JSON.parse(fs.readFileSync(template, 'utf8'));
+  assert.deepStrictEqual(t.columns, ['Muzzle', '50', '100', '200', '300', '400', '500']);
+  for (const col of t.columns) {
+    const cell = t.table[col];
+    assert.ok(cell && cell.velocityFps === null && cell.energyFtLb === null && cell.trajectoryIn === null && cell.rawText === '', col + ' must be blank');
+  }
+  assert.strictEqual(t.sawProjectValuesBeforeTranscribing, null);
+  assert.strictEqual(t.reviewer.independent, null);
+});
+
+test('the comparison tool refuses an incomplete reviewer file', () => {
+  const r = tool([template]);
+  assert.notStrictEqual(r.code, 0);
+  assert.match(r.out, /incomplete|not filled/i);
+});
+
+test('a fixture is labeled as NOT an independent review, and still exercises the whole comparison', () => {
+  const r = tool([fixture]);
+  assert.strictEqual(r.code, 0, r.out);
+  assert.match(r.out, /NOT AN INDEPENDENT REVIEW/);
+  assert.match(r.out, /0 differences from the project copy/);
+  assert.match(r.out, /5 of 5 engine comparisons within tolerance/);
+});
+
+test('the tool reports a difference between the reviewer\'s copy and the project copy', () => {
+  const f = JSON.parse(fs.readFileSync(fixture, 'utf8'));
+  f.table['300'].velocityFps = 2247;
+  const tmp = path.join(require('os').tmpdir(), 'reviewer-altered-' + process.pid + '.json');
+  fs.writeFileSync(tmp, JSON.stringify(f));
+  const r = tool([tmp]);
+  fs.unlinkSync(tmp);
+  assert.match(r.out, /DIFFERS FROM PROJECT COPY.*300/);
+  assert.match(r.out, /1 difference/);
+});
+
+test('a review only counts as independent if the reviewer says they never saw the project values', () => {
+  const f = JSON.parse(fs.readFileSync(fixture, 'utf8'));
+  f.reviewer.name = 'A. Reviewer'; f.reviewer.independent = true; f.sawProjectValuesBeforeTranscribing = true;
+  const tmp = path.join(require('os').tmpdir(), 'reviewer-saw-' + process.pid + '.json');
+  fs.writeFileSync(tmp, JSON.stringify(f));
+  const r = tool([tmp]);
+  fs.unlinkSync(tmp);
+  assert.match(r.out, /NOT AN INDEPENDENT REVIEW/);
+});
+
+test('the reviewer protocol says the reviewer must not be shown the project values first', () => {
+  const t = fs.readFileSync(path.join(root, 'docs', 'REVIEWER_PROTOCOL.md'), 'utf8');
+  assert.match(t, /must not be shown/i);
+  assert.match(t, /original manufacturer/i);
+});
+
+test('Stage 5 is only called complete when every criterion is checked, and the reviewer criterion needs a real review file', () => {
+  const t = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
+  const boxes = t.match(/^- \[[ x]\] /gm) || [];
+  assert.ok(boxes.length >= 6, 'criteria list is missing');
+  const allChecked = boxes.every(b => b.includes('[x]'));
+  const status = (t.match(/^\*\*Stage 5 status: ([A-Z ]+)\*\*/m) || [])[1];
+  assert.ok(status, 'status line missing');
+  assert.strictEqual(status === 'COMPLETE', allChecked, 'status says ' + status + ' but the checklist ' + (allChecked ? 'is' : 'is not') + ' fully checked');
+  const reviewerLine = t.split('\n').find(l => /independent reviewer reproduced/i.test(l)) || '';
+  if (reviewerLine.includes('[x]')) assert.ok(fs.existsSync(path.join(__dirname, 'validation', 'reviewer-results.json')), 'reviewer criterion is checked but there is no reviewer-results.json');
+});
+
+test('the sources document separates software correctness, reference agreement and physical accuracy', () => {
+  for (const w of ['Software correctness', 'Reference agreement', 'Physical accuracy']) assert.ok(sources.includes(w), w + ' is missing');
+  assert.match(sources, /Physical accuracy[^\n]*Not demonstrated/);
+});

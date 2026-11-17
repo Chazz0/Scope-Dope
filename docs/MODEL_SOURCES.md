@@ -5,12 +5,24 @@ Model version: see `docs/MODEL_CHANGELOG.md`. Status as of 2026-11-16.
 **Passing software tests is not proof of ballistic accuracy.** A test records what the code
 does. It cannot show that what the code does matches real bullets.
 
+## Three separate achievements
+
+Passing tests, matching published data and predicting a real bullet are different things. Each is shown separately.
+
+| Achievement | Question | Where it stands |
+| --- | --- | --- |
+| **Software correctness** | Does the program calculate consistently? | Supported by automated tests. This says nothing about the other two. |
+| **Reference agreement** | Does it reproduce published data? | Partly, not established. One bullet agrees with one manufacturer table from 100 to 500 yd, and two drag-table points agree at Mach 3. The reference data has not been reproduced by an independent reviewer (`docs/REVIEWER_PROTOCOL.md`). |
+| **Physical accuracy** | Does it predict what an actual bullet does? | Not demonstrated. No measured flight data has been compared. |
+
+Stage 5 completion criteria are in `docs/STAGE5_COMPLETION.md`.
+
 ## The three labels
 
 | Label | Meaning |
 | --- | --- |
 | **Tested** | Automated tests run it and pass. This says the code behaves consistently and is protected against accidental change. It says nothing about accuracy. |
-| **Verified** | Compared with an independent, named source that was opened and read, and agreed within a stated tolerance. A Verified label always states its scope: which values, which conditions. |
+| **Verified** | Compared with an independent, named source that was opened and read, and agreed within a stated tolerance. For data copied from a source, the copy must also have been reproduced by someone other than the author. A Verified label always states its scope: which values, which conditions. It never means physically accurate. |
 | **Unverified** | Not compared with an independent source that was opened and read. |
 
 A component can be Tested and also Unverified. Most of this app is.

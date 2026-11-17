@@ -1,0 +1,76 @@
+{
+ "README": "FIXTURE for testing the comparison tool. It was made from the project's own copy, so it is NOT a review and proves nothing about the reference data.",
+ "reviewer": {
+  "name": "TOOL TEST FIXTURE",
+  "relationshipToProject": "none: generated from the project copy",
+  "independent": false
+ },
+ "sawProjectValuesBeforeTranscribing": true,
+ "source": {
+  "url": "https://www.hornadyle.com/rifle-ammunition/140-gr-otm-a",
+  "accessedOn": "n/a",
+  "howAccessed": "n/a (fixture)",
+  "screenshotFile": ""
+ },
+ "published": {
+  "muzzleVelocityFps": 2700,
+  "bulletWeightGr": 140,
+  "bcG1": 0.608,
+  "bcG7": null,
+  "barrel": "24 in test barrel",
+  "statedConditions": "not stated"
+ },
+ "columns": [
+  "Muzzle",
+  "50",
+  "100",
+  "200",
+  "300",
+  "400",
+  "500"
+ ],
+ "table": {
+  "Muzzle": {
+   "velocityFps": 2700,
+   "energyFtLb": 2266,
+   "trajectoryIn": -1.5,
+   "rawText": "2700 2266 -1.5"
+  },
+  "50": {
+   "velocityFps": null,
+   "energyFtLb": null,
+   "trajectoryIn": null,
+   "rawText": "0 N/A 0"
+  },
+  "100": {
+   "velocityFps": 2553,
+   "energyFtLb": 2027,
+   "trajectoryIn": 0,
+   "rawText": "2553 2027 0"
+  },
+  "200": {
+   "velocityFps": 2412,
+   "energyFtLb": 1808,
+   "trajectoryIn": -3.8,
+   "rawText": "2412 1808 -3.8"
+  },
+  "300": {
+   "velocityFps": 2274,
+   "energyFtLb": 1608,
+   "trajectoryIn": -13.7,
+   "rawText": "2274 1608 -13.7"
+  },
+  "400": {
+   "velocityFps": 2141,
+   "energyFtLb": 1425,
+   "trajectoryIn": -30.2,
+   "rawText": "2141 1425 -30.2"
+  },
+  "500": {
+   "velocityFps": 2013,
+   "energyFtLb": 1259,
+   "trajectoryIn": -54.4,
+   "rawText": "2013 1259 -54.4"
+  }
+ }
+}
