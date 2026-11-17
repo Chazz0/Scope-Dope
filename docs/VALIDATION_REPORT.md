@@ -60,6 +60,17 @@ Hornady's stated BC is 0.608. No single BC fits the published column. That means
 published velocities, and this engine are not describing one calculation. It does not say which of the three,
 or the transcription, is wrong. It must not be read as a finding that the engine is wrong, or as one that it is right.
 
+### Investigation so far (nothing in the engine or any BC was changed)
+
+- **Integrator ruled out.** `python3 tests/tools/independent-integrator.py index.html` integrates the same G1 table
+  with a separately written RK4 method. It agrees with the app to within 0.2 fps at every range
+  (50 yd: 2624.7 and 2624.7). The integration method is not the cause.
+- **Atmosphere does not explain it.** Holding BC at 0.608, losing 2553 fps by 50 yd would need about 1.97 times
+  standard sea-level air density. No weather does that.
+- **Not ruled out:** the G1 table itself (both checks use it), the drag equation, the stated BC 0.608 (Hornady may use
+  a velocity-banded or differently defined BC), how Hornady built the table, and my copy of the numbers.
+- **Not done, on purpose:** no BC was fitted, and the solver was not changed to match Hornady.
+
 ## What this does and does not show
 
 - The engine does not reproduce the Hornady numbers as they were read. The cause is unresolved.
