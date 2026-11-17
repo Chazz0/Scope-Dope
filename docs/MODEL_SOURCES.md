@@ -13,7 +13,7 @@ Passing tests, matching published data and predicting a real bullet are differen
 | --- | --- | --- |
 | **Software correctness** | Does the program calculate consistently? | Supported by automated tests. This says nothing about the other two. |
 | **Reference agreement** | Does it reproduce published data? | Partly, not established. One bullet agrees with one manufacturer table from 100 to 500 yd, and two drag-table points agree at Mach 3. The reference data has not been reproduced by an independent reviewer. The project owner waived that step on 2026-11-16, so it is owner-checked only (`docs/STAGE5_COMPLETION.md`). |
-| **Physical accuracy** | Does it predict what an actual bullet does? | Not demonstrated. No measured flight data has been compared. |
+| **Physical accuracy** | Does it predict what an actual bullet does? | NOT DEMONSTRATED. No measured flight data has been compared. |
 
 Stage 5 completion criteria are in `docs/STAGE5_COMPLETION.md`.
 

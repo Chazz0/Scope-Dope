@@ -149,16 +149,52 @@ test('the reviewer protocol says the reviewer must not be shown the project valu
   assert.match(t, /original manufacturer/i);
 });
 
-test('Stage 5 is only called complete when every criterion is checked or formally waived, and the reviewer box needs a real review file', () => {
-  const t = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
-  const boxes = t.match(/^- \[[ x~]\] /gm) || [];
-  assert.ok(boxes.length >= 6, 'criteria list is missing');
-  const settled = boxes.every(b => b.includes('[x]') || b.includes('[~]'));
+const completion = () => fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
+const stateCounts = (t) => ({
+  complete: (t.match(/^- \[x\] /gm) || []).length,
+  waived: (t.match(/^- \[~\] /gm) || []).length,
+  open: (t.match(/^- \[ \] /gm) || []).length
+});
+
+test('OPEN, WAIVED and COMPLETE are separate states, and the overall status follows from them', () => {
+  const t = completion(), n = stateCounts(t);
+  assert.ok(n.complete + n.waived + n.open >= 6, 'criteria list is missing');
+  const want = n.open > 0 ? 'NOT COMPLETE' : (n.waived > 0 ? 'COMPLETE EXCEPT WAIVED ITEMS' : 'COMPLETE');
   const status = (t.match(/^\*\*Stage 5 status: ([A-Z ]+)\*\*/m) || [])[1];
-  assert.ok(status, 'status line missing');
-  assert.strictEqual(status === 'COMPLETE', settled, 'status says ' + status + ' but the checklist ' + (settled ? 'is' : 'is not') + ' fully settled');
-  const reviewerLine = t.split('\n').find(l => /independent reviewer reproduced/i.test(l)) || '';
-  if (reviewerLine.includes('[x]')) assert.ok(fs.existsSync(path.join(__dirname, 'validation', 'reviewer-results.json')), 'reviewer criterion is checked but there is no reviewer-results.json');
+  assert.strictEqual(status, want, 'status says ' + status + ' but the items give ' + want);
+});
+
+test('the summary line counts each state separately, and a waived item is not counted as complete', () => {
+  const t = completion(), n = stateCounts(t);
+  const m = t.match(/^Criteria: (\d+) complete, (\d+) waived, (\d+) open\./m);
+  assert.ok(m, 'summary line "Criteria: N complete, N waived, N open." is missing');
+  assert.deepStrictEqual([Number(m[1]), Number(m[2]), Number(m[3])], [n.complete, n.waived, n.open]);
+  assert.match(t, /A waived item is not evidence and is not counted as complete\./);
+});
+
+test('the reviewer box can only be checked with a real review file', () => {
+  const t = completion();
+  const line = t.split('\n').find(l => /independent reviewer reproduced/i.test(l)) || '';
+  if (line.includes('[x]')) assert.ok(fs.existsSync(path.join(__dirname, 'validation', 'reviewer-results.json')), 'reviewer criterion is checked but there is no reviewer-results.json');
+});
+
+test('no document or app label says independently verified without a negation', () => {
+  const files = ['docs/MODEL_SOURCES.md', 'docs/VALIDATION_REPORT.md', 'docs/STAGE5_COMPLETION.md', 'docs/MODEL_CHANGELOG.md', 'docs/REVIEWER_PROTOCOL.md', 'tests/README.md', 'index.html'];
+  for (const f of files) {
+    const text = fs.readFileSync(path.join(root, f), 'utf8');
+    for (const m of text.matchAll(/independently[ -]verified/gi)) {
+      const before = text.slice(Math.max(0, m.index - 40), m.index).toLowerCase();
+      assert.ok(/(not|never|no|un|neither|nor|cannot|without|waived)[^.\n]*$/.test(before) || /\bnot\s*$/.test(before), f + ': "' + text.slice(Math.max(0, m.index - 40), m.index + 30).replace(/\n/g, ' ') + '" is not negated');
+    }
+  }
+});
+
+test('physical accuracy is labeled NOT DEMONSTRATED in every document that mentions it', () => {
+  for (const f of ['docs/STAGE5_COMPLETION.md', 'docs/MODEL_SOURCES.md', 'docs/VALIDATION_REPORT.md']) {
+    const text = fs.readFileSync(path.join(root, f), 'utf8');
+    assert.match(text, /Physical accuracy[^\n]*NOT DEMONSTRATED/, f);
+    assert.doesNotMatch(text, /Physical accuracy[^\n]*(Achieved|Established|Verified)/i, f);
+  }
 });
 
 test('a waived criterion carries who waived it, when, and what it leaves unestablished', () => {
@@ -182,5 +218,5 @@ test('a waived reviewer does not let the Hornady data support a Verified label',
 
 test('the sources document separates software correctness, reference agreement and physical accuracy', () => {
   for (const w of ['Software correctness', 'Reference agreement', 'Physical accuracy']) assert.ok(sources.includes(w), w + ' is missing');
-  assert.match(sources, /Physical accuracy[^\n]*Not demonstrated/);
+  assert.match(sources, /Physical accuracy[^\n]*NOT DEMONSTRATED/);
 });

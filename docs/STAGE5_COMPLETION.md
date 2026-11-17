@@ -4,10 +4,24 @@ Stage 5 is complete only when the evidence supports the claims. It is not comple
 
 **Stage 5 status: NOT COMPLETE**
 
-`tests/validation.test.js` fails if the status above says COMPLETE while any box below is unchecked, or if the
-reviewer box is checked without `tests/validation/reviewer-results.json`. Check a box only with evidence in the repo. `[~]` means formally waived by the project owner. A waiver is not evidence: it records a decision and what it leaves unestablished.
+## States
+
+Each criterion is in exactly one of three states. They are never merged.
+
+| Mark | State | Meaning |
+| --- | --- | --- |
+| `[ ]` | OPEN | Not done. |
+| `[~]` | WAIVED | The project owner decided not to require it. It records a decision and what it leaves unestablished. |
+| `[x]` | COMPLETE | Done, with evidence in the repo. |
+
+A waived item is not evidence and is not counted as complete. Overall status is derived, not chosen:
+NOT COMPLETE while any item is OPEN; COMPLETE EXCEPT WAIVED ITEMS when nothing is open but something is waived;
+COMPLETE only when every item is `[x]`. `tests/validation.test.js` fails if the status line, the summary line or the
+marks disagree, or if the reviewer item is checked without `tests/validation/reviewer-results.json`.
 
 ## Criteria
+
+Criteria: 0 complete, 1 waived, 6 open.
 
 - [~] An independent reviewer reproduced the Hornady comparison from the original manufacturer page, without the project's transcription. WAIVED by the project owner on 2026-11-16 (20:23). The Hornady reference copy stays owner-checked only: it rests on the author's transcription and the owner's correction, and was not independently reproduced.
 - [ ] A second, different manufacturer data set has been reproduced the same way, covering something the first does not (a G7 bullet, another velocity, altitude or temperature)
@@ -30,7 +44,7 @@ reviewer box is checked without `tests/validation/reviewer-results.json`. Check 
 | --- | --- | --- |
 | Software correctness | Does the program calculate consistently? | Supported by automated tests. |
 | Reference agreement | Does it reproduce published data? | Partly. Not established until the criteria above are met. |
-| Physical accuracy | Does it predict what an actual bullet does? | Not demonstrated. Needs measured flight data. |
+| Physical accuracy | Does it predict what an actual bullet does? | NOT DEMONSTRATED. Needs measured flight data. |
 
-Completing Stage 5 can be done with physical accuracy still "Not demonstrated", but only if every report says so. Any
+Completing Stage 5 can be done with physical accuracy still NOT DEMONSTRATED, but only if every report says so. Any
 claim of physical accuracy needs measured data, and none has been compared.

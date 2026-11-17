@@ -20,7 +20,7 @@ shift at 19:04. The comparison below uses the corrected pairing.
 | --- | --- | --- |
 | Software correctness | Does the program calculate consistently? | Supported by automated tests. |
 | Reference agreement | Does it reproduce published data? | Partly, not established: one bullet, and the reference copy is owner-checked only (an independent reproduction was waived by the owner on 2026-11-16). |
-| Physical accuracy | Does it predict what an actual bullet does? | Not demonstrated. No measured flight data. |
+| Physical accuracy | Does it predict what an actual bullet does? | NOT DEMONSTRATED. No measured flight data. |
 
 Stage 5 is not complete. See `docs/STAGE5_COMPLETION.md`.
 
