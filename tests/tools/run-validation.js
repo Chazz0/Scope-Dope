@@ -56,7 +56,7 @@ if (process.argv.includes('--diagnose')) {
 if (process.argv.includes('--json')) { console.log(JSON.stringify(results, null, 1)); process.exit(0); }
 for (const x of results) {
   if (x.kind === 'table') console.log((x.pass ? 'MATCH   ' : 'DIFFERS ') + x.id + '  ' + x.what + '  published ' + x.published + '  ours ' + x.ours + '  diff ' + x.diff + '  (tolerance ' + x.tol + ')');
-  else if (x.kind === 'notObtained') console.log('NOT OBTAINED ' + x.id + ' [' + x.reading + '] ' + x.range + ' yd  published values for this row were not readable, so no comparison was made');
+  else if (x.kind === 'notObtained') console.log('NOT OBTAINED ' + x.id + ' [' + x.reading + '] ' + x.range + ' yd  no usable published value for this row (missing or placeholder in the source), so no comparison was made');
   else console.log((x.vPass && x.dropPass ? 'MATCH   ' : 'DIFFERS ') + x.id + ' [' + x.reading + '] ' + x.range + ' yd  velocity ' + x.vPub + ' vs ' + x.vOurs + ' (' + x.vPct + '%)  drop ' + x.dropPub + ' vs ' + x.dropOurs + ' in (diff ' + x.dropDiff + ', tol ' + x.dropTol + ')');
 }
 const n = results.filter(x => x.kind !== 'notObtained').length, m = results.filter(x => x.kind === 'notObtained' ? false : (x.kind === 'table' ? x.pass : (x.vPass && x.dropPass))).length;

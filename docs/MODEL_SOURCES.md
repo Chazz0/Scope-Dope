@@ -22,7 +22,7 @@ A component can be Tested and also Unverified. Most of this app is.
 | G1 drag table (`G1`) | Tested | **Unverified** | One point agrees: Cd 0.5133 at Mach 3 against 0.51 printed by Applied Ballistics (evidence AB-G1-M3). The other points were not checked. The origin of the table in this file is not established, see below. |
 | G7 drag table (`G7`) | Tested | **Unverified** | One point agrees: Cd 0.2424 at Mach 3 against 0.24 (evidence AB-G7-M3). The other points were not checked. Origin not established. |
 | BC to SI factor, 703.0696 | Tested | **Verified**, scope: the unit conversion only | Arithmetic from the exact definitions of the pound and the inch: 0.45359237 kg divided by 0.0254 squared. Checked in `tests/validation.test.js`. |
-| Drag equation, `a = (pi/8) rho Cd(M) v / BC` | Tested | **Unverified** | The one manufacturer table compared does not match (see the validation report). The cause is unresolved: it may be the engine, the transcribed numbers, or how Hornady made the table. |
+| Drag equation, `a = (pi/8) rho Cd(M) v / BC` | Tested | **Unverified** | One manufacturer table agrees within tolerance from 100 to 500 yd, with a steady offset of about 1.8% in effective BC (see the validation report). That is one bullet, not verification, and the offset is unexplained. |
 | Atmosphere: ISA pressure, moist-air density, speed of sound with gamma 1.4 | Tested | **Unverified** | Sea-level results are close to the commonly quoted ICAO values, but those values were quoted from memory and no source was opened for this. |
 | RK2 integrator, 0.5 ms step | Tested | **Unverified** | Tests measure sensitivity to the step size. That compares the code with itself. |
 | Zeroing and angled shots | Tested | **Unverified** | No external comparison. |

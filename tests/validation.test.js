@@ -22,9 +22,11 @@ test('the tolerances are the ones written before the comparison was run', () => 
 test('the owner-confirmed distance labels are recorded, and the discarded reading is history only', () => {
   const c = refs.trajectoryCases.find(x => x.id === 'HORNADY-LE-140-OTMA');
   assert.deepStrictEqual(c.labelsConfirmed.distancesYd, ['Muzzle', 50, 100, 200, 300, 400, 500]);
-  assert.ok(c.discardedReadings && c.discardedReadings.B_hundred_yard_steps, 'the discarded reading must stay recorded as history');
-  assert.ok(!Object.keys(c.readings).some(k => k.startsWith('B_')), 'the discarded reading must not be in the readings that are run');
-  assert.match(c.valuePairing, /not been confirmed/, 'unconfirmed value pairing must stay disclosed');
+  assert.ok(c.discardedReadings.A_shifted_one_column && c.discardedReadings.B_hundred_yard_steps, 'discarded readings must stay recorded as history');
+  assert.ok(!Object.keys(c.readings).some(k => /^(A_|B_)/.test(k)), 'a discarded reading must not be in the readings that are run');
+  assert.strictEqual(c.readings.confirmed_distances.rows['50'], null, 'the placeholder 50 yd column must stay invalid, not become a number');
+  assert.ok(c.readings.confirmed_distances.rowNotes['50'].includes('0 / N/A / 0'));
+  assert.match(c.valuePairing, /not seen by the author/, 'what the author did not see must stay disclosed');
 });
 
 test('every reference names its source, a URL and what could not be read', () => {
@@ -42,7 +44,7 @@ test('the validation runner reports every comparison, including the ones that di
   const rows = refs.trajectoryCases.flatMap(c => Object.values(c.readings).flatMap(r => Object.values(r.rows)));
   assert.strictEqual(out.filter(x => x.kind === 'trajectory').length, rows.filter(x => x !== null).length);
   assert.strictEqual(out.filter(x => x.kind === 'notObtained').length, rows.filter(x => x === null).length);
-  assert.ok(!out.some(x => String(x.reading || '').startsWith('B_')), 'the discarded reading was run');
+  assert.ok(!out.some(x => /^(A_|B_)/.test(String(x.reading || ''))), 'a discarded reading was run');
 });
 
 test('the BC unit factor in the app matches the exact definitions of the pound and the inch', () => {
@@ -77,4 +79,15 @@ test('evidence ids named in the sources document exist in the reference data', (
   const named = sources.match(/\b[A-Z]{2}-G[17]-M\d\b/g) || [];
   assert.ok(named.length > 0);
   for (const id of named) assert.ok(ids.has(id), id + ' is not in references.json');
+});
+
+test('transcription check: each Hornady row\'s energy matches its velocity (this checks the copy, not ballistics)', () => {
+  const c = refs.trajectoryCases.find(x => x.id === 'HORNADY-LE-140-OTMA');
+  const wt = c.inputsPublished.weightGr;
+  const energy = (v) => v * v * wt / 450240;
+  assert.ok(Math.abs(energy(c.inputsPublished.v0Fps) - c.inputsPublished.muzzleEnergyFtLb) <= 2, 'muzzle row');
+  for (const [r, w] of Object.entries(c.readings.confirmed_distances.rows)) {
+    if (!w) continue;
+    assert.ok(Math.abs(energy(w.v) - w.e) <= 2, r + ' yd: ' + w.v + ' fps gives ' + energy(w.v).toFixed(1) + ' ft-lb but the copy says ' + w.e + '. Whole-fps rounding allows about 1.');
+  }
 });

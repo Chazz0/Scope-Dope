@@ -47,7 +47,8 @@
     "bcG1": 0.608,
     "weightGr": 140,
     "barrel": "24 in test barrel",
-    "muzzleTrajectoryIn": -1.5
+    "muzzleTrajectoryIn": -1.5,
+    "muzzleEnergyFtLb": 2266
    },
    "inputsNotPublished": [
     "atmosphere",
@@ -67,30 +68,38 @@
    },
    "readings": {
     "confirmed_distances": {
-     "zeroYd": 50,
-     "zeroNote": "Not stated by Hornady. Inferred from the published trajectory of 0 at 50 yd with a -1.5 in muzzle row.",
+     "zeroYd": 100,
+     "zeroNote": "Not stated by Hornady. Inferred from the published trajectory of 0 at 100 yd with a -1.5 in muzzle row.",
+     "rowNotes": {
+      "50": "The page text for the 50 yd column returned 0 / N/A / 0. The owner judged this a missing or placeholder entry, not a ballistic value. Preserved as invalid and not compared."
+     },
      "rows": {
-      "50": {
+      "50": null,
+      "100": {
        "v": 2553,
+       "e": 2027,
        "drop": 0
       },
-      "100": {
+      "200": {
        "v": 2412,
+       "e": 1808,
        "drop": -3.8
       },
-      "200": {
+      "300": {
        "v": 2274,
+       "e": 1608,
        "drop": -13.7
       },
-      "300": {
+      "400": {
        "v": 2141,
+       "e": 1425,
        "drop": -30.2
       },
-      "400": {
+      "500": {
        "v": 2013,
+       "e": 1259,
        "drop": -54.4
-      },
-      "500": null
+      }
      }
     }
    },
@@ -107,10 +116,14 @@
     "confirmedBy": "project owner, by viewing the page directly",
     "date": "2026-11-16"
    },
-   "valuePairing": "Numbers were read from the page by a page-reading tool. The owner confirmed the distance labels. The pairing of each number with each distance, and the 500 yd values, have not been confirmed against the page.",
+   "valuePairing": "Corrected 2026-11-16 19:04 by the project owner: the 50 yd column is a placeholder (0 / N/A / 0), and 2553 fps belongs to 100 yd. The triples were read from the page by a page-reading tool and the owner supplied the corrected pairing. The transcription the owner refers to was not seen by the author. Each row's energy is checked against its velocity in tests/validation.test.js as a transcription check; that check does not test ballistics. The pairing is the owner's, and has not been confirmed row by row against the page by the author.",
    "discardedReadings": {
+    "A_shifted_one_column": {
+     "reason": "Used 2026-11-16 18:41 to 18:56. Paired 2553 fps with 50 yd, which shifted every row one column. The 50 yd column is a placeholder. Corrected by the project owner at 19:04.",
+     "zeroYd": 50
+    },
     "B_hundred_yard_steps": {
-     "reason": "Discarded by the project owner on 2026-11-16: the confirmed distance labels (Muzzle, 50, 100, 200, 300, 400, 500 yd) do not support rows in 100-yard steps. Kept here as history. It is not run and must not be used.",
+     "reason": "Discarded by the owner at 18:41 under the label '100-yard steps', before the 50 yd placeholder was identified. Its numbers are identical to the current mapping. The current mapping was adopted because the owner's page evidence (the placeholder 50 yd column) supports it, not because it matches the engine. Kept as history only.",
      "zeroYd": 100
     }
    }
