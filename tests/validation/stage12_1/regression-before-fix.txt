@@ -1,0 +1,41 @@
+FAIL typed weight "0" is rejected: no result, field named with its range, BC not rescaled
+     page.$eval: Failed to find element matching selector "#wtErr"
+FAIL typed weight "-5" is rejected: no result, field named with its range, BC not rescaled
+     page.$eval: Failed to find element matching selector "#wtErr"
+FAIL typed weight "-0.0001" is rejected: no result, field named with its range, BC not rescaled
+     page.$eval: Failed to find element matching selector "#wtErr"
+FAIL typed weight "14.99" is rejected: no result, field named with its range, BC not rescaled
+     BC must not be rescaled for an invalid weight: expected "0.462", got "0.041"
+FAIL typed weight "800.01" is rejected: no result, field named with its range, BC not rescaled
+     BC must not be rescaled for an invalid weight: expected "0.462", got "2.200"
+FAIL typed weight "1e6" is rejected: no result, field named with its range, BC not rescaled
+     BC must not be rescaled for an invalid weight: expected "0.462", got "2750.000"
+FAIL typed weight "1e-6" is rejected: no result, field named with its range, BC not rescaled
+     BC must not be rescaled for an invalid weight: expected "0.462", got "0.000"
+FAIL typed weight "99999999999" is rejected: no result, field named with its range, BC not rescaled
+     BC must not be rescaled for an invalid weight: expected "0.462", got "274999999.997"
+FAIL typed weight "" is rejected: no result, field named with its range, BC not rescaled
+     page.$eval: Failed to find element matching selector "#wtErr"
+FAIL 1e6 case: before the fix BC became 2750; now the BC stays at its last valid value and the load message does not claim a scaling
+     mismatch: expected "0.462", got "2750.000"
+FAIL non-numeric and infinite stored weights are rejected, shown, and not rewritten in storage
+     stored weight rewritten for abc: expected "abc", got ""
+FAIL boundary minimum (15 gr) is accepted as a weight
+     page.$eval: Failed to find element matching selector "#wtErr"
+FAIL boundary maximum (800 gr) is accepted as a weight
+     page.$eval: Failed to find element matching selector "#wtErr"
+PASS valid weights keep the preset-derived BC scaling, including typing digit by digit and returning to the preset weight
+FAIL an invalid weight in the middle of typing does not corrupt the scaling: 1, then 19, then 190 equals 190 at once
+     mismatch: expected "0.462", got "0.003"
+PASS a manually entered BC is never rewritten by an invalid or a valid weight
+PASS a fitted BC is never rewritten by an invalid or a valid weight
+PASS a saved profile with the old bad pair (weight 1e6, BC 2750) loads flagged, shows no result, and is not rewritten
+PASS switching rifles: an invalid-weight rifle shows no result, a valid one is unaffected, and scaling never uses the other rifle's numbers
+PASS selecting a preset replaces an invalid weight with the preset weight and BC and restores a result
+PASS saving: an invalid typed weight is saved as typed (not corrected), survives a reload still flagged, with no result
+FAIL error presentation at phone 360: the message is visible, inside the screen, and nothing scrolls sideways
+     page.$eval: Failed to find element matching selector "#wtErr"
+FAIL error presentation at desktop 1280: the message is visible, inside the screen, and nothing scrolls sideways
+     page.$eval: Failed to find element matching selector "#wtErr"
+
+7 passed, 16 failed, 23 total

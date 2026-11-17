@@ -17,7 +17,7 @@ A single-page ballistic calculator for rifles. You pick or enter a load, your si
 
 ## What has been tested
 
-- Software behaviour: 155 Node tests and 173 browser checks (saved data, profile workflows, invalid and boundary inputs, desktop and phone layouts, markup in names, backup and restore).
+- Software behaviour: 160 Node tests and 196 browser checks (saved data, profile workflows, invalid and boundary inputs, desktop and phone layouts, markup in names, backup and restore).
 - Calculation guards: the solver, drag tables, reference data, tolerances and golden baseline are pinned and tested for change.
 - The code was compared with a separately written integration of the same equations (agreement to about 0.0002 in on drop). This shows the code does what the equations say. It does not show the equations match real bullets.
 - Comparison with manufacturer trajectory tables (Federal and Hornady) over a limited set of loads and conditions. Manufacturer tables are calculated, so agreement is not proof of real-world accuracy.
@@ -41,7 +41,7 @@ A single-page ballistic calculator for rifles. You pick or enter a load, your si
 - Fitting or truing can absorb errors in BC, the drag model and the air inputs into the fitted value, so a fitted value may not hold at other distances or conditions.
 - Enter **station** pressure (what a barometer reads), not sea-level pressure from weather reports. Sea-level pressure typed at altitude overstates air density (about 20% at 5000 ft).
 - No aerodynamic jump, no powder-temperature model beyond your own change-per-degree setting, no moving targets, no bullet-length input.
-- If you change the bullet weight, a factory (preset) BC is scaled with weight and is labelled as such. A BC you typed or fitted is never rewritten.
+- If you change the bullet weight, a factory (preset) BC is scaled with weight and is labelled as such. A BC you typed or fitted is never rewritten. A weight that is empty, zero, negative, not a number or outside 15 to 800 grains is rejected: no result is shown and no BC is rescaled. A scaled preset BC can leave the allowed 0.05 to 1.2 range at very light or very heavy weights; enter your bullet's published BC.
 - Typed values are saved as typed, even when they are out of range. The app then shows an error and no result until you fix them.
 - Tested in desktop Chromium with emulated phone and tablet sizes only. It has not been tested on real phones, Safari or Firefox.
 

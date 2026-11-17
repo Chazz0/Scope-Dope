@@ -43,3 +43,7 @@ Stage 11 compared the unchanged solver (model version 1.0.0) with the measured t
 
 Interface wording and documentation only. The solver block, drag tables, reference data, tolerances, golden baseline and model version (1.0.0) are unchanged. Added to the interface: the model has not been shown to be physically accurate; manufacturer comparisons are not proof of real-world accuracy; the Coriolis discrepancy is unresolved. Physical accuracy remains NOT DEMONSTRATED. See `docs/STAGE12_FINAL_RELEASE_AUDIT.md` and `docs/RELEASE_NOTES.md`.
 
+## Stage 12.1 (bullet weight validation): no model change
+
+Input validation only. A bullet weight that is empty, zero, negative, not a number, infinite or outside 15 to 800 grains is rejected, no preset-derived BC is rescaled for it, and the reason is shown beside the field. Solver block, drag tables, reference data, tolerances, golden baseline and model version (1.0.0) are unchanged. Physical accuracy remains NOT DEMONSTRATED. See `docs/STAGE12_1_WEIGHT_VALIDATION.md`.
+

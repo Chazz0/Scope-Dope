@@ -454,6 +454,7 @@ input[type=range]{height:20px}
             <div class="field"><label for="v0">Your measured muzzle velocity (fps)</label><input id="v0" type="number" inputmode="numeric" min="500" max="4500" step="10" value="2650"></div>
             <div class="field"><label for="diam">Bullet diameter (inches)</label><input id="diam" type="number" inputmode="decimal" min="0.17" max="0.6" step="any" value="0.308"></div>
           </div>
+          <p class="hint" id="wtErr" role="alert" hidden style="color:var(--warn)"></p>
           <input type="hidden" id="v0src" value="factory">
           <input type="hidden" id="bcsrc" value="factory">
           <input type="hidden" id="bcwt" value="168">
@@ -832,6 +833,16 @@ function assessResult(inp, ctx){
     vsens:[-5,10,0], vref:[-40,130,59]
   };
   const PRESS_RANGE = [15, 32.5];
+  /* Bullet weight (grains): 15 to 800 gr. 15 gr is the lightest centerfire/small-bore rifle bullet in common use; 800 gr is above the heaviest
+     common rifle bullets (.50 BMG about 650 to 750 gr). It is a plausibility limit chosen with the diameter (0.17 to 0.6 in) and BC (0.05 to 1.2)
+     limits, not a measured or sourced value. The weight is read strictly: the whole text must be a finite decimal or exponent number. */
+  const NUM_RE = /^\s*[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?\s*$/i;
+  function weightOk(raw){
+    const t = String(raw == null ? '' : raw);
+    if (!NUM_RE.test(t)) return false;
+    const v = Number(t);
+    return isFinite(v) && v >= RANGES.wt[0] && v <= RANGES.wt[1];
+  }
   const PKEYS = ['pname','preset','cname','model','bc','wt','diam','v0','v0src','bcsrc','bcwt','vref','vsens','zero','h','twist','tdir','click','temp','press','humidity','alt','lat'];
   const CHIP_DISTS = [100,200,300,400,500,600,800,1000];
   const CARD = ['N','NE','E','SE','S','SW','W','NW'];
@@ -851,8 +862,11 @@ function assessResult(inp, ctx){
   // The weight and coefficient last set by you, a profile or a preset. Weight edits scale the coefficient from here.
   let anchor = { wt: 168, bc: 0.462, bcText: '0.462' };
   function setAnchor(){
-    const w = parseFloat($('wt').value), b = parseFloat($('bc').value);
-    if (isFinite(w) && w > 0 && isFinite(b) && b > 0) anchor = { wt: w, bc: b, bcText: $('bc').value.trim() };
+    const b = parseFloat($('bc').value);
+    // Only a valid weight with a valid coefficient can be the base for scaling. Otherwise the base is the selected preset's own weight and
+    // coefficient (never another rifle's numbers), or nothing at all for a custom load.
+    if (weightOk($('wt').value) && isFinite(b) && b >= RANGES.bc[0] && b <= RANGES.bc[1]) anchor = { wt: Number($('wt').value), bc: b, bcText: $('bc').value.trim() };
+    else { const p = PRESETS.find(x => x.id === $('preset').value); anchor = p ? { wt: p.wt, bc: p.bc, bcText: String(p.bc) } : { wt: 0, bc: 0, bcText: '' }; }
   }
   let lastSelPreset = '';
   function setLoadMsg(t){ const el = $('loadMsg'); el.textContent = t; el.hidden = !t; }
@@ -1086,7 +1100,7 @@ function assessResult(inp, ctx){
     humidity:'%', az:'°', vsens:' fps per °F', vref:'°F', press:' inHg', lat:'°', cStart:' yd', cEnd:' yd', cStep:' yd' };
   function problemText(id, raw, lo, hi){
     const r = String(raw).trim(), u = UNITS[id] || '';
-    const what = r === '' ? 'is empty' : (isFinite(parseFloat(r)) ? 'is ' + r + u : 'is not a number');
+    const what = r === '' ? 'is empty' : ((id === 'wt' ? NUM_RE.test(r) && isFinite(Number(r)) : isFinite(parseFloat(r))) ? 'is ' + r + u : 'is not a number');
     return (NAMES[id] || id) + ' ' + what + ' (allowed ' + lo + ' to ' + hi + u + ').';
   }
   const FIX_LINE = 'Fix the highlighted fields to see this.';
@@ -1100,7 +1114,7 @@ function assessResult(inp, ctx){
     const num = (id) => {
       const [min, max, def] = RANGES[id];
       const el = $(id);
-      let v = parseFloat(el.value);
+      let v = id === 'wt' ? (NUM_RE.test(el.value) ? Number(el.value) : NaN) : parseFloat(el.value);
       const ok = isFinite(v) && v >= min && v <= max;
       el.classList.toggle('bad', !ok);
       el.setAttribute('aria-invalid', ok ? 'false' : 'true');
@@ -1149,6 +1163,7 @@ function assessResult(inp, ctx){
       problems.push({ id: 'bc', text: 'Bullet weight is ' + pend.nw + ' gr, but the ballistic coefficient ' + pend.bc + ' was ' + ($('bcsrc').value === 'fitted' ? 'fitted' : 'entered') + ' for ' + pend.bw + ' gr and may not apply to this bullet. Enter the coefficient for this bullet, or on the Rifle tab keep ' + pend.bc + ' for ' + pend.nw + ' gr.' });
       $('bc').classList.add('bad'); $('bc').setAttribute('aria-invalid', 'true');
     }
+    { const wp = problems.find(q => q.id === 'wt'), we = $('wtErr'); we.textContent = wp ? wp.text : ''; we.hidden = !wp; }   // the Rifle tab shows the reason beside the field
     res.bad = problems.length;  // counted after every check above
     return res;
   }
@@ -1554,7 +1569,11 @@ function assessResult(inp, ctx){
       // Only a coefficient that came from a preset follows the weight. A coefficient you typed or fitted (or saved earlier) is never
       // rewritten: update() asks you to confirm it or enter one for the new bullet.
       if ($('bcsrc').value !== 'factory'){ /* left as it is */ }
-      else if (isFinite(nw) && nw > 0 && anchor.wt > 0 && isFinite(parseFloat($('bc').value))){  // a blank or non-numeric coefficient is left for you to fill in
+      else if (!weightOk(e.target.value)){
+        // Zero, negative, empty, non-numeric, infinite or out of range: the coefficient is left alone and nothing is scaled.
+        setLoadMsg(String(e.target.value).trim() === '' ? 'Bullet weight is empty (allowed ' + RANGES.wt[0] + ' to ' + RANGES.wt[1] + ' gr), so the ballistic coefficient was not rescaled.' : 'Bullet weight ' + String(e.target.value).trim() + ' is outside the allowed ' + RANGES.wt[0] + ' to ' + RANGES.wt[1] + ' gr (or is not a number), so the ballistic coefficient was not rescaled.');
+      }
+      else if (anchor.wt > 0 && isFinite(parseFloat($('bc').value))){  // a blank or non-numeric coefficient is left for you to fill in
         if (nw === anchor.wt){ $('bc').value = anchor.bcText; setLoadMsg(''); }
         else {
           const nb = (anchor.bc * nw / anchor.wt).toFixed(3);
@@ -1562,7 +1581,7 @@ function assessResult(inp, ctx){
           setLoadMsg('Bullet weight is ' + nw + ' gr, so the ballistic coefficient was scaled to ' + nb + ' (from ' + anchor.bcText + ' at ' + anchor.wt + ' gr). If your bullet has a published coefficient, enter that instead.');
         }
       }
-      if ($('bcsrc').value === 'factory') $('bcwt').value = e.target.value;
+      if ($('bcsrc').value === 'factory' && weightOk(e.target.value)) $('bcwt').value = e.target.value;
     }
     if (id === 'preset' && sel.value !== lastSelPreset){  // a select fires both input and change; act once per real change
       lastSelPreset = sel.value;
