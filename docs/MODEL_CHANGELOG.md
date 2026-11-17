@@ -28,3 +28,6 @@ Interface and storage only (`v0src` flag, chart panel, labels). Solver block unc
 
 ## Stage 9 (correctness and data integrity): no model change
 Profile loading, zero reachability message, fitted velocity and BC labels, station pressure limits and label, stability wording. Solver block unchanged, model version stays 1.0.0. Physical accuracy: NOT DEMONSTRATED.
+
+## Stage 9.1 (stability warning, BC confirmation): no model change
+Display and input handling only. Solver block unchanged, model version stays 1.0.0. Physical accuracy: NOT DEMONSTRATED.

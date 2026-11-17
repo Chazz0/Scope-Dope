@@ -1,5 +1,5 @@
 'use strict';
-// Stage 9 investigations (read-only): spin-drift display at low estimated stability, and the weight-based BC scaling.
+// Stage 9 investigations (read-only; the BC lines report what the current page does, Stage 9 results are in docs): spin-drift display at low estimated stability, and the weight-based BC scaling.
 // Changes nothing.   Run: node tests/tools/stage9-investigate.js
 const path = require('path'), http = require('http'), fs = require('fs');
 const ROOT = path.join(__dirname, '..', '..');
@@ -30,12 +30,12 @@ console.log('where it appears: ' + ['windage hold (dopeAt: rightM -= spin)', 'HU
   await page.click('#tabRifle'); const set = async (id, v) => { await page.fill('#' + id, String(v)); await page.waitForTimeout(60); }; const get = (id) => page.$eval('#' + id, e => e.value);
   console.log('\nINVESTIGATION 7: weight-based BC scaling (the real page)');
   await set('bc', '0.462'); await set('wt', '175'); console.log('168 gr .462 -> weight 175:  BC becomes', await get('bc'), '| message:', (await page.textContent('#loadMsg')).slice(0, 110));
-  await set('wt', '168'); console.log('weight back to 168:         BC becomes', await get('bc'), '(restored from the anchor)');
-  await set('diam', '0.264'); console.log('diameter edited to 0.264:   BC stays', await get('bc'), '(not rescaled, though BC = m / (i d^2) depends on d)');
+  await set('wt', '168'); console.log('weight back to 168:         BC becomes', await get('bc'), '');
+  await set('diam', '0.264'); console.log('diameter edited to 0.264:   BC stays', await get('bc'), '(diameter edits never rescale it)');
   await set('diam', '0.308'); await set('wt', '190'); const scaled = await get('bc');
-  await set('bc', '0.533'); await set('wt', '200'); console.log('user types BC .533 for a 190 gr bullet, then changes weight to 200: BC becomes', await get('bc'), '(typed value overwritten; message:', (await page.textContent('#loadMsg')).slice(0, 60) + '...)');
+  await set('bc', '0.533'); await set('wt', '200'); console.log('user types BC .533 for a 190 gr bullet, then changes weight to 200: BC becomes', await get('bc'), '| prompt:', (await page.textContent('#notice')).slice(0, 90) + '...');
   await set('wt', '190'); await set('bc', '0.533'); console.log('same bullet entered weight first, then BC: BC stays', await get('bc'));
-  await page.selectOption('#model', 'G7'); console.log('model switched to G7: BC stays', await get('bc'), '(same number now read as G7)');
+  await page.selectOption('#model', 'G7'); console.log('model switched to G7: BC stays', await get('bc'), '(the same number is now read as G7)');
   await b.close(); server.close();
   // sensitivity: how much does BC error move the drop?
   const i = baseInputs(); const M = S.buildModel(i, 1200), d0 = S.dopeAt(M, i, 1000).dropIn, i2 = baseInputs({ bc: .462 * 1.05 }), M2 = S.buildModel(i2, 1200), d2 = S.dopeAt(M2, i2, 1000).dropIn;

@@ -67,3 +67,4 @@ None of these show that the ballistics are accurate. See `docs/VALIDATION_REPORT
 **Stage 6 update:** `tests/assess.test.js` and `tests/browser/transparency.check.js` cover the advisory transparency panel (see `docs/STAGE6_TRANSPARENCY.md`). They also pin that the calculation block is unchanged.
 - `tests/step7.test.js` and `tests/browser/step7.check.js`: Step 7 velocity protection, profile isolation, chart transparency, units and phone layout.
 - `tests/stage9.test.js` and `tests/browser/stage9.check.js`: Stage 9 profile merge, unreachable zero, fitted labels, station pressure, stability wording, phone layout. `tests/tools/stage9-investigate.js`: read-only spin-drift and BC-scaling probe.
+- `tests/stage9-1.test.js` and `tests/browser/stage9-1.check.js`: Stage 9.1 stability warning and BC confirmation (the browser file compares values with the Stage 9 page).

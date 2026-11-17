@@ -125,11 +125,12 @@ test('typing a new weight digit by digit gives the same coefficient as entering 
   ok(Math.abs(bc1 - bc0 * 190 / 168) < 0.001, 'typed 190: bc ' + bc0 + ' became ' + bc1 + ', expected ' + (bc0 * 190 / 168).toFixed(3));
   await ctx.close();
 });
-test('a coefficient you type becomes the new starting point for later weight changes', async () => {
+// Stage 9.1: a coefficient you type is no longer rewritten when the weight changes (it asks you to confirm instead). Previously it was scaled.
+test('a coefficient you type is not rewritten by a later weight change', async () => {
   const { ctx, page } = await open();
   await page.click('.tab#tabRifle');
   await set(page, 'bc', '0.5'); await set(page, 'wt', '190');
-  ok(Math.abs(parseFloat(await page.$eval('#bc', e => e.value)) - 0.5 * 190 / 168) < 0.001); await ctx.close();
+  eq(await page.$eval('#bc', e => e.value), '0.5'); await ctx.close();
 });
 test('choosing a cartridge preset says which values were replaced and what they were', async () => {
   const { ctx, page } = await open();

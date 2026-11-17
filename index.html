@@ -455,8 +455,10 @@ input[type=range]{height:20px}
             <div class="field"><label for="diam">Bullet diameter (inches)</label><input id="diam" type="number" inputmode="decimal" min="0.17" max="0.6" step="any" value="0.308"></div>
           </div>
           <input type="hidden" id="v0src" value="factory">
-          <input type="hidden" id="bcsrc" value="">
+          <input type="hidden" id="bcsrc" value="factory">
+          <input type="hidden" id="bcwt" value="168">
           <p class="hint" id="bcSrc"></p>
+          <div class="btnrow" id="bcOffer" hidden><button type="button" class="btn" id="bcKeep"></button></div>
           <p class="hint" id="v0Src"></p>
           <p class="hint" id="v0Factory"></p>
           <div class="btnrow" id="v0Offer" hidden>
@@ -784,11 +786,13 @@ function assessResult(inp, ctx){
   if (outside(inp.tempF, V.tempF)) add('warning', 'temp', 'Temperature ' + Math.round(inp.tempF) + ' F is outside the ' + V.tempF[0] + ' to ' + V.tempF[1] + ' F covered by reference comparisons.');
   if (outside(pEff, V.pressInHg)) add('warning', 'pressure', (inp.pressInHg != null ? 'Pressure ' : 'Pressure estimated from altitude, ') + pEff.toFixed(1) + ' inHg, is outside the ' + V.pressInHg[0] + ' to ' + V.pressInHg[1] + ' inHg covered by reference comparisons.');
   if (outside(inp.humidity || 0, V.humidityPct)) add('warning', 'humidity', 'Humidity ' + Math.round(inp.humidity) + '% is outside the ' + V.humidityPct[0] + ' to ' + V.humidityPct[1] + '% covered by reference comparisons.');
+  if (ctx && ctx.sg != null && inp.twist > 0 && ctx.sg < 1) add('warning', 'stability', 'Estimated stability is ' + Math.min(0.99, Number(ctx.sg.toFixed(2))).toFixed(2) + ', below 1.0. The spin-drift part of the windage comes from that estimate and may be unreliable. The estimate uses an assumed bullet length, so a real bullet can differ.');
   const refCovered = !bcOut && !calOut;
   if (!refCovered) add('warning', 'noref', 'No reference comparison covers this load (caliber, weight or coefficient). Nothing in testing checked a load like it.');
   // Notes: incomplete inputs (what the result assumes or leaves out).
   if (inp.v0src === 'factory') add('notice', 'v0factory', 'Muzzle velocity is a typical factory starting value, not a velocity you measured. Enter your own measured velocity for a result that fits your rifle.');
   if (inp.v0src === 'fitted') add('notice', 'v0fitted', 'Muzzle velocity was fitted to match one observed hold. It is not a velocity you measured, and fitting can absorb errors in the ballistic coefficient or the drag model.');
+  if (inp.bcsrc === 'factory') add('notice', 'bcfactory', 'Ballistic coefficient is a typical value for the selected cartridge, not one for your bullet. Enter the published coefficient for your bullet.');
   if (inp.bcsrc === 'fitted') add('notice', 'bcfitted', 'Ballistic coefficient was fitted to match one observed hold. It is not a published or measured value, and fitting can absorb errors in the drag model or velocity.');
   if (inp.pressInHg != null && inp.altFt != null && inp.pressInHg > 1.08 * 29.921 * Math.pow(1 - 6.8756e-6 * inp.altFt, 5.2559)) add('notice', 'pressureAltitude', 'Pressure ' + inp.pressInHg + ' inHg is high for ' + Math.round(inp.altFt) + ' ft. This field takes station pressure, not the sea-level pressure that weather reports give. It is used as entered.');
   if (inp.pressInHg == null) add('notice', 'pressureEst', 'Pressure not entered, so it is estimated from altitude with a standard atmosphere. Enter station pressure for a better estimate.');
@@ -828,7 +832,7 @@ function assessResult(inp, ctx){
     vsens:[-5,10,0], vref:[-40,130,59]
   };
   const PRESS_RANGE = [15, 32.5];
-  const PKEYS = ['pname','preset','cname','model','bc','wt','diam','v0','v0src','bcsrc','vref','vsens','zero','h','twist','tdir','click','temp','press','humidity','alt','lat'];
+  const PKEYS = ['pname','preset','cname','model','bc','wt','diam','v0','v0src','bcsrc','bcwt','vref','vsens','zero','h','twist','tdir','click','temp','press','humidity','alt','lat'];
   const CHIP_DISTS = [100,200,300,400,500,600,800,1000];
   const CARD = ['N','NE','E','SE','S','SW','W','NW'];
 
@@ -838,7 +842,7 @@ function assessResult(inp, ctx){
 
   function profileDefaults(pid){
     const p = PRESETS.find(x => x.id === pid) || PRESETS[4];
-    return { pname:'My rifle', preset:p.id, cname:'', model:'G1', bc:String(p.bc), wt:String(p.wt), diam:String(p.d), v0:String(p.v0), v0src:'factory', bcsrc:'',
+    return { pname:'My rifle', preset:p.id, cname:'', model:'G1', bc:String(p.bc), wt:String(p.wt), diam:String(p.d), v0:String(p.v0), v0src:'factory', bcsrc:'factory', bcwt:String(p.wt),
       vref:'59', vsens:'0', zero:'100', h:'1.5', twist:String(p.tw), tdir:'R', click:'MOA:0.25', temp:'59', press:'', humidity:'50', alt:'0', lat:'' };
   }
   const sessionDefaults = () => ({ dist:'400', wind:'10', windHr:'3', angle:'0', az:'0', cStart:'100', cEnd:'1000', cStep:'50' });
@@ -926,7 +930,7 @@ function assessResult(inp, ctx){
           const old = store.session || {};
           store.session = Object.assign(sessionDefaults(), old);
           if (!old.windHr && old.side === 'L') store.session.windHr = '9';
-          store.profiles = store.profiles.map(p => { const q = Object.assign(profileDefaults('p308'), { v0src:'' }, p); if (p.v0 == null) q.v0src = 'factory'; return q; });   // no saved velocity: the default is a starting value
+          store.profiles = store.profiles.map(p => { const q = Object.assign(profileDefaults('p308'), { v0src:'', bcsrc:'', bcwt:'' }, p); if (p.v0 == null) q.v0src = 'factory'; if (p.bc == null) q.bcsrc = 'factory'; return q; });   // no saved velocity: the default is a starting value
           return;
         }
       }
@@ -934,7 +938,7 @@ function assessResult(inp, ctx){
       if (v1){
         const o = JSON.parse(v1);
         const p = profileDefaults('p308');
-        p.v0src = '';
+        p.v0src = ''; p.bcsrc = ''; p.bcwt = '';
         PKEYS.forEach(k => { if (o[k] != null && k !== 'pname') p[k] = o[k]; });
         store.profiles = [p];
         store.session = Object.assign(sessionDefaults(), { dist:o.dist || '400', wind:o.wind || '10', angle:o.angle || '0', windHr: o.side === 'L' ? '9' : '3' });
@@ -952,11 +956,13 @@ function assessResult(inp, ctx){
     const d = profileDefaults('p308');
     PKEYS.forEach(k => {
       let v = p[k];
-      if (v == null || typeof v === 'object') v = (k === 'v0src' || k === 'bcsrc') ? '' : d[k];
+      if (v == null || typeof v === 'object') v = (k === 'v0src' || k === 'bcsrc' || k === 'bcwt') ? '' : d[k];
       $(k).value = v;
     });
     if (p.v0 == null || typeof p.v0 === 'object') $('v0src').value = 'factory';   // no velocity saved: the default is a starting value, not yours
-    else if (p.v0src == null) $('v0src').value = '';   // saved before the source of the velocity was recorded: treated as the user's own
+    else if (p.v0src == null) $('v0src').value = '';
+    if (p.bc == null || typeof p.bc === 'object') $('bcsrc').value = 'factory';   // no coefficient saved: the default is a preset value, not yours
+    if (!$('bcwt').value) $('bcwt').value = $('wt').value;   // saved before the weight was recorded: the coefficient is taken to belong to the saved weight   // saved before the source of the velocity was recorded: treated as the user's own
     if (!$('preset').value) $('preset').value = 'custom';
     lastSelPreset = $('preset').value; setAnchor(); setLoadMsg(''); v0Offer = null; renderV0(); renderBcSrc();
   }
@@ -996,7 +1002,8 @@ function assessResult(inp, ctx){
       out[k] = typeof v === 'string' ? v.slice(0, 80) : (typeof v === 'number' && isFinite(v)) ? String(v) : d[k];
     });
     if (p.v0src !== 'user' && p.v0src !== 'factory' && p.v0src !== 'fitted') out.v0src = '';
-    if (p.bcsrc !== 'fitted') out.bcsrc = '';
+    if (p.bcsrc !== 'fitted' && p.bcsrc !== 'user' && p.bcsrc !== 'factory') out.bcsrc = '';
+    out.bcwt = typeof p.bcwt === 'string' ? p.bcwt.slice(0, 80) : (typeof p.bcwt === 'number' && isFinite(p.bcwt) ? String(p.bcwt) : '');
     return out;
   }
   function exportCode(){
@@ -1084,6 +1091,10 @@ function assessResult(inp, ctx){
   }
   const FIX_LINE = 'Fix the highlighted fields to see this.';
 
+  function bcPending(){
+    const nw = parseFloat($('wt').value), bw = parseFloat($('bcwt').value), bc = $('bc').value.trim();
+    return ($('bcsrc').value !== 'factory' && isFinite(nw) && isFinite(bw) && isFinite(parseFloat(bc)) && nw !== bw) ? { nw: nw, bw: bw, bc: bc } : null;
+  }
   function readInputs(){
     const problems = [];
     const num = (id) => {
@@ -1122,7 +1133,7 @@ function assessResult(inp, ctx){
       problems.push({ id: 'vsens', text: 'Velocity at the current temperature is ' + Math.round(v0adj) + ' fps (allowed 500 to 4500 fps). Check the velocity change per degree.' });
       $('vsens').classList.add('bad'); $('vsens').setAttribute('aria-invalid', 'true');
     }
-    return {
+    const res = {
       distYd: num('dist'), windSpd: spd, windHr: windHr, windMph: Math.abs(cross), windFrom: cross >= 0 ? 'R' : 'L', headMph: head,
       angleDeg: num('angle'), azimuth: num('az'), latDeg: latDeg,
       tempF: tempF, altFt: num('alt'), pressInHg: pressInHg, humidity: num('humidity'),
@@ -1130,8 +1141,16 @@ function assessResult(inp, ctx){
       diam: num('diam'), twist: num('twist'), model: $('model').value === 'G7' ? 'G7' : 'G1',
       twistDir: $('tdir').value === 'L' ? 'L' : 'R',
       click: { unit: parts[0], size: parseFloat(parts[1]) }, problems: problems,
-      bad: problems.length  // last property: counted after every field above has been read
+      bad: 0
     };
+    // A typed, fitted or saved coefficient belongs to the weight it was set for. A different weight needs your confirmation.
+    const pend = bcPending();
+    if (pend && !problems.some(q => q.id === 'bc' || q.id === 'wt')){
+      problems.push({ id: 'bc', text: 'Bullet weight is ' + pend.nw + ' gr, but the ballistic coefficient ' + pend.bc + ' was ' + ($('bcsrc').value === 'fitted' ? 'fitted' : 'entered') + ' for ' + pend.bw + ' gr and may not apply to this bullet. Enter the coefficient for this bullet, or on the Rifle tab keep ' + pend.bc + ' for ' + pend.nw + ' gr.' });
+      $('bc').classList.add('bad'); $('bc').setAttribute('aria-invalid', 'true');
+    }
+    res.bad = problems.length;  // counted after every check above
+    return res;
   }
 
   /* A zero distance the bullet cannot reach: the engine's search for the barrel angle stops at its upper limit and returns that
@@ -1384,9 +1403,21 @@ function assessResult(inp, ctx){
     }
   }
   function renderBcSrc(){
-    $('bcSrc').textContent = $('bcsrc').value === 'fitted'
-      ? 'Fitted coefficient: set by the match tool, not a published or measured value. Matching one observation can absorb errors in the drag model, velocity or air into this number, so it may not hold at other distances or loads.' : '';
+    const src = $('bcsrc').value, pend = bcPending();
+    $('bcSrc').textContent = src === 'fitted'
+      ? 'Fitted coefficient: set by the match tool, not a published or measured value. Matching one observation can absorb errors in the drag model, velocity or air into this number, so it may not hold at other distances or loads.'
+      : src === 'factory' ? 'Preset value: a typical coefficient for the selected cartridge, not one for your bullet. Enter the published coefficient for your bullet. It follows the weight until you do.'
+      : src === 'user' ? 'Your entered coefficient. A weight change will not rewrite it; you will be asked to confirm it.'
+      : 'Your saved coefficient. A weight change will not rewrite it; you will be asked to confirm it.';
+    $('bcOffer').hidden = !pend;
+    if (pend) $('bcKeep').textContent = 'Keep ' + pend.bc + ' for ' + pend.nw + ' gr';
   }
+  $('bcKeep').addEventListener('click', () => {
+    const pend = bcPending(); if (!pend) return;
+    $('bcwt').value = String(pend.nw); if (!$('bcsrc').value) $('bcsrc').value = 'user';
+    setLoadMsg('Kept the ballistic coefficient ' + pend.bc + ' for ' + pend.nw + ' gr, as you confirmed. It was set for ' + pend.bw + ' gr, so check it against your bullet.');
+    update();
+  });
   $('v0Use').addEventListener('click', () => { if (v0Offer){ v0Offer.armed = true; renderV0(); $('v0Confirm').focus(); } });
   $('v0Cancel').addEventListener('click', () => { if (v0Offer){ v0Offer.armed = false; renderV0(); } });
   $('v0Confirm').addEventListener('click', () => {
@@ -1405,7 +1436,7 @@ function assessResult(inp, ctx){
     if (inp.bad){ sum.textContent = head + ' No range card until the highlighted fields are fixed.'; return; }
     const rg = readRange();
     const top = rg.problems.length ? inp.distYd : Math.max(rg.b, inp.distYd);
-    const warns = assessResult(inp, { rangeYd: top, rangeLabel: 'The range card reaches' }).findings.filter(f => f.level === 'warning');
+    const warns = assessResult(inp, { rangeYd: top, rangeLabel: 'The range card reaches', sg: inp.twist > 0 ? stability(inp) : null }).findings.filter(f => f.level === 'warning');
     sum.textContent = head + (warns.length ? ' ' + warns.length + (warns.length === 1 ? ' warning.' : ' warnings.') : '');
     for (const f of warns){
       const li = document.createElement('li'); li.dataset.level = f.level; li.dataset.id = f.id;
@@ -1420,7 +1451,7 @@ function assessResult(inp, ctx){
     const box = $('assess'), list = $('assessList'), sum = $('assessSum');
     list.textContent = '';
     if (inp.bad){ sum.textContent = 'Calculated estimate. Not independently verified. No result until the highlighted fields are fixed.'; box.open = false; return; }
-    const r = assessResult(inp, { rangeYd: inp.distYd });
+    const r = assessResult(inp, { rangeYd: inp.distYd, sg: inp.twist > 0 ? stability(inp) : null });
     const warns = r.findings.filter(f => f.level === 'warning').length, notes = r.findings.length - warns;
     sum.textContent = r.badge + ' ' + (warns ? warns + (warns === 1 ? ' warning' : ' warnings') + ', ' : '') + notes + (notes === 1 ? ' note' : ' notes') + '.';
     for (const f of r.findings){
@@ -1514,13 +1545,16 @@ function assessResult(inp, ctx){
     if (id === 'profSel' || id === 'quickProf' || id === 'person' || id === 'personName') return;
     if (id === 'windRange') $('wind').value = e.target.value;
     if (id === 'wind') $('windRange').value = e.target.value;
-    if (id === 'bc'){ $('bcsrc').value = ''; setAnchor(); renderBcSrc(); }
+    if (id === 'bc'){ $('bcsrc').value = 'user'; $('bcwt').value = $('wt').value; setAnchor(); renderBcSrc(); }   // typed: yours, for this weight
     if (id === 'v0'){ $('v0src').value = 'user'; v0Offer = null; renderV0(); }
     if (id === 'wt'){
       // The coefficient is scaled from the last weight and coefficient you set yourself (the anchor), never from the
       // previous keystroke, so typing 1, 9, 0 gives the same result as entering 190 at once.
       const nw = parseFloat(e.target.value);
-      if (isFinite(nw) && nw > 0 && anchor.wt > 0 && isFinite(parseFloat($('bc').value))){  // a blank or non-numeric coefficient is left for you to fill in
+      // Only a coefficient that came from a preset follows the weight. A coefficient you typed or fitted (or saved earlier) is never
+      // rewritten: update() asks you to confirm it or enter one for the new bullet.
+      if ($('bcsrc').value !== 'factory'){ /* left as it is */ }
+      else if (isFinite(nw) && nw > 0 && anchor.wt > 0 && isFinite(parseFloat($('bc').value))){  // a blank or non-numeric coefficient is left for you to fill in
         if (nw === anchor.wt){ $('bc').value = anchor.bcText; setLoadMsg(''); }
         else {
           const nb = (anchor.bc * nw / anchor.wt).toFixed(3);
@@ -1528,6 +1562,7 @@ function assessResult(inp, ctx){
           setLoadMsg('Bullet weight is ' + nw + ' gr, so the ballistic coefficient was scaled to ' + nb + ' (from ' + anchor.bcText + ' at ' + anchor.wt + ' gr). If your bullet has a published coefficient, enter that instead.');
         }
       }
+      if ($('bcsrc').value === 'factory') $('bcwt').value = e.target.value;
     }
     if (id === 'preset' && sel.value !== lastSelPreset){  // a select fires both input and change; act once per real change
       lastSelPreset = sel.value;
@@ -1538,7 +1573,7 @@ function assessResult(inp, ctx){
         const keep = $('v0').value.trim() !== '' && $('v0src').value !== 'factory';
         const kept = $('v0').value.trim();
         const was = (keep ? '' : $('v0').value + ' fps, ') + $('wt').value + ' gr, ' + $('model').value + ' ' + $('bc').value + ', ' + $('diam').value + ' in, 1:' + $('twist').value + ' twist';
-        $('bcsrc').value = ''; renderBcSrc();
+        $('bcsrc').value = 'factory'; $('bcwt').value = String(p.wt); renderBcSrc();
         $('bc').value = p.bc; $('wt').value = p.wt; $('diam').value = p.d; $('twist').value = p.tw; $('model').value = 'G1';
         if (keep){ v0Offer = { preset: p.id, armed: false }; }
         else { $('v0').value = p.v0; $('v0src').value = 'factory'; v0Offer = null; }
@@ -1588,7 +1623,7 @@ function assessResult(inp, ctx){
     const val = (lo + hi) / 2;
     let msg;
     if (what === 'bc'){
-      $('bc').value = val.toFixed(3); $('bcsrc').value = 'fitted'; setAnchor(); renderBcSrc();
+      $('bc').value = val.toFixed(3); $('bcsrc').value = 'fitted'; $('bcwt').value = $('wt').value; setAnchor(); renderBcSrc();
       msg = 'Coefficient set to ' + val.toFixed(3) + ' (' + inp.model + '). ';
       if (Math.abs(val - inp.bc) / inp.bc > 0.2) msg += 'That is far from the ' + inp.bc.toFixed(3) + ' you had. ';
     } else {

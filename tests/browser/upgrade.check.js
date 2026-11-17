@@ -52,8 +52,8 @@ const newPageWith = async (data) => {
 
 // Step 7 records where each velocity came from. A rifle saved before that has no v0src or ''; either way it is treated as the user's own, so
 // presets never overwrite it. Nothing else may differ, so compare with that one field removed and require it to be absent or ''.
-// Stage 9 adds bcsrc ('' = not fitted); it is compared the same way as v0src.
-const stripSrc = (people) => people.map(p => p.profiles.map(r => { const c = Object.assign({}, r); delete c.v0src; if (c.bcsrc == null || c.bcsrc === '') delete c.bcsrc; return c; }));
+// Stage 9 adds bcsrc ('' = saved before the source was recorded) and Stage 9.1 adds bcwt (the weight the coefficient belongs to); both are compared the way v0src is.
+const stripSrc = (people) => people.map(p => p.profiles.map(r => { const c = Object.assign({}, r); delete c.v0src; delete c.bcwt; if (c.bcsrc == null || c.bcsrc === '') delete c.bcsrc; return c; }));
 const allLegacy = (people) => people.every(p => p.profiles.every(r => r.v0src == null || r.v0src === ''));
 
 let OLD;

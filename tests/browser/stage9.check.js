@@ -135,19 +135,19 @@ test('C6 a fitted velocity survives reload as fitted and a preset does not silen
 });
 test('C6 a fitted BC is labelled fitted, noted in the panel, saved, and cleared when the user types or picks a preset', async () => {
   const { ctx, page } = await open(seedOf([{ name: 'One', active: 0, profiles: [FULL({ v0: '2650' })] }])); await go(page, 'Rifle');
-  ok(/^\s*$/.test(await txt(page, '#bcSrc')), 'label shown before any fit');
+  ok(!/fitted/i.test(await txt(page, '#bcSrc')), 'fitted label shown before any fit');   // Stage 9.1: a saved coefficient now has its own line
   await fit(page, 'bc', 11.0); await page.waitForTimeout(150);
   eq(await val(page, 'bcsrc'), 'fitted'); const l = await txt(page, '#bcSrc'); ok(/fitted/i.test(l) && /not (a )?(published|measured)/i.test(l) && /absorb/i.test(l), l);
   ok(/absorb/i.test(await txt(page, '#fitMsg')), 'fit message lacks the explanation');
   await go(page, 'Hud'); ok((await assessIds(page)).includes('notice:bcfitted'), 'panel has no fitted-BC note');
   eq((await stored(page)).people[0].profiles[0].bcsrc, 'fitted');
   await page.reload(); await page.waitForTimeout(200); await go(page, 'Rifle'); ok(/fitted/i.test(await txt(page, '#bcSrc')), 'lost on reload');
-  await type(page, 'bc', 0.5); eq(await val(page, 'bcsrc'), ''); ok(/^\s*$/.test(await txt(page, '#bcSrc')), 'label stays after typing');
-  await fit(page, 'bc', 11.0); await page.waitForTimeout(100); eq(await val(page, 'bcsrc'), 'fitted'); await pick(page, 'preset', 'p65cm'); eq(await val(page, 'bcsrc'), '', 'preset left the fitted flag'); await ctx.close();
+  await type(page, 'bc', 0.5); eq(await val(page, 'bcsrc'), 'user'); ok(!/fitted/i.test(await txt(page, '#bcSrc')) && /your entered/i.test(await txt(page, '#bcSrc')), 'label stays after typing');   // Stage 9.1: typed is 'user'
+  await fit(page, 'bc', 11.0); await page.waitForTimeout(100); eq(await val(page, 'bcsrc'), 'fitted'); await pick(page, 'preset', 'p65cm'); eq(await val(page, 'bcsrc'), 'factory', 'preset left the fitted flag');   // Stage 9.1: preset-derived is 'factory' await ctx.close();
 });
 test('C6 old profiles without the BC flag load as not fitted', async () => {
   const a = FULL({ pname: 'A' }); delete a.bcsrc; const { ctx, page } = await open(seedOf([{ name: 'One', active: 0, profiles: [a] }])); await go(page, 'Rifle');
-  eq(await val(page, 'bcsrc'), ''); ok(/^\s*$/.test(await txt(page, '#bcSrc'))); await ctx.close();
+  eq(await val(page, 'bcsrc'), ''); ok(!/fitted/i.test(await txt(page, '#bcSrc'))); await ctx.close();   // Stage 9.1: still '' (saved), not fitted
 });
 
 // ---- C4 / C6b: station pressure ----
