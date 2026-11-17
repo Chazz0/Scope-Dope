@@ -229,3 +229,16 @@ test('external point check: Hornady factory table, 300 Win Mag 200 gr ELD-X, G7 
     near(d.vFps, table[yd][1], table[yd][1] * 0.01, yd + ' yd velocity');
   }
 });
+
+/* 9. Stage 4: moving-target (lead) code is gone. The app never offered it; the engine and page no longer carry it. */
+test('Stage 4: the engine returns no lead fields and ignores any moving-target inputs', () => {
+  const plain = dope({}, 500);
+  assert.equal('leadMoa' in plain, false, 'leadMoa is gone'); assert.equal('leadMil' in plain, false, 'leadMil is gone');
+  const withOld = dope({ tgtMph: 10, tgtAngle: 90, tgtDir: 'LR' }, 500);
+  assert.deepEqual(withOld, plain, 'old moving-target inputs change nothing');
+});
+test('Stage 4: no moving-target identifiers remain in the page source', () => {
+  const src = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'index.html'), 'utf8');
+  const hits = src.match(/\b(tgtMph|tgtAngle|tgtDir|tgtAng|lead(Moa|Mil|Rad|On|M|Dial|Clicks|Dir|Sub))\b|moving target|c\.lead\b|\blead:/gi) || [];
+  assert.deepEqual([...new Set(hits)], [], 'leftover moving-target code');
+});

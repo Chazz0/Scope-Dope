@@ -26,11 +26,9 @@ const cases = [
   { id: 'I_left_twist_wind_from_left', note: 'left-hand twist and left wind', ranges: R1000,
     inp: baseInputs({ twistDir: 'L', windMph: 5, windFrom: 'L' }) },
   { id: 'J_pressure_entered_cold', note: 'station pressure entered, cold', ranges: R1000,
-    inp: baseInputs({ pressInHg: 24.9, tempF: 41, humidity: 30 }) },
-  { id: 'K_moving_target_lead_scheduled_for_removal', note: 'lead math is unreachable in the app and is scheduled for removal; this case goes away with it', ranges: R500,
-    inp: baseInputs({ tgtMph: 10, tgtAngle: 90, tgtDir: 'LR' }) }
+    inp: baseInputs({ pressInHg: 24.9, tempF: 41, humidity: 30 }) }
 ];
 
-const FIELDS = ['dropIn', 'elevMoa', 'elevMil', 'driftIn', 'spinIn', 'corHIn', 'corVIn', 'windMoa', 'windMil', 'leadMoa', 'leadMil', 'vFps', 'energy', 't', 'mach'];
+const FIELDS = ['dropIn', 'elevMoa', 'elevMil', 'driftIn', 'spinIn', 'corHIn', 'corVIn', 'windMoa', 'windMil', 'vFps', 'energy', 't', 'mach'];
 
 module.exports = { cases, FIELDS };

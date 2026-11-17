@@ -35,8 +35,7 @@ function baseInputs(over) {
     v0: 2650, bc: 0.462, wt: 168, h: 1.5, zero: 100, diam: 0.308, twist: 10,
     model: 'G1', twistDir: 'R',
     windMph: 0, windFrom: 'R', headMph: 0,
-    angleDeg: 0, latDeg: null, azimuth: 0,
-    tgtMph: 0, tgtAngle: 90, tgtDir: 'LR'
+    angleDeg: 0, latDeg: null, azimuth: 0
   }, over || {});
 }
 

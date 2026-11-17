@@ -237,10 +237,27 @@ test('chart: a problem with the range fields does not hide the HUD result', asyn
   await page.click('.tab#tabHud'); await page.waitForTimeout(100);
   ok(/\d/.test(await text(page, 'elevClicks')), 'dials still show a result'); eq(await notice(page), ''); await ctx.close();
 });
-test('moving target: no input exists and the lead dial is hidden', async () => {
+test('moving target is gone: no input, no Lead dial, no Lead text, two equal dials, no Lead columns in the range card', async () => {
   const { ctx, page } = await open();
-  eq(await page.$('#tgt'), null); eq(await page.$eval('#leadDial', e => e.hidden), true);
-  await ctx.close();
+  for (const id of ['tgt', 'tgtAng', 'tgtDir', 'leadDial', 'leadClicks', 'leadDir', 'leadSub']) eq(await page.$('#' + id), null, '#' + id + ' is gone');
+  eq(await page.$$eval('.dials .dial', d => d.length), 2, 'two dials'); eq(await page.$eval('.dials', d => d.classList.contains('three')), false);
+  const w = await page.$$eval('.dials .dial', d => d.map(x => Math.round(x.getBoundingClientRect().width))); ok(Math.abs(w[0] - w[1]) <= 1, 'dials are equal width: ' + w);
+  ok(!/\blead\b/i.test(await page.$eval('body', b => b.innerText)), 'the word Lead does not appear on the HUD');
+  await page.click('.tab#tabChart'); await page.waitForTimeout(250);
+  eq(await page.$$eval('#thead th', t => t.map(x => x.textContent)), ['Yd', 'Drop in', 'Up MOA', 'Up mil', 'Up clicks', 'Wind MOA', 'Wind clicks', 'fps', 'ft·lb', 'Time s', 'Mach']);
+  ok(!/moving target/i.test(await page.$eval('body', b => b.innerText)), 'no mention of moving target anywhere');
+  eq(page.errors, []); await ctx.close();
+});
+test('a saved session that still carries old moving-target keys loads normally and does not keep them', async () => {
+  const sess = { dist: '500', wind: '8', windHr: '3', angle: '0', az: '0', cStart: '100', cEnd: '1000', cStep: '50', tgt: '20', tgtAng: '45', tgtDir: 'RL' };
+  const people = [{ name: 'Me', active: 0, profiles: [R('Keep', { wt: '190', bc: '0.4625' })] }];
+  const { ctx, page } = await open({ 'scopedope.v2': JSON.stringify({ schema: 1, pi: 0, people, session: sess }) });
+  eq(await page.$eval('#dist', e => e.value), '500'); eq(await page.$eval('#bc', e => e.value), '0.4625');
+  await set(page, 'dist', '510');
+  const saved = JSON.parse(await page.evaluate(() => localStorage.getItem('scopedope.v2')));
+  eq(saved.people[0].profiles[0].bc, '0.4625', 'rifle untouched'); eq(saved.session.dist, '510');
+  eq(Object.keys(saved.session).sort(), ['angle', 'az', 'cEnd', 'cStart', 'cStep', 'dist', 'windHr', 'wind'].sort(), 'session holds only the settings the app uses');
+  eq(page.errors, []); await ctx.close();
 });
 test('wind clock sets crosswind and headwind from the hour', async () => {
   const { ctx, page } = await open();
