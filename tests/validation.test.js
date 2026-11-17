@@ -19,10 +19,12 @@ test('the tolerances are the ones written before the comparison was run', () => 
   assert.deepStrictEqual(refs.tolerances.dropIn.minAbs, 0.3);
 });
 
-test('an ambiguous source keeps every reading, so none can be quietly dropped', () => {
+test('the owner-confirmed distance labels are recorded, and the discarded reading is history only', () => {
   const c = refs.trajectoryCases.find(x => x.id === 'HORNADY-LE-140-OTMA');
-  assert.ok(c.sourceProblem, 'the source problem must stay recorded');
-  assert.ok(Object.keys(c.readings).length >= 2, 'both readings must be kept');
+  assert.deepStrictEqual(c.labelsConfirmed.distancesYd, ['Muzzle', 50, 100, 200, 300, 400, 500]);
+  assert.ok(c.discardedReadings && c.discardedReadings.B_hundred_yard_steps, 'the discarded reading must stay recorded as history');
+  assert.ok(!Object.keys(c.readings).some(k => k.startsWith('B_')), 'the discarded reading must not be in the readings that are run');
+  assert.match(c.valuePairing, /not been confirmed/, 'unconfirmed value pairing must stay disclosed');
 });
 
 test('every reference names its source, a URL and what could not be read', () => {
@@ -34,11 +36,13 @@ test('every reference names its source, a URL and what could not be read', () =>
   }
 });
 
-test('the validation runner reports every comparison, including the ones that differ', () => {
+test('the validation runner reports every comparison, including the ones that differ and the ones not obtained', () => {
   const out = JSON.parse(execFileSync('node', [path.join(root, 'tests', 'tools', 'run-validation.js'), '--json'], { encoding: 'utf8' }));
   assert.strictEqual(out.filter(x => x.kind === 'table').length, refs.tablePoints.length);
-  const wantRows = refs.trajectoryCases.reduce((n, c) => n + Object.values(c.readings).reduce((m, r) => m + Object.keys(r.rows).length, 0), 0);
-  assert.strictEqual(out.filter(x => x.kind === 'trajectory').length, wantRows);
+  const rows = refs.trajectoryCases.flatMap(c => Object.values(c.readings).flatMap(r => Object.values(r.rows)));
+  assert.strictEqual(out.filter(x => x.kind === 'trajectory').length, rows.filter(x => x !== null).length);
+  assert.strictEqual(out.filter(x => x.kind === 'notObtained').length, rows.filter(x => x === null).length);
+  assert.ok(!out.some(x => String(x.reading || '').startsWith('B_')), 'the discarded reading was run');
 });
 
 test('the BC unit factor in the app matches the exact definitions of the pound and the inch', () => {
