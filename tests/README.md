@@ -23,6 +23,7 @@ old per-keystroke arithmetic) and `check-coefficients.js` (lists saved rifles wo
 node --test tests/solver.test.js          # calculation engine, no extra packages (Node 20 or newer)
 node tests/browser/storage.check.js       # saved data, needs Playwright + Chromium
 node tests/browser/inputs.check.js        # how the page treats inputs, needs Playwright + Chromium
+node tests/browser/layout.check.js        # phone-width layout and 16px input font check, needs Playwright + Chromium
 ```
 
 The engine tests read the code between `SOLVER_START` and `SOLVER_END` in `index.html`, so they test
