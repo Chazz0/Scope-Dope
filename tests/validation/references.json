@@ -1153,6 +1153,234 @@
    },
    "note": "Variant registered before running: the same Federal table with the page's other BC, 0.560, which the page labels only 'Ballistic Coefficient'. Registered as G1 by convention. The G7 .287 dataset is unchanged and both are reported. Federal Long Range table: zero 200 yd. Evidence: Federal's law-enforcement page for GM308M captions the Long Range trajectory 'for a 200 yards zero with a sight height of 1.5 inches' (le.vistaoutdoor.com id=150 and id=151), and a retailer copy of the 6.5 CM 130 gr data prints 0 at 200 yd. The federalpremium.com page's own caption says 100 yd for both tables, which cannot describe the Long Range table (its 100 yd value is +1.6 in).",
    "registeredRound": 2
+  },
+  {
+   "id": "HORNADY-PH-300WM-200-ELDX-G1-.597",
+   "manufacturer": "Hornady",
+   "source": "Hornady 300 Win Mag 200 gr ELD-X Precision Hunter, item 82002, Test Barrel (24 in) table",
+   "url": "https://www.hornady.com/ammunition/rifle/300-win-mag-200-gr-eld-x-precision-hunter",
+   "model": "G1",
+   "bc": 0.597,
+   "weightGr": 200,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 200,
+   "muzzle": {
+    "v": 2860,
+    "e": 3632,
+    "drop": -1.5
+   },
+   "rows": {
+    "100": {
+     "v": 2707,
+     "e": 3253,
+     "drop": 1.6
+    },
+    "200": {
+     "v": 2558,
+     "e": 2905,
+     "drop": 0.0
+    },
+    "300": {
+     "v": 2414,
+     "e": 2587,
+     "drop": -6.9
+    },
+    "400": {
+     "v": 2274,
+     "e": 2297,
+     "drop": -19.9
+    },
+    "500": {
+     "v": 2140,
+     "e": 2033,
+     "drop": -39.5
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere for this table",
+    "barrel used for any real rifle",
+    "drag-model velocity banding (the app uses one BC)",
+    "bullet diameter",
+    "zero range (inferred, see note)"
+   ],
+   "note": "Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G1 band (Mach 2.25 and above). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.",
+   "registeredRound": 3
+  },
+  {
+   "id": "HORNADY-PH-300WM-200-ELDX-G1-.588",
+   "manufacturer": "Hornady",
+   "source": "Hornady 300 Win Mag 200 gr ELD-X Precision Hunter, item 82002, Test Barrel (24 in) table",
+   "url": "https://www.hornady.com/ammunition/rifle/300-win-mag-200-gr-eld-x-precision-hunter",
+   "model": "G1",
+   "bc": 0.588,
+   "weightGr": 200,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 200,
+   "muzzle": {
+    "v": 2860,
+    "e": 3632,
+    "drop": -1.5
+   },
+   "rows": {
+    "100": {
+     "v": 2707,
+     "e": 3253,
+     "drop": 1.6
+    },
+    "200": {
+     "v": 2558,
+     "e": 2905,
+     "drop": 0.0
+    },
+    "300": {
+     "v": 2414,
+     "e": 2587,
+     "drop": -6.9
+    },
+    "400": {
+     "v": 2274,
+     "e": 2297,
+     "drop": -19.9
+    },
+    "500": {
+     "v": 2140,
+     "e": 2033,
+     "drop": -39.5
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere for this table",
+    "barrel used for any real rifle",
+    "drag-model velocity banding (the app uses one BC)",
+    "bullet diameter",
+    "zero range (inferred, see note)"
+   ],
+   "note": "Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G1 band (Mach 2.0). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.",
+   "registeredRound": 3
+  },
+  {
+   "id": "HORNADY-PH-300WM-200-ELDX-G7-.301",
+   "manufacturer": "Hornady",
+   "source": "Hornady 300 Win Mag 200 gr ELD-X Precision Hunter, item 82002, Test Barrel (24 in) table",
+   "url": "https://www.hornady.com/ammunition/rifle/300-win-mag-200-gr-eld-x-precision-hunter",
+   "model": "G7",
+   "bc": 0.301,
+   "weightGr": 200,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 200,
+   "muzzle": {
+    "v": 2860,
+    "e": 3632,
+    "drop": -1.5
+   },
+   "rows": {
+    "100": {
+     "v": 2707,
+     "e": 3253,
+     "drop": 1.6
+    },
+    "200": {
+     "v": 2558,
+     "e": 2905,
+     "drop": 0.0
+    },
+    "300": {
+     "v": 2414,
+     "e": 2587,
+     "drop": -6.9
+    },
+    "400": {
+     "v": 2274,
+     "e": 2297,
+     "drop": -19.9
+    },
+    "500": {
+     "v": 2140,
+     "e": 2033,
+     "drop": -39.5
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere for this table",
+    "barrel used for any real rifle",
+    "drag-model velocity banding (the app uses one BC)",
+    "bullet diameter",
+    "zero range (inferred, see note)"
+   ],
+   "note": "Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G7 band (Mach 2.25 and above). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.",
+   "registeredRound": 3
+  },
+  {
+   "id": "HORNADY-PH-300WM-200-ELDX-G7-.295",
+   "manufacturer": "Hornady",
+   "source": "Hornady 300 Win Mag 200 gr ELD-X Precision Hunter, item 82002, Test Barrel (24 in) table",
+   "url": "https://www.hornady.com/ammunition/rifle/300-win-mag-200-gr-eld-x-precision-hunter",
+   "model": "G7",
+   "bc": 0.295,
+   "weightGr": 200,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 200,
+   "muzzle": {
+    "v": 2860,
+    "e": 3632,
+    "drop": -1.5
+   },
+   "rows": {
+    "100": {
+     "v": 2707,
+     "e": 3253,
+     "drop": 1.6
+    },
+    "200": {
+     "v": 2558,
+     "e": 2905,
+     "drop": 0.0
+    },
+    "300": {
+     "v": 2414,
+     "e": 2587,
+     "drop": -6.9
+    },
+    "400": {
+     "v": 2274,
+     "e": 2297,
+     "drop": -19.9
+    },
+    "500": {
+     "v": 2140,
+     "e": 2033,
+     "drop": -39.5
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere for this table",
+    "barrel used for any real rifle",
+    "drag-model velocity banding (the app uses one BC)",
+    "bullet diameter",
+    "zero range (inferred, see note)"
+   ],
+   "note": "Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G7 band (Mach 2.0). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.",
+   "registeredRound": 3
   }
  ],
  "excludedSources": {
@@ -1160,5 +1388,5 @@
   "HORNADY-308-168-BTHP-MATCH": "hornady.com/ammunition/rifle/308-win-168-gr-bthp-match. Not registered: the page text as read has no BC, so the drag model cannot be set. Its velocities and energies are consistent with 168 gr and a 200 yd zero.",
   "FEDERAL-GM223M": "Federal 223 Rem 69 gr page was not on the fetch allowlist."
  },
- "roundNote": "Round 1 datasets were registered 2026-11-16 before the 21:15 round was run. Round 2 datasets were registered 2026-11-16 after 21:44, before being run, from pages re-read that evening. Rounds are reported separately so the earlier counts do not move."
+ "roundNote": "Round 1 datasets were registered 2026-11-16 before the 21:15 round was run. Round 2 datasets were registered 2026-11-16 after 21:44, before being run, from pages re-read that evening. Rounds are reported separately so the earlier counts do not move. Round 3 datasets (HORNADY-PH-300WM-200-ELDX-*) were registered 2026-11-17 before being run, to extend the compared weight range to 200 gr. Four BC variants of one table are registered together; all four are reported and none is selected. Tolerances are unchanged."
 }
