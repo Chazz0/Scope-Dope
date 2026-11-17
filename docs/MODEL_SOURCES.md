@@ -2,6 +2,8 @@
 
 Model version: see `docs/MODEL_CHANGELOG.md`. Status as of 2026-11-16.
 
+**Summary.** Reference agreement is partly demonstrated across several manufacturer datasets, but remains incomplete. The Federal and Hornady datasets have been registered and compared under two candidate atmospheres. 100 of 103 comparisons pass. The three misses occur under ICAO conditions. The reference entries still need owner checking against their original pages, and the drag-table origin remains unknown. None of this establishes physical accuracy.
+
 **Passing software tests is not proof of ballistic accuracy.** A test records what the code
 does. It cannot show that what the code does matches real bullets.
 
@@ -12,7 +14,7 @@ Passing tests, matching published data and predicting a real bullet are differen
 | Achievement | Question | Where it stands |
 | --- | --- | --- |
 | **Software correctness** | Does the program calculate consistently? | Supported by automated tests. This says nothing about the other two. |
-| **Reference agreement** | Does it reproduce published data? | Partly, not established. One bullet agrees with one manufacturer table from 100 to 500 yd, and two drag-table points agree at Mach 3. The reference data has not been reproduced by an independent reviewer. The project owner waived that step on 2026-11-16, so it is owner-checked only (`docs/STAGE5_COMPLETION.md`). |
+| **Reference agreement** | Does it reproduce published data? | Partial, with unresolved source and transcription checks. Federal and Hornady datasets were registered and compared under two candidate atmospheres (100 of 103 pass; the three misses are under ICAO). The entries have not been checked against the original pages, the drag-table origin is unknown, and the Hornady copy is owner-checked only (an independent reproduction was waived on 2026-11-16). |
 | **Physical accuracy** | Does it predict what an actual bullet does? | NOT DEMONSTRATED. No measured flight data has been compared. |
 
 Stage 5 completion criteria are in `docs/STAGE5_COMPLETION.md`.
@@ -60,7 +62,7 @@ None of the primary documents behind the G tables was found and compared line by
 
 ### Comparison of every point with a secondary copy (2026-11-16)
 
-`node tests/tools/compare-g-tables.js` compares all 79 G1 and 83 G7 points in `index.html` with a secondary transcription of another open-source project's data files (`tests/validation/third-party-tables/`, see its `PROVENANCE.md`). G1: identical at 79 of 79. G7: identical at all 83 shared Mach points; the other copy has one extra point at Mach 1.125 (Cd 0.3987 against 0.39845 interpolated here, a difference of 0.00025). The origin of that copy is unknown, so this does not verify either table. Both stay **Unverified**.
+`node tests/tools/compare-g-tables.js` compares all 79 G1 and 83 G7 points in `index.html` with a secondary transcription of another open-source project's data files (`tests/validation/third-party-tables/`, see its `PROVENANCE.md`). G1: identical at 79 of 79. G7: identical at all 83 shared Mach points; the other copy has one extra point at Mach 1.125 (Cd 0.3987 against 0.39845 interpolated here, a difference of 0.00025). The origin of that copy is unknown, so this does not verify either table. This is a point-for-point comparison against a secondary copy of unknown origin. It establishes consistency between the copies, not the provenance or accuracy of the tables. Neither table is Verified. Both stay **Unverified**.
 
 ## The Aberdeen atmosphere question (investigated 2026-11-16)
 
@@ -73,11 +75,13 @@ All pages below were read through a summarizing page reader, not seen directly. 
 | dexadine.com BEX help (a ballistics program's documentation) | 59 F | 29.53 inHg (750 mmHg) | 78% | Calls these the "standard Metro" conditions and "the standard ballistics atmosphere". It does not say who defined them. |
 | U.S. Standard Atmosphere 1976 constants (as printed in a program that cites it) | 288.15 K = 59 F | 101325 Pa = 29.92 inHg | dry | The ICAO-type atmosphere. |
 
+**Clarification.** Two Hornady statements are in play, and neither proves how the LE product-page trajectory was calculated. (1) A Hornady page refers to standard conditions for an unnamed book: 59 F, 29.53 inHg, 78% RH. (2) Hornady's website says BCs are corrected to ICAO conditions (59 F, 29.92 inHg, 0%). Neither statement proves the LE trajectory was calculated under Aberdeen conditions. Both atmosphere comparisons are kept. Aberdeen is not selected as correct, and the offset is not resolved: its disappearance under Aberdeen is a hypothesis, not proof.
+
 What this shows: two conventions are in use, with the same 59 F. The Aberdeen figures (29.53 inHg, 78%) appear on Hornady's page and a second ballistics program's page. No source opened says Hornady computed the Hornady LE table, the resource-page tables or the current BCs in Aberdeen conditions. Hornady's pages conflict with each other, and the Aberdeen statement may be old handbook text. A direct statement from Hornady for the LE table is still needed. In the engine, Aberdeen conditions give 1.80% lower air density than ICAO (1.2029 against 1.2249 kg/m3), the size of the effective-BC offset seen in the first Hornady case, and re-running the cases in Aberdeen conditions removes that offset (velocity within 0.07%). That is a hypothesis consistent with the data, not an established explanation. The ICAO comparison stays the primary, pre-registered run, and no BC or solver code was changed.
 
 ## The drag-table origin search (continued 2026-11-16)
 
-Still no authoritative original. Opened this round: Applied Ballistics "Aerodynamic Drag Modeling for Ballistics" gives no origin and no table (only the Mach 3 values already recorded) and cites McCoy, *Modern Exterior Ballistics* (1999) and Peelen, "A Look at Drag Models in Old Small Arms Firing Tables" (2006), neither of which was opened. A hobbyist page narrates Krupp (1881), Ingalls, BRL experiments and Winchester-Western (1965) with no bibliographic details. One site that may hold tables disallows automated access, so it was not used. The secondary comparison is supporting evidence only.
+Still no authoritative original. Opened this round: Applied Ballistics "Aerodynamic Drag Modeling for Ballistics" gives no origin and no table (only the Mach 3 values already recorded) and cites McCoy, *Modern Exterior Ballistics* (1999) and Peelen, "A Look at Drag Models in Old Small Arms Firing Tables" (2006), neither of which was opened. A hobbyist page narrates Krupp (1881), Ingalls, BRL experiments and Winchester-Western (1965) with no bibliographic details. One site that may hold tables disallows automated access, so it was not used. The secondary comparison is supporting evidence only. This is a point-for-point comparison against a secondary copy of unknown origin. It establishes consistency between the copies, not the provenance or accuracy of the tables. Neither table is Verified.
 
 ## Physical formula audit (2026-11-16)
 

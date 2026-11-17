@@ -4,6 +4,8 @@ Model version 1.0.0. Run date 2026-11-16. Reproduce with `node tests/tools/run-v
 (add `--diagnose` for the diagnostic below). The fuller Stage 5 report is the Claude Doc
 "Scope Dope Stage 5 Report (Preliminary)".
 
+**Summary.** Reference agreement is partly demonstrated across several manufacturer datasets, but remains incomplete. The Federal and Hornady datasets have been registered and compared under two candidate atmospheres. 100 of 103 comparisons pass. The three misses occur under ICAO conditions. The reference entries still need owner checking against their original pages, and the drag-table origin remains unknown. None of this establishes physical accuracy.
+
 **Passing software tests is not proof of ballistic accuracy.** This report compares the engine with the few
 published numbers that could be read. It is preliminary, it is not an independent audit, and accuracy is not established.
 
@@ -19,7 +21,7 @@ shift at 19:04. The comparison below uses the corrected pairing.
 | Achievement | Question | Where it stands |
 | --- | --- | --- |
 | Software correctness | Does the program calculate consistently? | Supported by automated tests. |
-| Reference agreement | Does it reproduce published data? | Partly, not established: one bullet, and the reference copy is owner-checked only (an independent reproduction was waived by the owner on 2026-11-16). |
+| Reference agreement | Does it reproduce published data? | Partial, with unresolved source and transcription checks. Federal and Hornady datasets were registered and compared under two candidate atmospheres (100 of 103 pass; the three misses are under ICAO). The entries have not been checked against the original pages, the drag-table origin is unknown, and the Hornady copy is owner-checked only (an independent reproduction was waived on 2026-11-16). |
 | Physical accuracy | Does it predict what an actual bullet does? | NOT DEMONSTRATED. No measured flight data. |
 
 Stage 5 is not complete. See `docs/STAGE5_COMPLETION.md`.
@@ -97,9 +99,9 @@ Reading: for the Hornady tables the Aberdeen atmosphere fits clearly better than
 
 ## Round of 2026-11-16 (21:15 request): sourcing, formula audit and checks
 
-- **Aberdeen atmosphere.** Documented in `docs/MODEL_SOURCES.md`: Hornady's External Ballistics page states 59 F, 29.53 inHg, 78% RH as the Aberdeen standard for "this book"; hornady.com/bc states ICAO (59 F, 29.92 inHg, 0%). No opened source says which one the LE table uses. Hypothesis only. The primary ICAO comparison above is unchanged and no BC was fitted.
+- **Aberdeen atmosphere.** Documented in `docs/MODEL_SOURCES.md`: Hornady's External Ballistics page states 59 F, 29.53 inHg, 78% RH as the Aberdeen standard for "this book"; hornady.com/bc states ICAO (59 F, 29.92 inHg, 0%). No opened source says which one the LE table uses. Two Hornady statements are in play, and neither proves how the LE product-page trajectory was calculated. (1) A Hornady page refers to standard conditions for an unnamed book: 59 F, 29.53 inHg, 78% RH. (2) Hornady's website says BCs are corrected to ICAO conditions (59 F, 29.92 inHg, 0%). Neither statement proves the LE trajectory was calculated under Aberdeen conditions. Both atmosphere comparisons are kept. Aberdeen is not selected as correct, and the offset is not resolved: its disappearance under Aberdeen is a hypothesis, not proof. The primary ICAO comparison above is unchanged and no BC was fitted.
 - **Reference data check.** `docs/OWNER_CHECK_REFERENCE_DATA.md` lists every Federal and Hornady entry for the owner to check against the pages. It is blank. Nobody but the page-reading tool has checked those copies.
-- **Drag-table origin.** Not found. See `docs/MODEL_SOURCES.md`.
+- **Drag-table origin.** Not found. See `docs/MODEL_SOURCES.md`. This is a point-for-point comparison against a secondary copy of unknown origin. It establishes consistency between the copies, not the provenance or accuracy of the tables. Neither table is Verified.
 - **Formula audit.** `node tests/tools/formula-audit.js`: sea-level density and speed of sound within 0.002% of the 1976 standard constants; the Miller formula equals its printed form; spin drift and Coriolis magnitudes for one chosen bullet are slightly outside the ranges Applied Ballistics prints (9.31 in against 8 to 9; 3.34 in against 2.5 to 3.0), which are not tied to a bullet.
 - **Tests.** All four browser suites pass: storage 27, inputs 27, layout 9, upgrade 5.
 

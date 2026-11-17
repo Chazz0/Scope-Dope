@@ -353,3 +353,38 @@ test('the primary ICAO comparison is unchanged by this round', () => {
   assert.deepStrictEqual(traj.map(x => x.vOurs), [2550.7, 2406.3, 2266.6, 2131.4, 2000.9]);
   assert.ok(traj.every(x => x.vPass && x.dropPass));
 });
+
+// ---- Documentation corrections (21:29): summary, criterion parts, qualifications ----
+test('the opening summary and the three achievements read the same in every document', () => {
+  const docs = ['docs/MODEL_SOURCES.md', 'docs/VALIDATION_REPORT.md', 'docs/STAGE5_COMPLETION.md'].map(f => [f, fs.readFileSync(path.join(root, f), 'utf8')]);
+  for (const [f, t] of docs) {
+    assert.match(t, /Reference agreement is partly demonstrated across several manufacturer datasets, but remains incomplete/, f);
+    assert.match(t, /100 of 103 comparisons pass\. The three misses occur under ICAO conditions/, f);
+    assert.match(t, /None of this establishes physical accuracy\./, f);
+    assert.match(t, /Partial, with unresolved source and transcription checks/, f);
+    assert.match(t, /NOT DEMONSTRATED|Not demonstrated/, f);
+    assert.doesNotMatch(t, /One bullet agrees with one manufacturer table|two drag-table points agree/i, f);
+  }
+});
+
+test('the second-manufacturer criterion separates registered, checked and reproduced, and is not marked complete', () => {
+  const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
+  const line = c.split('\n').find(l => l.includes('A second, different manufacturer data set'));
+  assert.ok(line.startsWith('- [ ]'));
+  assert.match(line, /dataset registered and calculations run: done/);
+  assert.match(line, /every source entry checked against the original manufacturer page: OPEN/);
+  assert.match(line, /independent reproduction: not performed/);
+  assert.match(line, /not independently verified/);
+  assert.match(c, /Criteria: 0 complete, 1 waived, 7 open\./);
+  assert.match(c, /\*\*Stage 5 status: NOT COMPLETE\*\*/);
+});
+
+test('the G-table comparison and the Aberdeen statements carry their qualifications', () => {
+  const GQ = 'It establishes consistency between the copies, not the provenance or accuracy of the tables. Neither table is Verified.';
+  for (const f of ['docs/MODEL_SOURCES.md', 'docs/VALIDATION_REPORT.md', 'docs/STAGE5_COMPLETION.md']) {
+    const t = fs.readFileSync(path.join(root, f), 'utf8');
+    assert.ok(t.includes(GQ), f + ' lacks the G-table qualification');
+    assert.match(t, /Neither (Hornady )?statement proves/, f);
+    assert.match(t, /Aberdeen is not selected|Aberdeen is not selected as correct/, f);
+  }
+});
