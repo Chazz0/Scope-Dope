@@ -26,8 +26,10 @@ test('reference data, tolerances, measured data and golden baseline are unchange
     assert.strictEqual(read(f), show(STAGE9_1, f), f + ' must not change in Stage 10');
 });
 
-test('Stage 10 changed no part of index.html', () => {
-  assert.strictEqual(read('index.html'), show(STAGE9_1, 'index.html'));
+// Stage 12 note: Stage 10 itself changed no part of index.html (that held at commit 6dbcc74 and ba0594c). Stage 12 is allowed to change interface
+// wording, so this historical whole-file pin is narrowed to the part that must never change, the solver block. Stage 12's own guards add the rest.
+test('Stage 10 changed no part of the solver block in index.html', () => {
+  assert.strictEqual(solverBlock(read('index.html')), solverBlock(show(STAGE9_1, 'index.html')));
 });
 
 const report = () => read('docs/STAGE10_SCIENTIFIC_VERIFICATION.md');

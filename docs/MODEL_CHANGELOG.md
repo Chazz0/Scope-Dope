@@ -38,3 +38,8 @@ Audit only. `index.html`, the solver block, the drag tables, reference data, tol
 ## Stage 11 (measured-trajectory validation): no model change
 
 Stage 11 compared the unchanged solver (model version 1.0.0) with the measured trajectory data that could be found. No solver, formula, drag table, reference data, tolerance, golden baseline, `index.html` or model-version change was made, and nothing was tuned to fit. Physical accuracy remains NOT DEMONSTRATED. See `docs/STAGE11_MEASURED_TRAJECTORY_VALIDATION.md`.
+
+## Stage 12 (final release audit): no model change
+
+Interface wording and documentation only. The solver block, drag tables, reference data, tolerances, golden baseline and model version (1.0.0) are unchanged. Added to the interface: the model has not been shown to be physically accurate; manufacturer comparisons are not proof of real-world accuracy; the Coriolis discrepancy is unresolved. Physical accuracy remains NOT DEMONSTRATED. See `docs/STAGE12_FINAL_RELEASE_AUDIT.md` and `docs/RELEASE_NOTES.md`.
+

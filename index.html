@@ -333,7 +333,7 @@ input[type=range]{height:20px}
               <div><dt>Energy</dt><dd><span id="sEn">0</span><small>ft&middot;lb</small></dd></div>
               <div><dt>Flight time</dt><dd><span id="sTime">0</span><small>s</small></dd></div>
             </dl>
-            <details class="assess" id="assess"><summary id="assessSum">Calculated estimate. Not independently verified.</summary><ul id="assessList"></ul></details>
+            <details class="assess" id="assess"><summary id="assessSum">Calculated estimate. Not independently verified. The model has not been shown to be physically accurate.</summary><ul id="assessList"></ul></details>
             <p class="notice" id="notice" hidden></p>
           </section>
 
@@ -388,7 +388,7 @@ input[type=range]{height:20px}
         <section class="card" aria-labelledby="h-range">
           <h2 id="h-range">Range card</h2>
           <p class="sub" id="cSummary"></p>
-          <details class="assess" id="cAssess"><summary id="cAssessSum">Calculated estimate. Not independently verified against measured bullet flight.</summary><p class="hint" id="cAssessNote"></p><ul id="cAssessList"></ul></details>
+          <details class="assess" id="cAssess"><summary id="cAssessSum">Calculated estimate. Not independently verified against measured bullet flight. The model has not been shown to be physically accurate.</summary><p class="hint" id="cAssessNote"></p><ul id="cAssessList"></ul></details>
           <div class="grid3">
             <div class="field"><label for="cStart">From (yards)</label><input id="cStart" type="number" inputmode="numeric" min="10" max="2000" step="5" value="100"></div>
             <div class="field"><label for="cEnd">To (yards)</label><input id="cEnd" type="number" inputmode="numeric" min="10" max="2000" step="5" value="1000"></div>
@@ -508,7 +508,7 @@ input[type=range]{height:20px}
             <label for="lat">Latitude (&deg;, north +, south &minus;)</label>
             <input id="lat" type="number" inputmode="decimal" min="-90" max="90" step="any" placeholder="Blank turns Coriolis off">
           </div>
-          <p class="hint">Coriolis effect needs your latitude and the shooting direction from the HUD. It is small, about 1 inch at 500 yards, and grows quickly at long range.</p>
+          <p class="hint">Coriolis effect needs your latitude and the shooting direction from the HUD. It is small, about 1 inch at 500 yards, and grows quickly at long range. The Coriolis calculation has a known, unresolved discrepancy against a full numerical integration (the closed-form estimate ran larger), so treat it as uncertain.</p>
         </section>
 
         <section class="card" aria-labelledby="h-fit">
@@ -536,7 +536,7 @@ input[type=range]{height:20px}
           <p class="hint" id="backupMsg" aria-live="polite"></p>
         </section>
       </div>
-      <p class="foot" style="margin-top:14px">Dial directions move your point of impact. Follow the arrows on your turrets. These are estimates from a point-mass model with G1 or G7 drag, plus spin drift, Coriolis effect when you enter a latitude, and wind from any clock position. They leave out aerodynamic jump and powder temperature unless you set a velocity change per degree. Fire a few rounds at known distances and true your velocity or coefficient until the card matches your groups. <span id="modelTag">Calculation model: unverified estimates.</span></p>
+      <p class="foot" style="margin-top:14px">Dial directions move your point of impact. Follow the arrows on your turrets. These are estimates from a point-mass model with G1 or G7 drag, plus spin drift, Coriolis effect when you enter a latitude, and wind from any clock position. They leave out aerodynamic jump and powder temperature unless you set a velocity change per degree. Fire a few rounds at known distances and true your velocity or coefficient until the card matches your groups. The model has not been shown to be physically accurate, manufacturer comparisons are not proof of real-world accuracy, and truing can absorb errors in the coefficient, the drag model and the air inputs. <span id="modelTag">Calculation model: unverified estimates.</span></p>
     </section>
   </main>
 </div>
@@ -801,12 +801,12 @@ function assessResult(inp, ctx){
   // Notes: effects that are in use but have no reference comparison.
   if (Math.abs(inp.windMph || 0) > 0 || Math.abs(inp.headMph || 0) > 0) add('notice', 'wind', 'Wind: no reference table in testing included wind. The wind correction is an estimate that was not checked against reference data.');
   if (inp.twist > 0) add('notice', 'spin', 'Spin drift is an empirical estimate. Its equation has no verified source and no reference comparison.');
-  if (inp.latDeg != null) add('notice', 'coriolis', 'Coriolis effect follows from first-order theory and was not compared with measurements.');
+  if (inp.latDeg != null) add('notice', 'coriolis', 'Coriolis effect follows from first-order theory and was not compared with measurements. A known discrepancy is unresolved: in one check the closed-form Coriolis estimate was larger than a full numerical integration (about 14% at 500 yd, 33% at 1000 yd and 47% at 1500 yd for one .308 sample load), so treat the Coriolis figures as uncertain.');
   if (inp.angleDeg) add('notice', 'angle', 'Angled shot: no reference comparison covers shooting uphill or downhill.');
   if (inp.v0nom != null && Math.abs(inp.v0 - inp.v0nom) >= 1) add('notice', 'vtemp', 'Velocity is adjusted for temperature using your own change-per-degree setting. That adjustment was not validated.');
-  add('notice', 'limits', 'Limits of the model: a point-mass trajectory with G1 or G7 drag tables that are not verified against an original source. It has no aerodynamic jump, no powder-temperature model beyond your setting, and a standard atmosphere. It has been compared with manufacturer tables, never with measured bullet flight.');
+  add('notice', 'limits', 'Limits of the model: a point-mass trajectory with G1 or G7 drag tables that are not verified against an original source. It has no aerodynamic jump, no powder-temperature model beyond your setting, and a standard atmosphere. It has been compared with manufacturer tables, never with measured bullet flight. Manufacturer comparisons are not proof of real-world accuracy, and the one attempt to compare it with published measured trajectories was inconclusive because the sources left out key inputs. The model has not been shown to be physically accurate.');
   return {
-    badge: 'Calculated estimate. Not independently verified. ' + (refCovered ? 'Compared with manufacturer tables for similar loads, not with measured bullet flight.' : 'No reference data covers this load.'),
+    badge: 'Calculated estimate. Not independently verified. The model has not been shown to be physically accurate. ' + (refCovered ? 'Compared with manufacturer tables for similar loads, not with measured bullet flight.' : 'No reference data covers this load.'),
     refCovered: refCovered, findings: out
   };
 }
@@ -1343,7 +1343,7 @@ function assessResult(inp, ctx){
     const lines = [];
     lines.push('Scope Dope range card');
     lines.push(q($('cSummary').textContent));
-    lines.push(q('Calculated estimate. Not independently verified against measured bullet flight. Reference comparisons cover limited conditions.'));
+    lines.push(q('Calculated estimate. Not independently verified against measured bullet flight. The model has not been shown to be physically accurate. Reference comparisons cover limited conditions.'));
     if (last){
       const i = last.inp;
       lines.push(q(Math.round(i.tempF) + 'F, ' + (i.pressInHg != null ? i.pressInHg + ' inHg' : 'pressure from altitude') + ', ' + i.humidity + '% humidity, ' + i.altFt + ' ft'));
@@ -1430,8 +1430,8 @@ function assessResult(inp, ctx){
 
   function renderChartAssess(inp){
     const box = $('cAssess'), list = $('cAssessList'), sum = $('cAssessSum'), note = $('cAssessNote');
-    const head = 'Calculated estimate. Not independently verified against measured bullet flight.';
-    note.textContent = 'Reference comparisons cover limited conditions: manufacturer tables, up to ' + VALIDATED.rangeYd[1] + ' yd. Being inside those conditions does not establish accuracy. Wind, spin drift and Coriolis notes are on the main screen.';
+    const head = 'Calculated estimate. Not independently verified against measured bullet flight. The model has not been shown to be physically accurate.';
+    note.textContent = 'Reference comparisons cover limited conditions: manufacturer tables, up to ' + VALIDATED.rangeYd[1] + ' yd. Being inside those conditions does not establish accuracy, and manufacturer comparisons are not proof of real-world accuracy. Wind, spin drift and Coriolis notes are on the main screen.';
     list.textContent = '';
     if (inp.bad){ sum.textContent = head + ' No range card until the highlighted fields are fixed.'; return; }
     const rg = readRange();
