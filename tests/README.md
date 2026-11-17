@@ -49,3 +49,13 @@ exactly what the app runs. Set `SCOPE_DOPE_FILE=/path/to/other.html` to test a d
 ## Baseline
 
 The code at tag `baseline-before-accuracy-work` is the state before any accuracy work.
+
+## Stage 5: accuracy verification (in progress)
+
+- `tests/model-version.test.js` ties `MODEL_VERSION`, `tests/golden/baseline.json` and `docs/MODEL_CHANGELOG.md` together.
+- `tests/validation/references.json` holds every published reference number, its source URL and the tolerances.
+  The tolerances were written before the comparison was run. Do not change them to make a case pass.
+- `node tests/tools/run-validation.js` prints every comparison against that data, including the ones that differ.
+- `tests/validation.test.js` guards the evidence files and the Tested / Verified / Unverified labels in `docs/MODEL_SOURCES.md`.
+
+None of these show that the ballistics are accurate. See `docs/VALIDATION_REPORT.md` for what was and was not compared.

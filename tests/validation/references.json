@@ -1,0 +1,41 @@
+{
+ "note": "Reference data copied from the named sources as they were read on 2026-11-16. Tolerances were written before the comparison was run and must not be changed to make a case pass. The tolerances are the author's choice, not an industry standard.",
+ "tolerances": {
+  "tableCd": { "abs": 0.005, "why": "Applied Ballistics prints Cd to two decimals, so a match is within half a unit of the last printed digit." },
+  "velocityPct": { "value": 1.0, "why": "Manufacturer tables print whole fps; 1% of about 2400 fps is about 24 fps." },
+  "dropIn": { "pct": 2.0, "minAbs": 0.3, "why": "Larger of 2% or 0.3 in, since tables print drop to 0.1 in." }
+ },
+ "tablePoints": [
+  {
+   "id": "AB-G1-M3",
+   "model": "G1", "mach": 3.0, "published": 0.51,
+   "source": "Applied Ballistics, ABDOC130 Drag Curve Models",
+   "url": "https://appliedballisticsllc.com/wp-content/uploads/2021/06/ABDOC130_CDM-2021-Copyright.pdf",
+   "quote": "At Mach 3 (3348 fps) the G1 projectile has a drag coefficient of 0.51, while the G7 projectile has a drag coefficient of only 0.24.",
+   "status": "readable"
+  },
+  {
+   "id": "AB-G7-M3",
+   "model": "G7", "mach": 3.0, "published": 0.24,
+   "source": "Applied Ballistics, ABDOC130 Drag Curve Models",
+   "url": "https://appliedballisticsllc.com/wp-content/uploads/2021/06/ABDOC130_CDM-2021-Copyright.pdf",
+   "quote": "same sentence as above",
+   "status": "readable"
+  }
+ ],
+ "trajectoryCases": [
+  {
+   "id": "HORNADY-LE-140-OTMA",
+   "source": "Hornady Law Enforcement product page, 6.5 Creedmoor 140 gr OTM-A, item 81480",
+   "url": "https://www.hornadyle.com/rifle-ammunition/140-gr-otm-a",
+   "inputsPublished": { "v0Fps": 2700, "bcG1": 0.608, "weightGr": 140, "barrel": "24 in test barrel", "muzzleTrajectoryIn": -1.5 },
+   "inputsNotPublished": ["atmosphere", "zero range", "sight height beyond the -1.5 muzzle row", "drag-model velocity banding", "bullet diameter used"],
+   "assumptions": { "tempF": 59, "pressInHg": 29.92, "humidity": 0, "altFt": 0, "sightHeightIn": 1.5, "diamIn": 0.264, "why": "ICAO standard atmosphere, which Hornady states its BCs are corrected to (https://www.hornady.com/bc). Sight height from the published muzzle row." },
+   "sourceProblem": "The page text is garbled. The tool that read it labeled the rows Muzzle, 50, 100, 200, 300, 400 yd. A 140 fps loss in the first 50 yd is not physically possible for a G1 0.608 bullet at 2700 fps, so the labels may be wrong. The page could not be viewed directly. Both readings are run and neither is chosen.",
+   "readings": {
+    "A_as_labeled_by_reader": { "zeroYd": 50, "rows": { "50": {"v": 2553, "drop": 0}, "100": {"v": 2412, "drop": -3.8}, "200": {"v": 2274, "drop": -13.7}, "300": {"v": 2141, "drop": -30.2}, "400": {"v": 2013, "drop": -54.4} } },
+    "B_hundred_yard_steps": { "zeroYd": 100, "rows": { "100": {"v": 2553, "drop": 0}, "200": {"v": 2412, "drop": -3.8}, "300": {"v": 2274, "drop": -13.7}, "400": {"v": 2141, "drop": -30.2}, "500": {"v": 2013, "drop": -54.4} } }
+   }
+  }
+ ]
+}
