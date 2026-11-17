@@ -95,6 +95,14 @@ LE 6.5 CM case in Aberdeen (sensitivity only): velocity within 0.06% at 100 to 5
 
 Reading: for the Hornady tables the Aberdeen atmosphere fits clearly better than ICAO, which supports the hypothesis that this explains the 1.8% BC offset. Hornady does not state this for the LE table, so it remains a hypothesis. The Federal table, whose atmosphere is unstated, fits ICAO a little better. One round-nose energy figure (3139 ft-lb at 50 yd) is 2 ft-lb from what its velocity implies; it is documented as an exception and not used in any comparison. These copies were read by a page tool and are unreproduced, and a pass does not verify the model.
 
+## Round of 2026-11-16 (21:15 request): sourcing, formula audit and checks
+
+- **Aberdeen atmosphere.** Documented in `docs/MODEL_SOURCES.md`: Hornady's External Ballistics page states 59 F, 29.53 inHg, 78% RH as the Aberdeen standard for "this book"; hornady.com/bc states ICAO (59 F, 29.92 inHg, 0%). No opened source says which one the LE table uses. Hypothesis only. The primary ICAO comparison above is unchanged and no BC was fitted.
+- **Reference data check.** `docs/OWNER_CHECK_REFERENCE_DATA.md` lists every Federal and Hornady entry for the owner to check against the pages. It is blank. Nobody but the page-reading tool has checked those copies.
+- **Drag-table origin.** Not found. See `docs/MODEL_SOURCES.md`.
+- **Formula audit.** `node tests/tools/formula-audit.js`: sea-level density and speed of sound within 0.002% of the 1976 standard constants; the Miller formula equals its printed form; spin drift and Coriolis magnitudes for one chosen bullet are slightly outside the ranges Applied Ballistics prints (9.31 in against 8 to 9; 3.34 in against 2.5 to 3.0), which are not tied to a bullet.
+- **Tests.** All four browser suites pass: storage 27, inputs 27, layout 9, upgrade 5.
+
 ## What this does and does not show
 
 - Under the owner's corrected pairing, the engine reproduces one manufacturer table within the stated tolerances

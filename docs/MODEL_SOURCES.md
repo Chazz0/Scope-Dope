@@ -62,15 +62,36 @@ None of the primary documents behind the G tables was found and compared line by
 
 `node tests/tools/compare-g-tables.js` compares all 79 G1 and 83 G7 points in `index.html` with a secondary transcription of another open-source project's data files (`tests/validation/third-party-tables/`, see its `PROVENANCE.md`). G1: identical at 79 of 79. G7: identical at all 83 shared Mach points; the other copy has one extra point at Mach 1.125 (Cd 0.3987 against 0.39845 interpolated here, a difference of 0.00025). The origin of that copy is unknown, so this does not verify either table. Both stay **Unverified**.
 
-## Atmosphere and the 1.8% offset (hypothesis)
+## The Aberdeen atmosphere question (investigated 2026-11-16)
 
-Hornady's own pages disagree on its standard atmosphere: hornady.com/bc says ICAO (59 F, 29.92 inHg, 0% RH); the Hornady external-ballistics page says Aberdeen (59 F, 29.53 inHg, 78% RH). Both were declared before any run. In the Aberdeen atmosphere the engine reproduces the Hornady LE table and the Hornady resource-page tables to within about 0.07% in velocity; in ICAO they differ by up to 1.4% for the round-nose bullet. This is consistent with Hornady using the Aberdeen atmosphere, but no Hornady page says so for the LE table, so it is a hypothesis. Federal does not state its atmosphere and agrees under both. Nothing was selected, and no BC or solver code changed.
+All pages below were read through a summarizing page reader, not seen directly. The project owner has not checked the quotes (`docs/OWNER_CHECK_REFERENCE_DATA.md`).
 
-## Formulas checked against opened sources (qualitative only)
+| Source | Temperature | Pressure | Humidity | Says it applies to |
+| --- | --- | --- | --- | --- |
+| Hornady, External Ballistics page (hornady.com/team-hornady/.../external-ballistics) | 59 F | 29.53 inHg | 78% | "All ballistic coefficients and ballistic tables in this book have been adjusted to standard conditions. These are standard conditions for the Aberdeen test site." The book is not named, and no edition or date is shown. |
+| Hornady, hornady.com/bc | 59 F | 29.92 inHg | 0% | "Hornady BC values have been corrected back to ... ICAO Standard Atmosphere", and ELD-X, ELD Match and A-Tip velocity tables are labeled ICAO. |
+| dexadine.com BEX help (a ballistics program's documentation) | 59 F | 29.53 inHg (750 mmHg) | 78% | Calls these the "standard Metro" conditions and "the standard ballistics atmosphere". It does not say who defined them. |
+| U.S. Standard Atmosphere 1976 constants (as printed in a program that cites it) | 288.15 K = 59 F | 101325 Pa = 29.92 inHg | dry | The ICAO-type atmosphere. |
 
-- **Miller stability.** The formula was reconstructed from an opened description; the constants 30 and 2800 fps match. The pressure reference may differ (29.92 inHg here, 750 mmHg = 29.53 inHg in some descriptions), worth about 1.3% in the stability factor. Flagged, not changed. The code was not compared with Miller's original paper.
-- **Spin drift and Coriolis.** The Applied Ballistics article opened gives magnitudes (spin drift about 8 to 9 in at 1000 yd for a typical match bullet; Coriolis at most about 10 to 12 in) and directions, and no formulas. Magnitudes are not a quantitative check, so both stay Unverified.
-- **Atmosphere constants.** No readable authoritative source has been opened. Unverified.
+What this shows: two conventions are in use, with the same 59 F. The Aberdeen figures (29.53 inHg, 78%) appear on Hornady's page and a second ballistics program's page. No source opened says Hornady computed the Hornady LE table, the resource-page tables or the current BCs in Aberdeen conditions. Hornady's pages conflict with each other, and the Aberdeen statement may be old handbook text. A direct statement from Hornady for the LE table is still needed. In the engine, Aberdeen conditions give 1.80% lower air density than ICAO (1.2029 against 1.2249 kg/m3), the size of the effective-BC offset seen in the first Hornady case, and re-running the cases in Aberdeen conditions removes that offset (velocity within 0.07%). That is a hypothesis consistent with the data, not an established explanation. The ICAO comparison stays the primary, pre-registered run, and no BC or solver code was changed.
+
+## The drag-table origin search (continued 2026-11-16)
+
+Still no authoritative original. Opened this round: Applied Ballistics "Aerodynamic Drag Modeling for Ballistics" gives no origin and no table (only the Mach 3 values already recorded) and cites McCoy, *Modern Exterior Ballistics* (1999) and Peelen, "A Look at Drag Models in Old Small Arms Firing Tables" (2006), neither of which was opened. A hobbyist page narrates Krupp (1881), Ingalls, BRL experiments and Winchester-Western (1965) with no bibliographic details. One site that may hold tables disallows automated access, so it was not used. The secondary comparison is supporting evidence only.
+
+## Physical formula audit (2026-11-16)
+
+`node tests/tools/formula-audit.js`. Tolerances were fixed before the run.
+
+| Check | Source opened | Result | What it does and does not show |
+| --- | --- | --- | --- |
+| Sea-level density 1.2250 kg/m3 and speed of sound 340.294 m/s | U.S. Standard Atmosphere 1976 constants as printed in pdas.com atmos76.f90 (the 1976 document itself not opened) | Density -0.0018%, speed of sound +0.0009% (tolerance 0.1%) | Sea level, dry air only. No source opened for the humidity (vapor pressure) term, the altitude formula at other heights, or the gamma 1.4 moist-air speed of sound. |
+| Altitude pressure formula | none opened | Self-consistent at 0 ft only | Unverified above sea level. |
+| Miller stability formula | arXiv 1410.5340, which prints the equation and cites Miller 2005 (Miller's own article not opened) | The engine's formula equals the printed one for three inputs (differences 0) | The printed reference pressure is 29.92 inHg and temperature 59 F, as in the engine. A Wikipedia page lists 750 mmHg but its equations did not load, so that conflict is unresolved. The engine does not take bullet length: it estimates length from weight, and real bullets differ, so real stability values can differ from the engine's. Formula form only. |
+| Spin drift 1.25 (Sg + 1.2) t^1.83 in | No opened source with the formula. An open-source Rust crate repeats it with no citation. Applied Ballistics gives only "8 to 9 in at 1000 yd" | 9.31 in for the one bullet I chose (175 gr, BC 0.5, 2800 fps, 11 in twist), OUTSIDE the 8 to 9 range | The source's range is for "typical" trajectories and is not tied to any bullet, so this is not a failure of the formula. It is not a verification either. Unverified. |
+| Coriolis, 2 Omega sin(lat) integral of x dt, Omega 7.292115e-5 rad/s | Omega appears in a book appendix (title only, no edition) found through a page reader. No source with the deflection formula opened. Applied Ballistics gives "2.5 to 3.0 in" at 1000 yd, 45 deg | 3.34 in horizontal and 3.34 in vertical for the same chosen bullet, OUTSIDE 2.5 to 3.0 | Coriolis grows with time of flight, and the source does not say which bullet. Directions behave as the article describes (sign flips by hemisphere and by east/west, zero at the equator for horizontal and at the pole for vertical, zero firing north). Unverified. |
+
+None of these rows moves a component to Verified. The two OUTSIDE rows are reported as they came out. The chosen example was not changed to make them pass.
 
 ## Known limits of this model
 

@@ -306,3 +306,50 @@ test('the second-dataset and G-table criteria stay open until the evidence exist
     assert.match(c, new RegExp('- \\[ \\] ' + k), k + ' must stay open');
   }
 });
+
+// ---- Round of 2026-11-16 (21:15): audit, owner check sheet, atmosphere sourcing ----
+test('the formula audit runs, its tolerances are fixed, and its failures are reported not hidden', () => {
+  const out = JSON.parse(execFileSync('node', [path.join(root, 'tests', 'tools', 'formula-audit.js'), '--json'], { encoding: 'utf8' }));
+  const by = Object.fromEntries(out.map(x => [x.id, x]));
+  assert.strictEqual(by['ATM-RHO'].tol, 0.001); assert.strictEqual(by['ATM-SOS'].tol, 0.001);
+  assert.ok(by['ATM-RHO'].pass && by['ATM-SOS'].pass);
+  for (const k of Object.keys(by).filter(k => k.startsWith('MILLER-'))) assert.ok(by[k].pass, k);
+  assert.ok(by['COR-H-HEMISPHERES'].pass && by['COR-V-EAST-WEST'].pass && by['COR-V-NORTH'].pass);
+  // The magnitude rows are reported with their pass flag. If they are OUTSIDE, MODEL_SOURCES must say so.
+  const src = fs.readFileSync(path.join(root, 'docs', 'MODEL_SOURCES.md'), 'utf8');
+  for (const id of ['SPIN-1000', 'COR-H-1000']) if (!by[id].pass) assert.match(src, /OUTSIDE/);
+});
+
+test('the audit does not turn any formula into Verified', () => {
+  const src = fs.readFileSync(path.join(root, 'docs', 'MODEL_SOURCES.md'), 'utf8');
+  for (const row of src.split('\n').filter(l => /^\| (Spin drift|Stability factor|Coriolis|Atmosphere:)/.test(l))) assert.ok(!/\*\*Verified\*\*/.test(row), row);
+});
+
+test('the owner check sheet lists every dataset and every entry, and says it has not been done', () => {
+  const sheet = fs.readFileSync(path.join(root, 'docs', 'OWNER_CHECK_REFERENCE_DATA.md'), 'utf8');
+  assert.match(sheet, /NOT DONE/);
+  assert.match(sheet, /HORNADY-LE|Hornady LE 6\.5/);
+  for (const d of refs.datasets) {
+    assert.ok(sheet.includes(d.id), d.id + ' missing from the sheet');
+    for (const [r, w] of Object.entries(d.rows)) if (w.v !== null) assert.ok(sheet.includes(r + ' yd velocity') && sheet.includes(w.v + ' fps'), d.id + ' ' + r);
+  }
+  assert.match(sheet, /leave the recorded value alone/);
+  const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
+  assert.match(c, /- \[ \] The project owner checked every Federal and Hornady reference entry/);
+});
+
+test('the Aberdeen question is documented with temperature, pressure, humidity, and what is not confirmed', () => {
+  const src = fs.readFileSync(path.join(root, 'docs', 'MODEL_SOURCES.md'), 'utf8');
+  assert.match(src, /Aberdeen atmosphere question/);
+  for (const k of ['59 F', '29.53 inHg', '78%', '29.92 inHg']) assert.ok(src.includes(k), k);
+  assert.match(src, /No source opened says Hornady computed/);
+  assert.match(src, /primary, pre-registered run/);
+});
+
+test('the primary ICAO comparison is unchanged by this round', () => {
+  const out = JSON.parse(execFileSync('node', [path.join(root, 'tests', 'tools', 'run-validation.js'), '--json'], { encoding: 'utf8' }));
+  const traj = out.filter(x => x.kind === 'trajectory');
+  assert.strictEqual(traj.length, 5);
+  assert.deepStrictEqual(traj.map(x => x.vOurs), [2550.7, 2406.3, 2266.6, 2131.4, 2000.9]);
+  assert.ok(traj.every(x => x.vPass && x.dropPass));
+});

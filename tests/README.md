@@ -21,6 +21,10 @@ saved weight or coefficient; blank coefficient is left alone when the weight cha
 like every other field). Two read-only analysis tools were added in `tests/tools/`: `coefficient-exposure.js` (replays the
 old per-keystroke arithmetic) and `check-coefficients.js` (lists saved rifles worth a second look; never writes).
 
+**Stage 5 validation tools** (`tests/tools/`): `run-validation.js` (published tables, both atmospheres), `compare-g-tables.js`
+(79 G1 and 83 G7 points against a secondary copy), `formula-audit.js` (atmosphere, Miller, spin drift, Coriolis against opened
+sources), `make-owner-check-sheet.js` (writes `docs/OWNER_CHECK_REFERENCE_DATA.md`). All read-only. None changes the engine.
+
 ## Run
 
 ```
