@@ -19,6 +19,10 @@ Contents of this version: point-mass drag using the G1 or G7 table in `index.htm
 integration at a 0.5 ms step, moist-air density with an ISA fallback, lag-time crosswind,
 Litz spin drift, first-order Coriolis, and the Miller stability estimate.
 
+## Stage 13 (no model change): reference comparisons extended to 200 gr
+
+Four 300 Win Mag 200 gr ELD-X datasets (Hornady calculated table) were registered before running and compared under both atmospheres: 38 of 40 match; two ICAO 500 yd velocities differ by -1.24% and -1.27% against a 1% tolerance. The advisory span (`VALIDATED`) now covers 200 gr and G7 0.301. Solver, drag tables, model version, tolerances and baseline are unchanged. Physical accuracy remains NOT DEMONSTRATED. See `docs/STAGE13_REFERENCE_EXTENSION_200GR.md`.
+
 ## Stage 6 (no model change)
 
 Model version stays 1.0.0. Stage 6 added an advisory transparency panel and no calculation change; the solver block is byte-identical to Stage 5. See `docs/STAGE6_TRANSPARENCY.md`.

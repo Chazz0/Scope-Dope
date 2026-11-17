@@ -392,6 +392,98 @@ Cell notes: {"200":"Image placeholder on the Federal page, left null. A retailer
 | Zero range (yd) | 200 (page caption) | | | |
 | Sight height (in) | 1.5 | | | |
 
+## HORNADY-PH-300WM-200-ELDX-G1-.597: Hornady 300 Win Mag 200 gr ELD-X Precision Hunter, item 82002, Test Barrel (24 in) table
+
+URL: https://www.hornady.com/ammunition/rifle/300-win-mag-200-gr-eld-x-precision-hunter
+
+Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G1 band (Mach 2.25 and above). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.
+
+Known energy inconsistency to look at: {"100":"Printed energy 3253 ft-lb; 2707 fps at 200 gr gives 3255.1, a 2.1 ft-lb gap, just over the 2 ft-lb check (0.06%). Not corrected. Added after the first run, when the transcription check flagged it; it may be rounding in the printed velocity or a page-read slip. Only velocity and drop are compared, never energy, so it enters no comparison."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G1) | 0.597 | | | |
+| Muzzle velocity (fps) | 2860 | | | |
+| Bullet weight (gr) | 200 | | | |
+| Muzzle energy (ft-lb) | 3632 | | | |
+| Muzzle trajectory (in) | -1.5 | | | |
+| 100 yd velocity / energy / trajectory | 2707 fps / 3253 ft-lb / 1.6 in | | | |
+| 200 yd velocity / energy / trajectory | 2558 fps / 2905 ft-lb / 0 in | | | |
+| 300 yd velocity / energy / trajectory | 2414 fps / 2587 ft-lb / -6.9 in | | | |
+| 400 yd velocity / energy / trajectory | 2274 fps / 2297 ft-lb / -19.9 in | | | |
+| 500 yd velocity / energy / trajectory | 2140 fps / 2033 ft-lb / -39.5 in | | | |
+| Zero range (yd) | 200 (column header) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## HORNADY-PH-300WM-200-ELDX-G1-.588: Hornady 300 Win Mag 200 gr ELD-X Precision Hunter, item 82002, Test Barrel (24 in) table
+
+URL: https://www.hornady.com/ammunition/rifle/300-win-mag-200-gr-eld-x-precision-hunter
+
+Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G1 band (Mach 2.0). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.
+
+Known energy inconsistency to look at: {"100":"Printed energy 3253 ft-lb; 2707 fps at 200 gr gives 3255.1, a 2.1 ft-lb gap, just over the 2 ft-lb check (0.06%). Not corrected. Added after the first run, when the transcription check flagged it; it may be rounding in the printed velocity or a page-read slip. Only velocity and drop are compared, never energy, so it enters no comparison."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G1) | 0.588 | | | |
+| Muzzle velocity (fps) | 2860 | | | |
+| Bullet weight (gr) | 200 | | | |
+| Muzzle energy (ft-lb) | 3632 | | | |
+| Muzzle trajectory (in) | -1.5 | | | |
+| 100 yd velocity / energy / trajectory | 2707 fps / 3253 ft-lb / 1.6 in | | | |
+| 200 yd velocity / energy / trajectory | 2558 fps / 2905 ft-lb / 0 in | | | |
+| 300 yd velocity / energy / trajectory | 2414 fps / 2587 ft-lb / -6.9 in | | | |
+| 400 yd velocity / energy / trajectory | 2274 fps / 2297 ft-lb / -19.9 in | | | |
+| 500 yd velocity / energy / trajectory | 2140 fps / 2033 ft-lb / -39.5 in | | | |
+| Zero range (yd) | 200 (column header) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## HORNADY-PH-300WM-200-ELDX-G7-.301: Hornady 300 Win Mag 200 gr ELD-X Precision Hunter, item 82002, Test Barrel (24 in) table
+
+URL: https://www.hornady.com/ammunition/rifle/300-win-mag-200-gr-eld-x-precision-hunter
+
+Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G7 band (Mach 2.25 and above). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.
+
+Known energy inconsistency to look at: {"100":"Printed energy 3253 ft-lb; 2707 fps at 200 gr gives 3255.1, a 2.1 ft-lb gap, just over the 2 ft-lb check (0.06%). Not corrected. Added after the first run, when the transcription check flagged it; it may be rounding in the printed velocity or a page-read slip. Only velocity and drop are compared, never energy, so it enters no comparison."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G7) | 0.301 | | | |
+| Muzzle velocity (fps) | 2860 | | | |
+| Bullet weight (gr) | 200 | | | |
+| Muzzle energy (ft-lb) | 3632 | | | |
+| Muzzle trajectory (in) | -1.5 | | | |
+| 100 yd velocity / energy / trajectory | 2707 fps / 3253 ft-lb / 1.6 in | | | |
+| 200 yd velocity / energy / trajectory | 2558 fps / 2905 ft-lb / 0 in | | | |
+| 300 yd velocity / energy / trajectory | 2414 fps / 2587 ft-lb / -6.9 in | | | |
+| 400 yd velocity / energy / trajectory | 2274 fps / 2297 ft-lb / -19.9 in | | | |
+| 500 yd velocity / energy / trajectory | 2140 fps / 2033 ft-lb / -39.5 in | | | |
+| Zero range (yd) | 200 (column header) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## HORNADY-PH-300WM-200-ELDX-G7-.295: Hornady 300 Win Mag 200 gr ELD-X Precision Hunter, item 82002, Test Barrel (24 in) table
+
+URL: https://www.hornady.com/ammunition/rifle/300-win-mag-200-gr-eld-x-precision-hunter
+
+Hornady's BC page (https://www.hornady.com/bc) lists the 30 cal 200 gr ELD-X at G1 0.597 / G7 0.301 for Mach 2.25 and above (2512 fps), G1 0.588 / G7 0.295 at Mach 2.0 (2232 fps) and G1 0.578 / G7 0.291 at Mach 1.75 (1953 fps), corrected to ICAO. This dataset uses the G7 band (Mach 2.0). The table runs 2860 to 2140 fps, so the one-BC approximation spans two bands. Zero 200 yd is inferred, not stated: the published trajectory is +1.6 in at 100 yd and 0 at 200 yd; sight height 1.5 in from the -1.5 in muzzle row. The page's table text was read twice by a summarizing page reader and both reads gave the same 18 numbers in the same order; the row and column labels are the reader's inference from that order. Energy cells check against 200 gr and the printed velocities (E = m v^2 / 450240). Diameter .308 assumed for a 30 caliber bullet; the page does not print it. BC values were not on the product page and come from the BC page. Registered before the first run.
+
+Known energy inconsistency to look at: {"100":"Printed energy 3253 ft-lb; 2707 fps at 200 gr gives 3255.1, a 2.1 ft-lb gap, just over the 2 ft-lb check (0.06%). Not corrected. Added after the first run, when the transcription check flagged it; it may be rounding in the printed velocity or a page-read slip. Only velocity and drop are compared, never energy, so it enters no comparison."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G7) | 0.295 | | | |
+| Muzzle velocity (fps) | 2860 | | | |
+| Bullet weight (gr) | 200 | | | |
+| Muzzle energy (ft-lb) | 3632 | | | |
+| Muzzle trajectory (in) | -1.5 | | | |
+| 100 yd velocity / energy / trajectory | 2707 fps / 3253 ft-lb / 1.6 in | | | |
+| 200 yd velocity / energy / trajectory | 2558 fps / 2905 ft-lb / 0 in | | | |
+| 300 yd velocity / energy / trajectory | 2414 fps / 2587 ft-lb / -6.9 in | | | |
+| 400 yd velocity / energy / trajectory | 2274 fps / 2297 ft-lb / -19.9 in | | | |
+| 500 yd velocity / energy / trajectory | 2140 fps / 2033 ft-lb / -39.5 in | | | |
+| Zero range (yd) | 200 (column header) | | | |
+| Sight height (in) | 1.5 | | | |
+
 ## Hornady atmosphere statements
 
 URL: https://www.hornady.com/team-hornady/ballistic-information/ballistic-resources/external-ballistics and https://www.hornady.com/bc

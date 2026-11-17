@@ -3,6 +3,7 @@
 const test = require('node:test'), assert = require('node:assert');
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const root = path.join(__dirname, '..');
+const { withoutRound3 } = require('./helpers/refs-pin');
 const STAGE12 = 'f6cbe5ca009de5058039400602c6ed3e86a75b67';
 const show = (rev, f) => execFileSync('git', ['show', rev + ':' + f], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 });
 const read = (f) => fs.readFileSync(path.join(root, f), 'utf8');
@@ -16,7 +17,8 @@ test('drag tables, reference data, tolerances, golden baseline, helpers, Stage 1
   for (const f of ['tests/validation/references.json', 'tests/validation/source-reads.json', 'tests/validation/measured-doppler.json', 'tests/golden/baseline.json', 'tests/golden/cases.js',
     'tests/validation/third-party-tables/g1.csv', 'tests/validation/third-party-tables/g7.csv', 'tests/helpers/load-solver.js', 'tests/validation/stage11/results.json', 'tests/validation/stage11/datasets.json',
     'docs/MODEL_SOURCES.md', 'docs/STAGE10_SCIENTIFIC_VERIFICATION.md', 'docs/STAGE11_MEASURED_TRAJECTORY_VALIDATION.md'])
-    assert.strictEqual(read(f), show(STAGE12, f), f);
+    if (f === 'tests/validation/references.json') assert.deepStrictEqual(withoutRound3(read(f)), withoutRound3(show(STAGE12, f)), f + ' (earlier data) must not change');
+    else assert.strictEqual(read(f), show(STAGE12, f), f);
 });
 test('the documented weight limits are 15 to 800 grains in the code, the field and the documentation', () => {
   const h = read('index.html');

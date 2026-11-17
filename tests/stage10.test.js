@@ -5,6 +5,7 @@
 const test = require('node:test'), assert = require('node:assert');
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const root = path.join(__dirname, '..');
+const { withoutRound3 } = require('./helpers/refs-pin');
 const STAGE9_1 = '1732d7941fbdb054f555b186aa382a032d355967';
 const show = (rev, f) => execFileSync('git', ['show', rev + ':' + f], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 });
 const solverBlock = (t) => t.slice(t.indexOf('/*SOLVER_START*/'), t.indexOf('/*SOLVER_END*/') + '/*SOLVER_END*/'.length);
@@ -23,7 +24,8 @@ test('model version is still 1.0.0', () => {
 test('reference data, tolerances, measured data and golden baseline are unchanged from Stage 9.1', () => {
   for (const f of ['tests/validation/references.json', 'tests/validation/source-reads.json', 'tests/validation/measured-doppler.json',
     'tests/golden/baseline.json', 'tests/golden/cases.js', 'tests/validation/third-party-tables/g1.csv', 'tests/validation/third-party-tables/g7.csv'])
-    assert.strictEqual(read(f), show(STAGE9_1, f), f + ' must not change in Stage 10');
+    if (f === 'tests/validation/references.json') assert.deepStrictEqual(withoutRound3(read(f)), withoutRound3(show(STAGE9_1, f)), f + ' (earlier data) must not change');
+    else assert.strictEqual(read(f), show(STAGE9_1, f), f + ' must not change in Stage 10');
 });
 
 // Stage 12 note: Stage 10 itself changed no part of index.html (that held at commit 6dbcc74 and ba0594c). Stage 12 is allowed to change interface

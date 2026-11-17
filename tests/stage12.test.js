@@ -5,6 +5,7 @@
 const test = require('node:test'), assert = require('node:assert');
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const root = path.join(__dirname, '..');
+const { withoutRound3 } = require('./helpers/refs-pin');
 const STAGE11 = 'ba0594c252a49df1fe552a5f3f98529d38a70af8';
 const show = (rev, f) => execFileSync('git', ['show', rev + ':' + f], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 });
 const read = (f) => fs.readFileSync(path.join(root, f), 'utf8');
@@ -22,12 +23,16 @@ test('drag tables, reference data, measured data, tolerances, golden baseline an
   for (const f of ['tests/validation/references.json', 'tests/validation/source-reads.json', 'tests/validation/measured-doppler.json', 'tests/golden/baseline.json',
     'tests/golden/cases.js', 'tests/validation/third-party-tables/g1.csv', 'tests/validation/third-party-tables/g7.csv', 'tests/helpers/load-solver.js',
     'tests/validation/stage11/datasets.json', 'tests/validation/stage11/results.json', 'docs/MODEL_SOURCES.md'])
-    assert.strictEqual(read(f), show(STAGE11, f), f + ' must not change in Stage 12');
+    if (f === 'tests/validation/references.json') assert.deepStrictEqual(withoutRound3(read(f)), withoutRound3(show(STAGE11, f)), f + ' (earlier data) must not change');
+    else assert.strictEqual(read(f), show(STAGE11, f), f + ' must not change in Stage 12');
 });
 test('the reference-data hashes recorded in the Stage 12 report are the real ones', () => {
   const crypto = require('crypto'), t = read('docs/STAGE12_FINAL_RELEASE_AUDIT.md');
+  // Stage 13 added round-3 data to references.json, so the Stage 12 report's hash is checked against the Stage 12 version of that file.
+  const { execFileSync } = require('child_process');
+  const bytes = (f) => f === 'tests/validation/references.json' ? execFileSync('git', ['show', 'f6cbe5c:' + f], { cwd: root, maxBuffer: 1 << 26 }) : fs.readFileSync(path.join(root, f));
   for (const f of ['tests/validation/references.json', 'tests/golden/baseline.json', 'tests/validation/measured-doppler.json'])
-    assert.ok(t.includes(crypto.createHash('sha256').update(fs.readFileSync(path.join(root, f))).digest('hex')), 'hash of ' + f);
+    assert.ok(t.includes(crypto.createHash('sha256').update(bytes(f)).digest('hex')), 'hash of ' + f);
 });
 
 const html = () => read('index.html');

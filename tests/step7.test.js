@@ -5,6 +5,7 @@ const fs = require('fs'), path = require('path'), { execFileSync } = require('ch
 const { loadAssess } = require('./helpers/load-assess');
 const { baseInputs } = require('./helpers/load-solver');
 const root = path.join(__dirname, '..');
+const { withoutRound3 } = require('./helpers/refs-pin');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const { assessResult } = loadAssess();
 const base = (o) => ({ ...baseInputs(), v0nom: 2650, windMph: 0, headMph: 0, ...(o || {}) });
@@ -45,7 +46,7 @@ test('the calculation block is byte-identical to the Stage 5 version', () => {
   for (const f of ['tests/golden/baseline.json', 'tests/helpers/load-solver.js', 'tests/solver.test.js']) {
     assert.strictEqual(execFileSync('git', ['diff', '9ab52a6', '--stat', '--', f], { cwd: root, encoding: 'utf8' }).trim(), '', f);
   }
-  const refsNow = JSON.parse(fs.readFileSync(path.join(root, 'tests', 'validation', 'references.json'), 'utf8'));
+  const refsNow = withoutRound3(fs.readFileSync(path.join(root, 'tests', 'validation', 'references.json'), 'utf8'));
   const refsThen = JSON.parse(execFileSync('git', ['show', '9ab52a6:tests/validation/references.json'], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 }));
   assert.deepStrictEqual(refsNow, refsThen);
 });
