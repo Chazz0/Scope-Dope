@@ -1,0 +1,78 @@
+{
+  "note": "Stage 11 dataset registry. Values are transcribed from the cited sources; nothing here is tuned. A null means the source does not state it and it is NOT filled in. 'envelope' lists sensitivity variants used for inputs the source does not give; they are not fits.",
+  "datasets": [
+    {
+      "id": "DS-A", "kind": "measured-trajectory", "status": "usable-with-envelope",
+      "title": "Sierra 175 gr MatchKing, .308 Win short barrel, live-fire drop to 1323 yd (Applied Ballistics ABDOC130 Table 1)",
+      "url": "https://appliedballisticsllc.com/wp-content/uploads/2019/11/ABDOC130_CDM.pdf",
+      "method": "Observed drop = elevation needed to centre the group on a steel target; source states uncertainty of about +/-1 click (0.1 mil).",
+      "bullet": { "maker": "Sierra", "model": "175 gr MatchKing", "wt": 175, "diam": 0.308, "diamSource": "caliber .308 stated in text; bullet diameter itself not printed" },
+      "mv": 2570, "mvSource": "text: 'average muzzle velocity of 2570 fps' (instrument not stated)",
+      "bc": [ { "model": "G1", "value": 0.505, "origin": "Sierra catalog (manufacturer, method not stated)" }, { "model": "G7", "value": 0.243, "origin": "Litz value quoted in a third-party article; different lot and source" } ],
+      "missing": ["atmosphere", "zero distance", "sight height", "barrel length and twist", "wind", "latitude and azimuth", "per-test BC", "whether drop is vs line of sight or bore (text says drop; 'relative to line of sight' is the reading used)"],
+      "measured": { "unit": "mil", "uncertaintyMil": 0.1, "rows": [ [300, -1.1], [600, -4.3], [1000, -11.2], [1101, -13.7], [1166, -15.5], [1200, -16.6], [1323, -19.9] ] },
+      "notCountedAsMeasured": "Vel/Mach column and prediction column of the source table (custom drag curve output)",
+      "envelope": { "zero": [100, 200], "h": [1.5, 2.5], "atm": [ { "id": "std", "tempF": 59, "altFt": 0 }, { "id": "cold", "tempF": 40, "altFt": 0 }, { "id": "hot", "tempF": 85, "altFt": 0 }, { "id": "alt3000", "tempF": 59, "altFt": 3000 } ] },
+      "primary": { "zero": 100, "h": 1.5, "atm": "std", "reason": "default app inputs fixed before looking at results; not a best fit" }
+    },
+    {
+      "id": "DS-B", "kind": "measured-trajectory", "status": "excluded-no-muzzle-velocity",
+      "title": "Berger 175 gr OTM Tactical, same test series (ABDOC130 Table 2)",
+      "url": "https://appliedballisticsllc.com/wp-content/uploads/2019/11/ABDOC130_CDM.pdf",
+      "method": "same as DS-A",
+      "bullet": { "maker": "Berger", "model": "175 gr OTM Tactical", "wt": 175, "diam": 0.308 },
+      "mv": null, "bc": [ { "model": "G7", "value": 0.263, "origin": "Berger catalog; measured-or-predicted not stated" }, { "model": "G1", "value": 0.512, "origin": "Berger catalog" } ],
+      "missing": ["muzzle velocity for this table", "atmosphere", "zero", "sight height"],
+      "measured": { "unit": "mil", "uncertaintyMil": 0.1, "rows": [ [300, -1.1], [600, -4.0], [700, -5.6], [1000, -10.7], [1101, -12.8], [1166, -14.2], [1200, -15.4], [1323, -18.6] ] },
+      "excludedBecause": "No muzzle velocity is stated for this table. Using DS-A's 2570 fps would be a guess, so no prediction is made."
+    },
+    {
+      "id": "DS-C", "kind": "unconfirmed-status", "status": "excluded-measured-status-unclear",
+      "title": "Brozovich .338 Wildcat, 300 gr Berger Hybrid OTM, MV 3198 fps (ABDOC130 Table 3)",
+      "url": "https://appliedballisticsllc.com/wp-content/uploads/2019/11/ABDOC130_CDM.pdf",
+      "method": "Caption says 'predicted and actual drop'; the method for the drop column is not described in the text read.",
+      "bullet": { "maker": "Berger", "model": "300 gr Hybrid OTM Tactical", "wt": 300, "diam": 0.338 },
+      "mv": 3198, "bc": [ { "model": "G7", "value": 0.421, "origin": "Berger catalog" } ],
+      "missing": ["atmosphere", "zero", "sight height", "whether the MOA values are measured", "how MV was measured"],
+      "listedDropMoa": [ [800, 11.4], [1200, 21.9], [1600, 35.1], [1773, 42.2] ],
+      "excludedBecause": "It cannot be established from the source that the listed drops are measured rather than fitted or calculated, and the zero and atmosphere are missing. It is not counted as measured data."
+    },
+    {
+      "id": "DS-D", "kind": "measured-trajectory", "status": "usable-with-envelope",
+      "title": "Warner Flat Line 155 gr .30 cal, 1000 and 1220 yd, Precision Rifle Blog BC test",
+      "url": "https://precisionrifleblog.com/2016/02/28/flat-line-bullets-4700-yard-shot/",
+      "method": "Scope elevation (mil) at which hits were observed at known (rangefinder) distances; at 1220 yd the hits were 8.4 (slightly low) and 8.5 (slightly high). Blog post, not a peer-reviewed test.",
+      "bullet": { "maker": "Warner Tool Company", "model": "Flat Line 155 gr", "wt": 155, "diam": 0.308, "diamSource": "nominal 30 caliber; exact diameter not printed (assumption: .308)" },
+      "mv": 3107, "mvSource": "LabRadar, three shots 3109 / 3107 / 3104 fps (mean 3106.7)",
+      "bc": [ { "model": "G7", "value": 0.285, "origin": "advertised by the maker (method not stated)" } ],
+      "missing": ["atmosphere values (a Kestrel was used; readings not printed)", "sight height", "wind", "number of shots at each range", "click size", "latitude and azimuth"],
+      "twist": 10, "zero": 100,
+      "measured": { "unit": "mil", "uncertaintyMil": 0.1, "uncertaintyNote": "assumed one 0.1 mil click; not stated by the source", "rows": [ [1000, 5.9], [1220, 8.47] ] },
+      "envelope": { "zero": [100], "h": [1.5, 2.5], "atm": [ { "id": "std", "tempF": 59, "altFt": 0 }, { "id": "cold", "tempF": 40, "altFt": 0 }, { "id": "hot", "tempF": 85, "altFt": 0 }, { "id": "alt3000", "tempF": 59, "altFt": 3000 } ] },
+      "primary": { "zero": 100, "h": 1.5, "atm": "std", "reason": "default app inputs fixed before looking at results; not a best fit" },
+      "circularityNote": "The post's own fitted G7 0.278 was derived from these same hits, so it is not used as an input."
+    },
+    {
+      "id": "DS-E", "kind": "anecdotal", "status": "usable-with-envelope-low-quality",
+      "title": "Sniper's Hide forum report, Savage 110 6.5 Creedmoor, Hornady 140 ELD-M, 1000 yd",
+      "url": "https://www.snipershide.com/shooting/threads/discrepancy-between-ballistic-calculator-predictions-and-real-world-long-range-shots-seeking-advice.7193944/",
+      "method": "Forum post: 'actual elevation needed' 8.7 mrad at 1000 yd; method, targets and shot count not described. 42-shot MV session: avg 2750, ES 32, SD 9.1.",
+      "bullet": { "maker": "Hornady", "model": "140 ELD Match", "wt": 140, "diam": 0.264 },
+      "mv": 2750, "mvSource": "poster's chronograph, 42 shots",
+      "bc": [ { "model": "G7", "value": 0.326, "origin": "Hornady published, Mach 2.25 and above" }, { "model": "G7", "value": 0.310, "origin": "Hornady published, Mach 1.75 band" }, { "model": "G1", "value": 0.646, "origin": "Hornady published, Mach 2.25 and above" }, { "model": "G1", "value": 0.616, "origin": "Hornady published, Mach 1.75 band" } ],
+      "missing": ["atmosphere (barometer reading uncertain per the poster)", "wind", "twist", "method of confirming elevation", "date"],
+      "zero": 100, "h": 2.17,
+      "measured": { "unit": "mil", "uncertaintyMil": null, "uncertaintyNote": "not stated; the poster's own calculator gave 8.24 mrad, a 0.46 mrad gap that the post attributes to unknown causes", "rows": [ [1000, 8.7] ] },
+      "envelope": { "zero": [100], "h": [2.17], "atm": [ { "id": "std", "tempF": 59, "altFt": 0 }, { "id": "cold", "tempF": 40, "altFt": 0 }, { "id": "hot", "tempF": 85, "altFt": 0 }, { "id": "alt3000", "tempF": 59, "altFt": 3000 } ] },
+      "primary": { "zero": 100, "h": 2.17, "atm": "std", "reason": "stated sight height; standard atmosphere because none given" }
+    },
+    {
+      "id": "DS-F", "kind": "measured-drag", "status": "drag-only-not-a-trajectory",
+      "title": "Courtney and Courtney Doppler-radar drag coefficients (arXiv 1608.06500), already in tests/validation/measured-doppler.json",
+      "url": "https://arxiv.org/abs/1608.06500",
+      "method": "LabRadar Doppler measurement of Cd over about the first 20-25 yd.",
+      "missing": ["atmosphere", "downrange trajectory"],
+      "circularityNote": "The BCs in the source are fitted from the same shots, so agreement tests the table's shape near one Mach number per shot, not trajectory prediction."
+    }
+  ]
+}

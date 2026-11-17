@@ -34,3 +34,7 @@ Display and input handling only. Solver block unchanged, model version stays 1.0
 
 ## Stage 10 (scientific verification audit): no model change
 Audit only. `index.html`, the solver block, the drag tables, reference data, tolerances and golden baseline are unchanged; model version stays 1.0.0. Findings and a prioritized list of recommended corrections (none implemented) are in `docs/STAGE10_SCIENTIFIC_VERIFICATION.md`. Physical accuracy: NOT DEMONSTRATED.
+
+## Stage 11 (measured-trajectory validation): no model change
+
+Stage 11 compared the unchanged solver (model version 1.0.0) with the measured trajectory data that could be found. No solver, formula, drag table, reference data, tolerance, golden baseline, `index.html` or model-version change was made, and nothing was tuned to fit. Physical accuracy remains NOT DEMONSTRATED. See `docs/STAGE11_MEASURED_TRAJECTORY_VALIDATION.md`.

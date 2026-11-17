@@ -1,0 +1,4705 @@
+{
+ "generatedBy": "tests/tools/stage11-compare.js",
+ "modelVersion": "1.0.0",
+ "conventions": "error = predicted hold minus measured hold (positive: model needs more elevation than was measured). inches = mil * range_yd * 0.036; MOA = mil * 3.43775.",
+ "datasets": {
+  "DS-A": {
+   "status": "usable-with-envelope",
+   "uncertaintyMil": 0.1,
+   "rows": [
+    {
+     "rangeYd": 300,
+     "measuredMil": 1.1,
+     "measuredIn": 11.88,
+     "uncertaintyMil": 0.1,
+     "byBc": [
+      {
+       "bc": "G1 0.505",
+       "bcOrigin": "Sierra catalog (manufacturer, method not stated)",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 1.495,
+        "vFps": 2068,
+        "mach": 1.852,
+        "errMil": 0.395,
+        "errMoa": 1.36,
+        "errIn": 4.26
+       },
+       "envelopeErrMil": [
+        -0.31,
+        0.405
+       ],
+       "envelopeErrMoa": [
+        -1.07,
+        1.39
+       ],
+       "envelopeErrIn": [
+        -3.35,
+        4.37
+       ],
+       "casesWithinMeasUncertainty": 0,
+       "caseCount": 16
+      },
+      {
+       "bc": "G7 0.243",
+       "bcOrigin": "Litz value quoted in a third-party article; different lot and source",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 1.511,
+        "vFps": 2047,
+        "mach": 1.834,
+        "errMil": 0.411,
+        "errMoa": 1.41,
+        "errIn": 4.44
+       },
+       "envelopeErrMil": [
+        -0.3,
+        0.423
+       ],
+       "envelopeErrMoa": [
+        -1.03,
+        1.45
+       ],
+       "envelopeErrIn": [
+        -3.24,
+        4.57
+       ],
+       "casesWithinMeasUncertainty": 0,
+       "caseCount": 16
+      }
+     ]
+    },
+    {
+     "rangeYd": 600,
+     "measuredMil": 4.3,
+     "measuredIn": 92.88,
+     "uncertaintyMil": 0.1,
+     "byBc": [
+      {
+       "bc": "G1 0.505",
+       "bcOrigin": "Sierra catalog (manufacturer, method not stated)",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 4.882,
+        "vFps": 1630,
+        "mach": 1.46,
+        "errMil": 0.582,
+        "errMoa": 2,
+        "errIn": 12.58
+       },
+       "envelopeErrMil": [
+        -0.342,
+        0.645
+       ],
+       "envelopeErrMoa": [
+        -1.18,
+        2.22
+       ],
+       "envelopeErrIn": [
+        -7.39,
+        13.93
+       ],
+       "casesWithinMeasUncertainty": 3,
+       "caseCount": 16
+      },
+      {
+       "bc": "G7 0.243",
+       "bcOrigin": "Litz value quoted in a third-party article; different lot and source",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 4.98,
+        "vFps": 1586,
+        "mach": 1.421,
+        "errMil": 0.68,
+        "errMoa": 2.34,
+        "errIn": 14.68
+       },
+       "envelopeErrMil": [
+        -0.266,
+        0.747
+       ],
+       "envelopeErrMoa": [
+        -0.91,
+        2.57
+       ],
+       "envelopeErrIn": [
+        -5.75,
+        16.14
+       ],
+       "casesWithinMeasUncertainty": 4,
+       "caseCount": 16
+      }
+     ]
+    },
+    {
+     "rangeYd": 1000,
+     "measuredMil": 11.2,
+     "measuredIn": 403.2,
+     "uncertaintyMil": 0.1,
+     "byBc": [
+      {
+       "bc": "G1 0.505",
+       "bcOrigin": "Sierra catalog (manufacturer, method not stated)",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 11.756,
+        "vFps": 1190,
+        "mach": 1.066,
+        "errMil": 0.556,
+        "errMoa": 1.91,
+        "errIn": 20.02
+       },
+       "envelopeErrMil": [
+        -1.037,
+        0.833
+       ],
+       "envelopeErrMoa": [
+        -3.56,
+        2.86
+       ],
+       "envelopeErrIn": [
+        -37.33,
+        29.99
+       ],
+       "casesWithinMeasUncertainty": 3,
+       "caseCount": 16
+      },
+      {
+       "bc": "G7 0.243",
+       "bcOrigin": "Litz value quoted in a third-party article; different lot and source",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 12.349,
+        "vFps": 1076,
+        "mach": 0.964,
+        "errMil": 1.149,
+        "errMoa": 3.95,
+        "errIn": 41.37
+       },
+       "envelopeErrMil": [
+        -0.627,
+        1.467
+       ],
+       "envelopeErrMoa": [
+        -2.16,
+        5.04
+       ],
+       "envelopeErrIn": [
+        -22.57,
+        52.81
+       ],
+       "casesWithinMeasUncertainty": 1,
+       "caseCount": 16
+      }
+     ]
+    },
+    {
+     "rangeYd": 1101,
+     "measuredMil": 13.7,
+     "measuredIn": 543.01,
+     "uncertaintyMil": 0.1,
+     "byBc": [
+      {
+       "bc": "G1 0.505",
+       "bcOrigin": "Sierra catalog (manufacturer, method not stated)",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 14.067,
+        "vFps": 1115,
+        "mach": 0.999,
+        "errMil": 0.367,
+        "errMoa": 1.26,
+        "errIn": 14.55
+       },
+       "envelopeErrMil": [
+        -1.503,
+        0.741
+       ],
+       "envelopeErrMoa": [
+        -5.17,
+        2.55
+       ],
+       "envelopeErrIn": [
+        -59.57,
+        29.37
+       ],
+       "casesWithinMeasUncertainty": 2,
+       "caseCount": 16
+      },
+      {
+       "bc": "G7 0.243",
+       "bcOrigin": "Litz value quoted in a third-party article; different lot and source",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 14.971,
+        "vFps": 1024,
+        "mach": 0.917,
+        "errMil": 1.271,
+        "errMoa": 4.37,
+        "errIn": 50.39
+       },
+       "envelopeErrMil": [
+        -0.884,
+        1.708
+       ],
+       "envelopeErrMoa": [
+        -3.04,
+        5.87
+       ],
+       "envelopeErrIn": [
+        -35.04,
+        67.7
+       ],
+       "casesWithinMeasUncertainty": 1,
+       "caseCount": 16
+      }
+     ]
+    },
+    {
+     "rangeYd": 1166,
+     "measuredMil": 15.5,
+     "measuredIn": 650.63,
+     "uncertaintyMil": 0.1,
+     "byBc": [
+      {
+       "bc": "G1 0.505",
+       "bcOrigin": "Sierra catalog (manufacturer, method not stated)",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 15.697,
+        "vFps": 1076,
+        "mach": 0.963,
+        "errMil": 0.197,
+        "errMoa": 0.68,
+        "errIn": 8.26
+       },
+       "envelopeErrMil": [
+        -1.874,
+        0.644
+       ],
+       "envelopeErrMoa": [
+        -6.44,
+        2.21
+       ],
+       "envelopeErrIn": [
+        -78.66,
+        27.03
+       ],
+       "casesWithinMeasUncertainty": 2,
+       "caseCount": 16
+      },
+      {
+       "bc": "G7 0.243",
+       "bcOrigin": "Litz value quoted in a third-party article; different lot and source",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 16.841,
+        "vFps": 999,
+        "mach": 0.895,
+        "errMil": 1.341,
+        "errMoa": 4.61,
+        "errIn": 56.28
+       },
+       "envelopeErrMil": [
+        -1.075,
+        1.865
+       ],
+       "envelopeErrMoa": [
+        -3.7,
+        6.41
+       ],
+       "envelopeErrIn": [
+        -45.12,
+        78.29
+       ],
+       "casesWithinMeasUncertainty": 2,
+       "caseCount": 16
+      }
+     ]
+    },
+    {
+     "rangeYd": 1200,
+     "measuredMil": 16.6,
+     "measuredIn": 717.12,
+     "uncertaintyMil": 0.1,
+     "byBc": [
+      {
+       "bc": "G1 0.505",
+       "bcOrigin": "Sierra catalog (manufacturer, method not stated)",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 16.595,
+        "vFps": 1057,
+        "mach": 0.947,
+        "errMil": -0.005,
+        "errMoa": -0.02,
+        "errIn": -0.22
+       },
+       "envelopeErrMil": [
+        -2.188,
+        0.484
+       ],
+       "envelopeErrMoa": [
+        -7.52,
+        1.66
+       ],
+       "envelopeErrIn": [
+        -94.52,
+        20.91
+       ],
+       "casesWithinMeasUncertainty": 1,
+       "caseCount": 16
+      },
+      {
+       "bc": "G7 0.243",
+       "bcOrigin": "Litz value quoted in a third-party article; different lot and source",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 17.873,
+        "vFps": 987,
+        "mach": 0.884,
+        "errMil": 1.273,
+        "errMoa": 4.38,
+        "errIn": 54.98
+       },
+       "envelopeErrMil": [
+        -1.281,
+        1.846
+       ],
+       "envelopeErrMoa": [
+        -4.4,
+        6.35
+       ],
+       "envelopeErrIn": [
+        -55.34,
+        79.75
+       ],
+       "casesWithinMeasUncertainty": 1,
+       "caseCount": 16
+      }
+     ]
+    },
+    {
+     "rangeYd": 1323,
+     "measuredMil": 19.9,
+     "measuredIn": 947.8,
+     "uncertaintyMil": 0.1,
+     "byBc": [
+      {
+       "bc": "G1 0.505",
+       "bcOrigin": "Sierra catalog (manufacturer, method not stated)",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 20.109,
+        "vFps": 1000,
+        "mach": 0.896,
+        "errMil": 0.209,
+        "errMoa": 0.72,
+        "errIn": 9.94
+       },
+       "envelopeErrMil": [
+        -2.415,
+        0.869
+       ],
+       "envelopeErrMoa": [
+        -8.3,
+        2.99
+       ],
+       "envelopeErrIn": [
+        -115.02,
+        41.39
+       ],
+       "casesWithinMeasUncertainty": 1,
+       "caseCount": 16
+      },
+      {
+       "bc": "G7 0.243",
+       "bcOrigin": "Litz value quoted in a third-party article; different lot and source",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 21.905,
+        "vFps": 946,
+        "mach": 0.848,
+        "errMil": 2.005,
+        "errMoa": 6.89,
+        "errIn": 95.48
+       },
+       "envelopeErrMil": [
+        -1.057,
+        2.774
+       ],
+       "envelopeErrMoa": [
+        -3.63,
+        9.54
+       ],
+       "envelopeErrIn": [
+        -50.34,
+        132.12
+       ],
+       "casesWithinMeasUncertainty": 0,
+       "caseCount": 16
+      }
+     ]
+    }
+   ],
+   "allCases": [
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 1.495,
+     "vFps": 2068,
+     "mach": 1.852,
+     "errMil": 0.395,
+     "errMoa": 1.36,
+     "errIn": 4.26
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 1.505,
+     "vFps": 2054,
+     "mach": 1.875,
+     "errMil": 0.405,
+     "errMoa": 1.39,
+     "errIn": 4.38
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 1.481,
+     "vFps": 2086,
+     "mach": 1.823,
+     "errMil": 0.381,
+     "errMoa": 1.31,
+     "errIn": 4.12
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 1.458,
+     "vFps": 2117,
+     "mach": 1.896,
+     "errMil": 0.358,
+     "errMoa": 1.23,
+     "errIn": 3.87
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 1.309,
+     "vFps": 2068,
+     "mach": 1.852,
+     "errMil": 0.209,
+     "errMoa": 0.72,
+     "errIn": 2.26
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 1.32,
+     "vFps": 2054,
+     "mach": 1.875,
+     "errMil": 0.22,
+     "errMoa": 0.76,
+     "errIn": 2.38
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 1.296,
+     "vFps": 2086,
+     "mach": 1.823,
+     "errMil": 0.196,
+     "errMoa": 0.67,
+     "errIn": 2.12
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 1.273,
+     "vFps": 2117,
+     "mach": 1.896,
+     "errMil": 0.173,
+     "errMoa": 0.59,
+     "errIn": 1.87
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 0.861,
+     "vFps": 2068,
+     "mach": 1.852,
+     "errMil": -0.239,
+     "errMoa": -0.82,
+     "errIn": -2.59
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 0.868,
+     "vFps": 2054,
+     "mach": 1.875,
+     "errMil": -0.232,
+     "errMoa": -0.8,
+     "errIn": -2.51
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 0.852,
+     "vFps": 2086,
+     "mach": 1.823,
+     "errMil": -0.248,
+     "errMoa": -0.85,
+     "errIn": -2.68
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 0.837,
+     "vFps": 2117,
+     "mach": 1.896,
+     "errMil": -0.263,
+     "errMoa": -0.91,
+     "errIn": -2.84
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 0.814,
+     "vFps": 2068,
+     "mach": 1.852,
+     "errMil": -0.286,
+     "errMoa": -0.98,
+     "errIn": -3.09
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 0.821,
+     "vFps": 2054,
+     "mach": 1.875,
+     "errMil": -0.279,
+     "errMoa": -0.96,
+     "errIn": -3.01
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 0.806,
+     "vFps": 2086,
+     "mach": 1.823,
+     "errMil": -0.294,
+     "errMoa": -1.01,
+     "errIn": -3.18
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 0.79,
+     "vFps": 2117,
+     "mach": 1.896,
+     "errMil": -0.31,
+     "errMoa": -1.06,
+     "errIn": -3.34
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 1.511,
+     "vFps": 2047,
+     "mach": 1.834,
+     "errMil": 0.411,
+     "errMoa": 1.41,
+     "errIn": 4.44
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 1.523,
+     "vFps": 2033,
+     "mach": 1.855,
+     "errMil": 0.423,
+     "errMoa": 1.45,
+     "errIn": 4.56
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 1.497,
+     "vFps": 2066,
+     "mach": 1.805,
+     "errMil": 0.397,
+     "errMoa": 1.37,
+     "errIn": 4.29
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 1.472,
+     "vFps": 2098,
+     "mach": 1.879,
+     "errMil": 0.372,
+     "errMoa": 1.28,
+     "errIn": 4.02
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 1.326,
+     "vFps": 2047,
+     "mach": 1.834,
+     "errMil": 0.226,
+     "errMoa": 0.78,
+     "errIn": 2.44
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 1.337,
+     "vFps": 2033,
+     "mach": 1.855,
+     "errMil": 0.237,
+     "errMoa": 0.82,
+     "errIn": 2.56
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 1.312,
+     "vFps": 2066,
+     "mach": 1.805,
+     "errMil": 0.212,
+     "errMoa": 0.73,
+     "errIn": 2.29
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 1.287,
+     "vFps": 2098,
+     "mach": 1.879,
+     "errMil": 0.187,
+     "errMoa": 0.64,
+     "errIn": 2.02
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 0.871,
+     "vFps": 2047,
+     "mach": 1.834,
+     "errMil": -0.229,
+     "errMoa": -0.79,
+     "errIn": -2.47
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 0.879,
+     "vFps": 2033,
+     "mach": 1.855,
+     "errMil": -0.221,
+     "errMoa": -0.76,
+     "errIn": -2.39
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 0.862,
+     "vFps": 2066,
+     "mach": 1.805,
+     "errMil": -0.238,
+     "errMoa": -0.82,
+     "errIn": -2.57
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 0.846,
+     "vFps": 2098,
+     "mach": 1.879,
+     "errMil": -0.254,
+     "errMoa": -0.87,
+     "errIn": -2.74
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 0.825,
+     "vFps": 2047,
+     "mach": 1.834,
+     "errMil": -0.275,
+     "errMoa": -0.94,
+     "errIn": -2.97
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 0.833,
+     "vFps": 2033,
+     "mach": 1.855,
+     "errMil": -0.267,
+     "errMoa": -0.92,
+     "errIn": -2.89
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 0.816,
+     "vFps": 2066,
+     "mach": 1.805,
+     "errMil": -0.284,
+     "errMoa": -0.98,
+     "errIn": -3.07
+    },
+    {
+     "rangeYd": 300,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 0.8,
+     "vFps": 2098,
+     "mach": 1.879,
+     "errMil": -0.3,
+     "errMoa": -1.03,
+     "errIn": -3.24
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 4.882,
+     "vFps": 1630,
+     "mach": 1.46,
+     "errMil": 0.582,
+     "errMoa": 2,
+     "errIn": 12.58
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 4.945,
+     "vFps": 1606,
+     "mach": 1.465,
+     "errMil": 0.645,
+     "errMoa": 2.22,
+     "errIn": 13.93
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 4.805,
+     "vFps": 1662,
+     "mach": 1.452,
+     "errMil": 0.505,
+     "errMoa": 1.73,
+     "errIn": 10.9
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 4.672,
+     "vFps": 1715,
+     "mach": 1.536,
+     "errMil": 0.372,
+     "errMoa": 1.28,
+     "errIn": 8.04
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 4.651,
+     "vFps": 1630,
+     "mach": 1.46,
+     "errMil": 0.351,
+     "errMoa": 1.21,
+     "errIn": 7.58
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 4.714,
+     "vFps": 1606,
+     "mach": 1.465,
+     "errMil": 0.414,
+     "errMoa": 1.42,
+     "errIn": 8.93
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 4.573,
+     "vFps": 1662,
+     "mach": 1.452,
+     "errMil": 0.273,
+     "errMoa": 0.94,
+     "errIn": 5.9
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 4.441,
+     "vFps": 1715,
+     "mach": 1.536,
+     "errMil": 0.141,
+     "errMoa": 0.48,
+     "errIn": 3.04
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 4.248,
+     "vFps": 1630,
+     "mach": 1.46,
+     "errMil": -0.052,
+     "errMoa": -0.18,
+     "errIn": -1.12
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 4.307,
+     "vFps": 1606,
+     "mach": 1.465,
+     "errMil": 0.007,
+     "errMoa": 0.02,
+     "errIn": 0.16
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 4.175,
+     "vFps": 1662,
+     "mach": 1.452,
+     "errMil": -0.125,
+     "errMoa": -0.43,
+     "errIn": -2.7
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 4.051,
+     "vFps": 1715,
+     "mach": 1.536,
+     "errMil": -0.249,
+     "errMoa": -0.86,
+     "errIn": -5.38
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 4.156,
+     "vFps": 1630,
+     "mach": 1.46,
+     "errMil": -0.144,
+     "errMoa": -0.5,
+     "errIn": -3.12
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 4.215,
+     "vFps": 1606,
+     "mach": 1.465,
+     "errMil": -0.085,
+     "errMoa": -0.29,
+     "errIn": -1.84
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 4.082,
+     "vFps": 1662,
+     "mach": 1.452,
+     "errMil": -0.218,
+     "errMoa": -0.75,
+     "errIn": -4.7
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 3.958,
+     "vFps": 1715,
+     "mach": 1.536,
+     "errMil": -0.342,
+     "errMoa": -1.17,
+     "errIn": -7.38
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 4.98,
+     "vFps": 1586,
+     "mach": 1.421,
+     "errMil": 0.68,
+     "errMoa": 2.34,
+     "errIn": 14.68
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 5.047,
+     "vFps": 1562,
+     "mach": 1.425,
+     "errMil": 0.747,
+     "errMoa": 2.57,
+     "errIn": 16.14
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 4.896,
+     "vFps": 1618,
+     "mach": 1.414,
+     "errMil": 0.596,
+     "errMoa": 2.05,
+     "errIn": 12.88
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 4.753,
+     "vFps": 1678,
+     "mach": 1.503,
+     "errMil": 0.453,
+     "errMoa": 1.56,
+     "errIn": 9.79
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 4.748,
+     "vFps": 1586,
+     "mach": 1.421,
+     "errMil": 0.448,
+     "errMoa": 1.54,
+     "errIn": 9.68
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 4.816,
+     "vFps": 1562,
+     "mach": 1.425,
+     "errMil": 0.516,
+     "errMoa": 1.77,
+     "errIn": 11.14
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 4.665,
+     "vFps": 1618,
+     "mach": 1.414,
+     "errMil": 0.365,
+     "errMoa": 1.25,
+     "errIn": 7.88
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 4.522,
+     "vFps": 1678,
+     "mach": 1.503,
+     "errMil": 0.222,
+     "errMoa": 0.76,
+     "errIn": 4.79
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 4.34,
+     "vFps": 1586,
+     "mach": 1.421,
+     "errMil": 0.04,
+     "errMoa": 0.14,
+     "errIn": 0.86
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 4.404,
+     "vFps": 1562,
+     "mach": 1.425,
+     "errMil": 0.104,
+     "errMoa": 0.36,
+     "errIn": 2.24
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 4.261,
+     "vFps": 1618,
+     "mach": 1.414,
+     "errMil": -0.039,
+     "errMoa": -0.13,
+     "errIn": -0.84
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 4.127,
+     "vFps": 1678,
+     "mach": 1.503,
+     "errMil": -0.173,
+     "errMoa": -0.6,
+     "errIn": -3.74
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 4.247,
+     "vFps": 1586,
+     "mach": 1.421,
+     "errMil": -0.053,
+     "errMoa": -0.18,
+     "errIn": -1.14
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 4.311,
+     "vFps": 1562,
+     "mach": 1.425,
+     "errMil": 0.011,
+     "errMoa": 0.04,
+     "errIn": 0.24
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 4.169,
+     "vFps": 1618,
+     "mach": 1.414,
+     "errMil": -0.131,
+     "errMoa": -0.45,
+     "errIn": -2.84
+    },
+    {
+     "rangeYd": 600,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 4.034,
+     "vFps": 1678,
+     "mach": 1.503,
+     "errMil": -0.266,
+     "errMoa": -0.91,
+     "errIn": -5.74
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 11.756,
+     "vFps": 1190,
+     "mach": 1.066,
+     "errMil": 0.556,
+     "errMoa": 1.91,
+     "errIn": 20.02
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 12.033,
+     "vFps": 1159,
+     "mach": 1.058,
+     "errMil": 0.833,
+     "errMoa": 2.86,
+     "errIn": 30
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 11.419,
+     "vFps": 1230,
+     "mach": 1.075,
+     "errMil": 0.219,
+     "errMoa": 0.75,
+     "errIn": 7.88
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 10.895,
+     "vFps": 1284,
+     "mach": 1.15,
+     "errMil": -0.305,
+     "errMoa": -1.05,
+     "errIn": -10.98
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 11.506,
+     "vFps": 1190,
+     "mach": 1.066,
+     "errMil": 0.306,
+     "errMoa": 1.05,
+     "errIn": 11.02
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 11.783,
+     "vFps": 1159,
+     "mach": 1.058,
+     "errMil": 0.583,
+     "errMoa": 2,
+     "errIn": 21
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 11.169,
+     "vFps": 1230,
+     "mach": 1.075,
+     "errMil": -0.031,
+     "errMoa": -0.11,
+     "errIn": -1.12
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 10.645,
+     "vFps": 1284,
+     "mach": 1.15,
+     "errMil": -0.555,
+     "errMoa": -1.91,
+     "errIn": -19.98
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 11.122,
+     "vFps": 1190,
+     "mach": 1.066,
+     "errMil": -0.078,
+     "errMoa": -0.27,
+     "errIn": -2.8
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 11.395,
+     "vFps": 1159,
+     "mach": 1.058,
+     "errMil": 0.195,
+     "errMoa": 0.67,
+     "errIn": 7.04
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 10.789,
+     "vFps": 1230,
+     "mach": 1.075,
+     "errMil": -0.411,
+     "errMoa": -1.41,
+     "errIn": -14.78
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 10.274,
+     "vFps": 1284,
+     "mach": 1.15,
+     "errMil": -0.926,
+     "errMoa": -3.18,
+     "errIn": -33.35
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 11.011,
+     "vFps": 1190,
+     "mach": 1.066,
+     "errMil": -0.189,
+     "errMoa": -0.65,
+     "errIn": -6.8
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 11.284,
+     "vFps": 1159,
+     "mach": 1.058,
+     "errMil": 0.084,
+     "errMoa": 0.29,
+     "errIn": 3.04
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 10.678,
+     "vFps": 1230,
+     "mach": 1.075,
+     "errMil": -0.522,
+     "errMoa": -1.79,
+     "errIn": -18.78
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 10.163,
+     "vFps": 1284,
+     "mach": 1.15,
+     "errMil": -1.037,
+     "errMoa": -3.57,
+     "errIn": -37.35
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 12.349,
+     "vFps": 1076,
+     "mach": 0.964,
+     "errMil": 1.149,
+     "errMoa": 3.95,
+     "errIn": 41.37
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 12.667,
+     "vFps": 1048,
+     "mach": 0.957,
+     "errMil": 1.467,
+     "errMoa": 5.04,
+     "errIn": 52.79
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 11.965,
+     "vFps": 1114,
+     "mach": 0.974,
+     "errMil": 0.765,
+     "errMoa": 2.63,
+     "errIn": 27.53
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 11.311,
+     "vFps": 1186,
+     "mach": 1.062,
+     "errMil": 0.111,
+     "errMoa": 0.38,
+     "errIn": 4
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 12.099,
+     "vFps": 1076,
+     "mach": 0.964,
+     "errMil": 0.899,
+     "errMoa": 3.09,
+     "errIn": 32.37
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 12.417,
+     "vFps": 1048,
+     "mach": 0.957,
+     "errMil": 1.217,
+     "errMoa": 4.18,
+     "errIn": 43.79
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 11.715,
+     "vFps": 1114,
+     "mach": 0.974,
+     "errMil": 0.515,
+     "errMoa": 1.77,
+     "errIn": 18.53
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 11.061,
+     "vFps": 1186,
+     "mach": 1.062,
+     "errMil": -0.139,
+     "errMoa": -0.48,
+     "errIn": -5
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 11.709,
+     "vFps": 1076,
+     "mach": 0.964,
+     "errMil": 0.509,
+     "errMoa": 1.75,
+     "errIn": 18.34
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 12.023,
+     "vFps": 1048,
+     "mach": 0.957,
+     "errMil": 0.823,
+     "errMoa": 2.83,
+     "errIn": 29.62
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 11.33,
+     "vFps": 1114,
+     "mach": 0.974,
+     "errMil": 0.13,
+     "errMoa": 0.45,
+     "errIn": 4.67
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 10.685,
+     "vFps": 1186,
+     "mach": 1.062,
+     "errMil": -0.515,
+     "errMoa": -1.77,
+     "errIn": -18.55
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 11.598,
+     "vFps": 1076,
+     "mach": 0.964,
+     "errMil": 0.398,
+     "errMoa": 1.37,
+     "errIn": 14.34
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 11.912,
+     "vFps": 1048,
+     "mach": 0.957,
+     "errMil": 0.712,
+     "errMoa": 2.45,
+     "errIn": 25.62
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 11.219,
+     "vFps": 1114,
+     "mach": 0.974,
+     "errMil": 0.019,
+     "errMoa": 0.06,
+     "errIn": 0.68
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 10.573,
+     "vFps": 1186,
+     "mach": 1.062,
+     "errMil": -0.627,
+     "errMoa": -2.15,
+     "errIn": -22.55
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 14.067,
+     "vFps": 1115,
+     "mach": 0.999,
+     "errMil": 0.367,
+     "errMoa": 1.26,
+     "errIn": 14.55
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 14.441,
+     "vFps": 1085,
+     "mach": 0.991,
+     "errMil": 0.741,
+     "errMoa": 2.55,
+     "errIn": 29.38
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 13.613,
+     "vFps": 1155,
+     "mach": 1.009,
+     "errMil": -0.087,
+     "errMoa": -0.3,
+     "errIn": -3.44
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 12.932,
+     "vFps": 1201,
+     "mach": 1.076,
+     "errMil": -0.768,
+     "errMoa": -2.64,
+     "errIn": -30.43
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 13.815,
+     "vFps": 1115,
+     "mach": 0.999,
+     "errMil": 0.115,
+     "errMoa": 0.39,
+     "errIn": 4.54
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 14.189,
+     "vFps": 1085,
+     "mach": 0.991,
+     "errMil": 0.489,
+     "errMoa": 1.68,
+     "errIn": 19.37
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 13.361,
+     "vFps": 1155,
+     "mach": 1.009,
+     "errMil": -0.339,
+     "errMoa": -1.17,
+     "errIn": -13.45
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 12.68,
+     "vFps": 1201,
+     "mach": 1.076,
+     "errMil": -1.02,
+     "errMoa": -3.51,
+     "errIn": -40.44
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 13.433,
+     "vFps": 1115,
+     "mach": 0.999,
+     "errMil": -0.267,
+     "errMoa": -0.92,
+     "errIn": -10.58
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 13.803,
+     "vFps": 1085,
+     "mach": 0.99,
+     "errMil": 0.103,
+     "errMoa": 0.36,
+     "errIn": 4.1
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 12.984,
+     "vFps": 1155,
+     "mach": 1.009,
+     "errMil": -0.716,
+     "errMoa": -2.46,
+     "errIn": -28.4
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 12.311,
+     "vFps": 1201,
+     "mach": 1.076,
+     "errMil": -1.389,
+     "errMoa": -4.78,
+     "errIn": -55.06
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 13.319,
+     "vFps": 1115,
+     "mach": 0.999,
+     "errMil": -0.381,
+     "errMoa": -1.31,
+     "errIn": -15.09
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 13.69,
+     "vFps": 1085,
+     "mach": 0.99,
+     "errMil": -0.01,
+     "errMoa": -0.04,
+     "errIn": -0.41
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 12.87,
+     "vFps": 1155,
+     "mach": 1.009,
+     "errMil": -0.83,
+     "errMoa": -2.85,
+     "errIn": -32.9
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 12.197,
+     "vFps": 1201,
+     "mach": 1.076,
+     "errMil": -1.503,
+     "errMoa": -5.17,
+     "errIn": -59.56
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 14.971,
+     "vFps": 1024,
+     "mach": 0.917,
+     "errMil": 1.271,
+     "errMoa": 4.37,
+     "errIn": 50.39
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 15.408,
+     "vFps": 999,
+     "mach": 0.912,
+     "errMil": 1.708,
+     "errMoa": 5.87,
+     "errIn": 67.69
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 14.444,
+     "vFps": 1058,
+     "mach": 0.925,
+     "errMil": 0.744,
+     "errMoa": 2.56,
+     "errIn": 29.48
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 13.557,
+     "vFps": 1086,
+     "mach": 0.973,
+     "errMil": -0.143,
+     "errMoa": -0.49,
+     "errIn": -5.69
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 14.719,
+     "vFps": 1024,
+     "mach": 0.917,
+     "errMil": 1.019,
+     "errMoa": 3.5,
+     "errIn": 40.38
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 15.155,
+     "vFps": 999,
+     "mach": 0.912,
+     "errMil": 1.455,
+     "errMoa": 5,
+     "errIn": 57.68
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 14.191,
+     "vFps": 1058,
+     "mach": 0.925,
+     "errMil": 0.491,
+     "errMoa": 1.69,
+     "errIn": 19.47
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 13.304,
+     "vFps": 1086,
+     "mach": 0.973,
+     "errMil": -0.396,
+     "errMoa": -1.36,
+     "errIn": -15.7
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 14.331,
+     "vFps": 1024,
+     "mach": 0.917,
+     "errMil": 0.631,
+     "errMoa": 2.17,
+     "errIn": 25.03
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 14.764,
+     "vFps": 999,
+     "mach": 0.912,
+     "errMil": 1.064,
+     "errMoa": 3.66,
+     "errIn": 42.18
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 13.809,
+     "vFps": 1058,
+     "mach": 0.925,
+     "errMil": 0.109,
+     "errMoa": 0.37,
+     "errIn": 4.31
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 12.93,
+     "vFps": 1086,
+     "mach": 0.973,
+     "errMil": -0.77,
+     "errMoa": -2.65,
+     "errIn": -30.52
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 14.218,
+     "vFps": 1024,
+     "mach": 0.917,
+     "errMil": 0.518,
+     "errMoa": 1.78,
+     "errIn": 20.52
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 14.65,
+     "vFps": 999,
+     "mach": 0.912,
+     "errMil": 0.95,
+     "errMoa": 3.27,
+     "errIn": 37.67
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 13.695,
+     "vFps": 1058,
+     "mach": 0.925,
+     "errMil": -0.005,
+     "errMoa": -0.02,
+     "errIn": -0.19
+    },
+    {
+     "rangeYd": 1101,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 12.816,
+     "vFps": 1086,
+     "mach": 0.973,
+     "errMil": -0.884,
+     "errMoa": -3.04,
+     "errIn": -35.02
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 15.697,
+     "vFps": 1076,
+     "mach": 0.963,
+     "errMil": 0.197,
+     "errMoa": 0.68,
+     "errIn": 8.26
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 16.144,
+     "vFps": 1046,
+     "mach": 0.955,
+     "errMil": 0.644,
+     "errMoa": 2.21,
+     "errIn": 27.04
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 15.155,
+     "vFps": 1114,
+     "mach": 0.974,
+     "errMil": -0.345,
+     "errMoa": -1.19,
+     "errIn": -14.49
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 14.362,
+     "vFps": 1155,
+     "mach": 1.034,
+     "errMil": -1.138,
+     "errMoa": -3.91,
+     "errIn": -47.76
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 15.443,
+     "vFps": 1076,
+     "mach": 0.963,
+     "errMil": -0.057,
+     "errMoa": -0.2,
+     "errIn": -2.4
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 15.89,
+     "vFps": 1046,
+     "mach": 0.955,
+     "errMil": 0.39,
+     "errMoa": 1.34,
+     "errIn": 16.38
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 14.901,
+     "vFps": 1114,
+     "mach": 0.974,
+     "errMil": -0.599,
+     "errMoa": -2.06,
+     "errIn": -25.15
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 14.108,
+     "vFps": 1155,
+     "mach": 1.034,
+     "errMil": -1.392,
+     "errMoa": -4.78,
+     "errIn": -58.42
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 15.063,
+     "vFps": 1076,
+     "mach": 0.963,
+     "errMil": -0.437,
+     "errMoa": -1.5,
+     "errIn": -18.35
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 15.506,
+     "vFps": 1046,
+     "mach": 0.955,
+     "errMil": 0.006,
+     "errMoa": 0.02,
+     "errIn": 0.27
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 14.525,
+     "vFps": 1114,
+     "mach": 0.974,
+     "errMil": -0.975,
+     "errMoa": -3.35,
+     "errIn": -40.92
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 13.741,
+     "vFps": 1155,
+     "mach": 1.034,
+     "errMil": -1.759,
+     "errMoa": -6.05,
+     "errIn": -73.85
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 14.948,
+     "vFps": 1076,
+     "mach": 0.963,
+     "errMil": -0.552,
+     "errMoa": -1.9,
+     "errIn": -23.18
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 15.391,
+     "vFps": 1046,
+     "mach": 0.955,
+     "errMil": -0.109,
+     "errMoa": -0.37,
+     "errIn": -4.56
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 14.41,
+     "vFps": 1114,
+     "mach": 0.974,
+     "errMil": -1.09,
+     "errMoa": -3.75,
+     "errIn": -45.75
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 13.626,
+     "vFps": 1155,
+     "mach": 1.034,
+     "errMil": -1.874,
+     "errMoa": -6.44,
+     "errIn": -78.68
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 16.841,
+     "vFps": 999,
+     "mach": 0.895,
+     "errMil": 1.341,
+     "errMoa": 4.61,
+     "errIn": 56.28
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 17.365,
+     "vFps": 974,
+     "mach": 0.889,
+     "errMil": 1.865,
+     "errMoa": 6.41,
+     "errIn": 78.27
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 16.207,
+     "vFps": 1032,
+     "mach": 0.902,
+     "errMil": 0.707,
+     "errMoa": 2.43,
+     "errIn": 29.69
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 15.167,
+     "vFps": 1050,
+     "mach": 0.94,
+     "errMil": -0.333,
+     "errMoa": -1.15,
+     "errIn": -13.99
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 16.587,
+     "vFps": 999,
+     "mach": 0.895,
+     "errMil": 1.087,
+     "errMoa": 3.74,
+     "errIn": 45.61
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 17.111,
+     "vFps": 974,
+     "mach": 0.889,
+     "errMil": 1.611,
+     "errMoa": 5.54,
+     "errIn": 67.61
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 15.953,
+     "vFps": 1032,
+     "mach": 0.902,
+     "errMil": 0.453,
+     "errMoa": 1.56,
+     "errIn": 19.03
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 14.913,
+     "vFps": 1050,
+     "mach": 0.94,
+     "errMil": -0.587,
+     "errMoa": -2.02,
+     "errIn": -24.65
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 16.201,
+     "vFps": 999,
+     "mach": 0.895,
+     "errMil": 0.701,
+     "errMoa": 2.41,
+     "errIn": 29.41
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 16.721,
+     "vFps": 974,
+     "mach": 0.889,
+     "errMil": 1.221,
+     "errMoa": 4.2,
+     "errIn": 51.25
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 15.572,
+     "vFps": 1032,
+     "mach": 0.902,
+     "errMil": 0.072,
+     "errMoa": 0.25,
+     "errIn": 3.04
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 14.54,
+     "vFps": 1050,
+     "mach": 0.94,
+     "errMil": -0.96,
+     "errMoa": -3.3,
+     "errIn": -40.28
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 16.086,
+     "vFps": 999,
+     "mach": 0.895,
+     "errMil": 0.586,
+     "errMoa": 2.01,
+     "errIn": 24.58
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 16.606,
+     "vFps": 974,
+     "mach": 0.889,
+     "errMil": 1.106,
+     "errMoa": 3.8,
+     "errIn": 46.42
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 15.457,
+     "vFps": 1032,
+     "mach": 0.902,
+     "errMil": -0.043,
+     "errMoa": -0.15,
+     "errIn": -1.79
+    },
+    {
+     "rangeYd": 1166,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 14.425,
+     "vFps": 1050,
+     "mach": 0.94,
+     "errMil": -1.075,
+     "errMoa": -3.69,
+     "errIn": -45.11
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 16.595,
+     "vFps": 1057,
+     "mach": 0.947,
+     "errMil": -0.005,
+     "errMoa": -0.02,
+     "errIn": -0.22
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 17.084,
+     "vFps": 1028,
+     "mach": 0.938,
+     "errMil": 0.484,
+     "errMoa": 1.66,
+     "errIn": 20.92
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 16.003,
+     "vFps": 1095,
+     "mach": 0.957,
+     "errMil": -0.597,
+     "errMoa": -2.05,
+     "errIn": -25.81
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 15.149,
+     "vFps": 1133,
+     "mach": 1.015,
+     "errMil": -1.451,
+     "errMoa": -4.99,
+     "errIn": -62.69
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 16.34,
+     "vFps": 1057,
+     "mach": 0.947,
+     "errMil": -0.26,
+     "errMoa": -0.89,
+     "errIn": -11.22
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 16.83,
+     "vFps": 1028,
+     "mach": 0.938,
+     "errMil": 0.23,
+     "errMoa": 0.79,
+     "errIn": 9.92
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 15.748,
+     "vFps": 1095,
+     "mach": 0.957,
+     "errMil": -0.852,
+     "errMoa": -2.93,
+     "errIn": -36.81
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 14.894,
+     "vFps": 1133,
+     "mach": 1.015,
+     "errMil": -1.706,
+     "errMoa": -5.86,
+     "errIn": -73.69
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 15.961,
+     "vFps": 1057,
+     "mach": 0.947,
+     "errMil": -0.639,
+     "errMoa": -2.2,
+     "errIn": -27.61
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 16.446,
+     "vFps": 1028,
+     "mach": 0.938,
+     "errMil": -0.154,
+     "errMoa": -0.53,
+     "errIn": -6.64
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 15.373,
+     "vFps": 1095,
+     "mach": 0.957,
+     "errMil": -1.227,
+     "errMoa": -4.22,
+     "errIn": -53
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 14.527,
+     "vFps": 1133,
+     "mach": 1.015,
+     "errMil": -2.073,
+     "errMoa": -7.13,
+     "errIn": -89.54
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 15.845,
+     "vFps": 1057,
+     "mach": 0.947,
+     "errMil": -0.755,
+     "errMoa": -2.6,
+     "errIn": -32.61
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 16.331,
+     "vFps": 1028,
+     "mach": 0.938,
+     "errMil": -0.269,
+     "errMoa": -0.93,
+     "errIn": -11.64
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 15.257,
+     "vFps": 1095,
+     "mach": 0.957,
+     "errMil": -1.343,
+     "errMoa": -4.62,
+     "errIn": -58
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 14.412,
+     "vFps": 1133,
+     "mach": 1.015,
+     "errMil": -2.188,
+     "errMoa": -7.52,
+     "errIn": -94.54
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 17.873,
+     "vFps": 987,
+     "mach": 0.884,
+     "errMil": 1.273,
+     "errMoa": 4.38,
+     "errIn": 54.98
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 18.446,
+     "vFps": 962,
+     "mach": 0.878,
+     "errMil": 1.846,
+     "errMoa": 6.35,
+     "errIn": 79.74
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 17.18,
+     "vFps": 1020,
+     "mach": 0.891,
+     "errMil": 0.58,
+     "errMoa": 1.99,
+     "errIn": 25.07
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 16.061,
+     "vFps": 1035,
+     "mach": 0.927,
+     "errMil": -0.539,
+     "errMoa": -1.85,
+     "errIn": -23.26
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 17.618,
+     "vFps": 987,
+     "mach": 0.884,
+     "errMil": 1.018,
+     "errMoa": 3.5,
+     "errIn": 43.98
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 18.191,
+     "vFps": 962,
+     "mach": 0.878,
+     "errMil": 1.591,
+     "errMoa": 5.47,
+     "errIn": 68.74
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 16.926,
+     "vFps": 1020,
+     "mach": 0.891,
+     "errMil": 0.326,
+     "errMoa": 1.12,
+     "errIn": 14.06
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 15.807,
+     "vFps": 1035,
+     "mach": 0.927,
+     "errMil": -0.793,
+     "errMoa": -2.73,
+     "errIn": -34.26
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 17.233,
+     "vFps": 987,
+     "mach": 0.884,
+     "errMil": 0.633,
+     "errMoa": 2.18,
+     "errIn": 27.34
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 17.802,
+     "vFps": 962,
+     "mach": 0.878,
+     "errMil": 1.202,
+     "errMoa": 4.13,
+     "errIn": 51.93
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 16.545,
+     "vFps": 1020,
+     "mach": 0.891,
+     "errMil": -0.055,
+     "errMoa": -0.19,
+     "errIn": -2.37
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 15.435,
+     "vFps": 1035,
+     "mach": 0.927,
+     "errMil": -1.165,
+     "errMoa": -4,
+     "errIn": -50.33
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 17.117,
+     "vFps": 987,
+     "mach": 0.884,
+     "errMil": 0.517,
+     "errMoa": 1.78,
+     "errIn": 22.34
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 17.686,
+     "vFps": 962,
+     "mach": 0.878,
+     "errMil": 1.086,
+     "errMoa": 3.73,
+     "errIn": 46.92
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 16.429,
+     "vFps": 1020,
+     "mach": 0.891,
+     "errMil": -0.171,
+     "errMoa": -0.59,
+     "errIn": -7.37
+    },
+    {
+     "rangeYd": 1200,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 15.319,
+     "vFps": 1035,
+     "mach": 0.927,
+     "errMil": -1.281,
+     "errMoa": -4.4,
+     "errIn": -55.33
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 20.109,
+     "vFps": 1000,
+     "mach": 0.896,
+     "errMil": 0.209,
+     "errMoa": 0.72,
+     "errIn": 9.94
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 20.769,
+     "vFps": 972,
+     "mach": 0.887,
+     "errMil": 0.869,
+     "errMoa": 2.99,
+     "errIn": 41.37
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 19.311,
+     "vFps": 1037,
+     "mach": 0.906,
+     "errMil": -0.589,
+     "errMoa": -2.02,
+     "errIn": -28.05
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 18.225,
+     "vFps": 1065,
+     "mach": 0.954,
+     "errMil": -1.675,
+     "errMoa": -5.76,
+     "errIn": -79.8
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 19.852,
+     "vFps": 1000,
+     "mach": 0.896,
+     "errMil": -0.048,
+     "errMoa": -0.17,
+     "errIn": -2.29
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 20.512,
+     "vFps": 972,
+     "mach": 0.887,
+     "errMil": 0.612,
+     "errMoa": 2.1,
+     "errIn": 29.13
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 19.054,
+     "vFps": 1037,
+     "mach": 0.906,
+     "errMil": -0.846,
+     "errMoa": -2.91,
+     "errIn": -40.28
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 17.968,
+     "vFps": 1065,
+     "mach": 0.954,
+     "errMil": -1.932,
+     "errMoa": -6.64,
+     "errIn": -92.03
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 19.475,
+     "vFps": 1000,
+     "mach": 0.896,
+     "errMil": -0.425,
+     "errMoa": -1.46,
+     "errIn": -20.26
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 20.131,
+     "vFps": 972,
+     "mach": 0.887,
+     "errMil": 0.231,
+     "errMoa": 0.79,
+     "errIn": 10.98
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 18.682,
+     "vFps": 1037,
+     "mach": 0.906,
+     "errMil": -1.218,
+     "errMoa": -4.19,
+     "errIn": -58.03
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 17.603,
+     "vFps": 1065,
+     "mach": 0.954,
+     "errMil": -2.297,
+     "errMoa": -7.9,
+     "errIn": -109.4
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 19.357,
+     "vFps": 1000,
+     "mach": 0.896,
+     "errMil": -0.543,
+     "errMoa": -1.87,
+     "errIn": -25.88
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 20.013,
+     "vFps": 972,
+     "mach": 0.887,
+     "errMil": 0.113,
+     "errMoa": 0.39,
+     "errIn": 5.37
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 18.564,
+     "vFps": 1037,
+     "mach": 0.906,
+     "errMil": -1.336,
+     "errMoa": -4.59,
+     "errIn": -63.65
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G1 0.505",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 17.485,
+     "vFps": 1065,
+     "mach": 0.954,
+     "errMil": -2.415,
+     "errMoa": -8.3,
+     "errIn": -115.01
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 21.905,
+     "vFps": 946,
+     "mach": 0.848,
+     "errMil": 2.005,
+     "errMoa": 6.89,
+     "errIn": 95.48
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 22.674,
+     "vFps": 921,
+     "mach": 0.841,
+     "errMil": 2.774,
+     "errMoa": 9.53,
+     "errIn": 132.1
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 20.975,
+     "vFps": 979,
+     "mach": 0.856,
+     "errMil": 1.075,
+     "errMoa": 3.7,
+     "errIn": 51.21
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 19.587,
+     "vFps": 992,
+     "mach": 0.888,
+     "errMil": -0.313,
+     "errMoa": -1.07,
+     "errIn": -14.89
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 21.648,
+     "vFps": 946,
+     "mach": 0.848,
+     "errMil": 1.748,
+     "errMoa": 6.01,
+     "errIn": 83.24
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 22.417,
+     "vFps": 921,
+     "mach": 0.841,
+     "errMil": 2.517,
+     "errMoa": 8.65,
+     "errIn": 119.87
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 20.718,
+     "vFps": 979,
+     "mach": 0.856,
+     "errMil": 0.818,
+     "errMoa": 2.81,
+     "errIn": 38.98
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 19.331,
+     "vFps": 992,
+     "mach": 0.888,
+     "errMil": -0.569,
+     "errMoa": -1.96,
+     "errIn": -27.12
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 21.265,
+     "vFps": 946,
+     "mach": 0.847,
+     "errMil": 1.365,
+     "errMoa": 4.69,
+     "errIn": 64.99
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 22.03,
+     "vFps": 921,
+     "mach": 0.841,
+     "errMil": 2.13,
+     "errMoa": 7.32,
+     "errIn": 101.43
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 20.34,
+     "vFps": 979,
+     "mach": 0.856,
+     "errMil": 0.44,
+     "errMoa": 1.51,
+     "errIn": 20.96
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 18.961,
+     "vFps": 992,
+     "mach": 0.888,
+     "errMil": -0.939,
+     "errMoa": -3.23,
+     "errIn": -44.73
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 21.147,
+     "vFps": 946,
+     "mach": 0.847,
+     "errMil": 1.247,
+     "errMoa": 4.29,
+     "errIn": 59.38
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 21.912,
+     "vFps": 921,
+     "mach": 0.841,
+     "errMil": 2.012,
+     "errMoa": 6.92,
+     "errIn": 95.82
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 20.222,
+     "vFps": 979,
+     "mach": 0.856,
+     "errMil": 0.322,
+     "errMoa": 1.11,
+     "errIn": 15.35
+    },
+    {
+     "rangeYd": 1323,
+     "bc": "G7 0.243",
+     "zero": 200,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 18.843,
+     "vFps": 992,
+     "mach": 0.888,
+     "errMil": -1.057,
+     "errMoa": -3.63,
+     "errIn": -50.35
+    }
+   ]
+  },
+  "DS-B": {
+   "status": "excluded-no-muzzle-velocity",
+   "excludedBecause": "No muzzle velocity is stated for this table. Using DS-A's 2570 fps would be a guess, so no prediction is made.",
+   "predictionsMade": false
+  },
+  "DS-C": {
+   "status": "excluded-measured-status-unclear",
+   "excludedBecause": "It cannot be established from the source that the listed drops are measured rather than fitted or calculated, and the zero and atmosphere are missing. It is not counted as measured data.",
+   "predictionsMade": false
+  },
+  "DS-D": {
+   "status": "usable-with-envelope",
+   "uncertaintyMil": 0.1,
+   "rows": [
+    {
+     "rangeYd": 1000,
+     "measuredMil": 5.9,
+     "measuredIn": 212.4,
+     "uncertaintyMil": 0.1,
+     "byBc": [
+      {
+       "bc": "G7 0.285",
+       "bcOrigin": "advertised by the maker (method not stated)",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 6.939,
+        "vFps": 1620,
+        "mach": 1.451,
+        "errMil": 1.039,
+        "errMoa": 3.57,
+        "errIn": 37.4
+       },
+       "envelopeErrMil": [
+        0.372,
+        1.161
+       ],
+       "envelopeErrMoa": [
+        1.28,
+        3.99
+       ],
+       "envelopeErrIn": [
+        13.39,
+        41.8
+       ],
+       "casesWithinMeasUncertainty": 0,
+       "caseCount": 8
+      }
+     ]
+    },
+    {
+     "rangeYd": 1220,
+     "measuredMil": 8.47,
+     "measuredIn": 372,
+     "uncertaintyMil": 0.1,
+     "byBc": [
+      {
+       "bc": "G7 0.285",
+       "bcOrigin": "advertised by the maker (method not stated)",
+       "primary": {
+        "zero": 100,
+        "h": 1.5,
+        "atm": "std",
+        "holdMil": 9.932,
+        "vFps": 1356,
+        "mach": 1.214,
+        "errMil": 1.462,
+        "errMoa": 5.03,
+        "errIn": 64.2
+       },
+       "envelopeErrMil": [
+        0.439,
+        1.692
+       ],
+       "envelopeErrMoa": [
+        1.51,
+        5.82
+       ],
+       "envelopeErrIn": [
+        19.28,
+        74.31
+       ],
+       "casesWithinMeasUncertainty": 0,
+       "caseCount": 8
+      }
+     ]
+    }
+   ],
+   "allCases": [
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 6.939,
+     "vFps": 1620,
+     "mach": 1.451,
+     "errMil": 1.039,
+     "errMoa": 3.57,
+     "errIn": 37.4
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 7.061,
+     "vFps": 1584,
+     "mach": 1.446,
+     "errMil": 1.161,
+     "errMoa": 3.99,
+     "errIn": 41.79
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 6.788,
+     "vFps": 1665,
+     "mach": 1.455,
+     "errMil": 0.888,
+     "errMoa": 3.05,
+     "errIn": 31.97
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 6.522,
+     "vFps": 1751,
+     "mach": 1.569,
+     "errMil": 0.622,
+     "errMoa": 2.14,
+     "errIn": 22.39
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 6.689,
+     "vFps": 1620,
+     "mach": 1.451,
+     "errMil": 0.789,
+     "errMoa": 2.71,
+     "errIn": 28.4
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 6.811,
+     "vFps": 1584,
+     "mach": 1.446,
+     "errMil": 0.911,
+     "errMoa": 3.13,
+     "errIn": 32.79
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 6.538,
+     "vFps": 1665,
+     "mach": 1.455,
+     "errMil": 0.638,
+     "errMoa": 2.19,
+     "errIn": 22.97
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 6.272,
+     "vFps": 1751,
+     "mach": 1.569,
+     "errMil": 0.372,
+     "errMoa": 1.28,
+     "errIn": 13.39
+    },
+    {
+     "rangeYd": 1220,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "std",
+     "holdMil": 9.932,
+     "vFps": 1356,
+     "mach": 1.214,
+     "errMil": 1.462,
+     "errMoa": 5.03,
+     "errIn": 64.2
+    },
+    {
+     "rangeYd": 1220,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "cold",
+     "holdMil": 10.162,
+     "vFps": 1316,
+     "mach": 1.201,
+     "errMil": 1.692,
+     "errMoa": 5.82,
+     "errIn": 74.31
+    },
+    {
+     "rangeYd": 1220,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "hot",
+     "holdMil": 9.651,
+     "vFps": 1407,
+     "mach": 1.23,
+     "errMil": 1.181,
+     "errMoa": 4.06,
+     "errIn": 51.86
+    },
+    {
+     "rangeYd": 1220,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 1.5,
+     "atm": "alt3000",
+     "holdMil": 9.164,
+     "vFps": 1505,
+     "mach": 1.348,
+     "errMil": 0.694,
+     "errMoa": 2.38,
+     "errIn": 30.46
+    },
+    {
+     "rangeYd": 1220,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "std",
+     "holdMil": 9.677,
+     "vFps": 1356,
+     "mach": 1.214,
+     "errMil": 1.207,
+     "errMoa": 4.15,
+     "errIn": 53
+    },
+    {
+     "rangeYd": 1220,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "cold",
+     "holdMil": 9.907,
+     "vFps": 1316,
+     "mach": 1.201,
+     "errMil": 1.437,
+     "errMoa": 4.94,
+     "errIn": 63.11
+    },
+    {
+     "rangeYd": 1220,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "hot",
+     "holdMil": 9.396,
+     "vFps": 1407,
+     "mach": 1.23,
+     "errMil": 0.926,
+     "errMoa": 3.18,
+     "errIn": 40.66
+    },
+    {
+     "rangeYd": 1220,
+     "bc": "G7 0.285",
+     "zero": 100,
+     "h": 2.5,
+     "atm": "alt3000",
+     "holdMil": 8.909,
+     "vFps": 1505,
+     "mach": 1.348,
+     "errMil": 0.439,
+     "errMoa": 1.51,
+     "errIn": 19.26
+    }
+   ]
+  },
+  "DS-E": {
+   "status": "usable-with-envelope-low-quality",
+   "uncertaintyMil": null,
+   "rows": [
+    {
+     "rangeYd": 1000,
+     "measuredMil": 8.7,
+     "measuredIn": 313.2,
+     "uncertaintyMil": null,
+     "byBc": [
+      {
+       "bc": "G7 0.326",
+       "bcOrigin": "Hornady published, Mach 2.25 and above",
+       "primary": {
+        "zero": 100,
+        "h": 2.17,
+        "atm": "std",
+        "holdMil": 8.408,
+        "vFps": 1515,
+        "mach": 1.357,
+        "errMil": -0.292,
+        "errMoa": -1,
+        "errIn": -10.52
+       },
+       "envelopeErrMil": [
+        -0.753,
+        -0.154
+       ],
+       "envelopeErrMoa": [
+        -2.59,
+        -0.53
+       ],
+       "envelopeErrIn": [
+        -27.11,
+        -5.54
+       ],
+       "casesWithinMeasUncertainty": 0,
+       "caseCount": 4
+      },
+      {
+       "bc": "G7 0.31",
+       "bcOrigin": "Hornady published, Mach 1.75 band",
+       "primary": {
+        "zero": 100,
+        "h": 2.17,
+        "atm": "std",
+        "holdMil": 8.653,
+        "vFps": 1460,
+        "mach": 1.308,
+        "errMil": -0.047,
+        "errMoa": -0.16,
+        "errIn": -1.67
+       },
+       "envelopeErrMil": [
+        -0.553,
+        0.105
+       ],
+       "envelopeErrMoa": [
+        -1.9,
+        0.36
+       ],
+       "envelopeErrIn": [
+        -19.91,
+        3.78
+       ],
+       "casesWithinMeasUncertainty": 0,
+       "caseCount": 4
+      },
+      {
+       "bc": "G1 0.646",
+       "bcOrigin": "Hornady published, Mach 2.25 and above",
+       "primary": {
+        "zero": 100,
+        "h": 2.17,
+        "atm": "std",
+        "holdMil": 8.42,
+        "vFps": 1524,
+        "mach": 1.365,
+        "errMil": -0.28,
+        "errMoa": -0.96,
+        "errIn": -10.07
+       },
+       "envelopeErrMil": [
+        -0.74,
+        -0.139
+       ],
+       "envelopeErrMoa": [
+        -2.54,
+        -0.48
+       ],
+       "envelopeErrIn": [
+        -26.64,
+        -5
+       ],
+       "casesWithinMeasUncertainty": 0,
+       "caseCount": 4
+      },
+      {
+       "bc": "G1 0.616",
+       "bcOrigin": "Hornady published, Mach 1.75 band",
+       "primary": {
+        "zero": 100,
+        "h": 2.17,
+        "atm": "std",
+        "holdMil": 8.65,
+        "vFps": 1477,
+        "mach": 1.323,
+        "errMil": -0.05,
+        "errMoa": -0.17,
+        "errIn": -1.81
+       },
+       "envelopeErrMil": [
+        -0.551,
+        0.104
+       ],
+       "envelopeErrMoa": [
+        -1.89,
+        0.36
+       ],
+       "envelopeErrIn": [
+        -19.84,
+        3.74
+       ],
+       "casesWithinMeasUncertainty": 0,
+       "caseCount": 4
+      }
+     ]
+    }
+   ],
+   "allCases": [
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.326",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "std",
+     "holdMil": 8.408,
+     "vFps": 1515,
+     "mach": 1.357,
+     "errMil": -0.292,
+     "errMoa": -1,
+     "errIn": -10.52
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.326",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "cold",
+     "holdMil": 8.546,
+     "vFps": 1484,
+     "mach": 1.355,
+     "errMil": -0.154,
+     "errMoa": -0.53,
+     "errIn": -5.56
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.326",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "hot",
+     "holdMil": 8.238,
+     "vFps": 1553,
+     "mach": 1.358,
+     "errMil": -0.462,
+     "errMoa": -1.59,
+     "errIn": -16.64
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.326",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "alt3000",
+     "holdMil": 7.947,
+     "vFps": 1626,
+     "mach": 1.457,
+     "errMil": -0.753,
+     "errMoa": -2.59,
+     "errIn": -27.1
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.31",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "std",
+     "holdMil": 8.653,
+     "vFps": 1460,
+     "mach": 1.308,
+     "errMil": -0.047,
+     "errMoa": -0.16,
+     "errIn": -1.67
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.31",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "cold",
+     "holdMil": 8.805,
+     "vFps": 1429,
+     "mach": 1.304,
+     "errMil": 0.105,
+     "errMoa": 0.36,
+     "errIn": 3.78
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.31",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "hot",
+     "holdMil": 8.467,
+     "vFps": 1500,
+     "mach": 1.311,
+     "errMil": -0.233,
+     "errMoa": -0.8,
+     "errIn": -8.4
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G7 0.31",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "alt3000",
+     "holdMil": 8.147,
+     "vFps": 1576,
+     "mach": 1.412,
+     "errMil": -0.553,
+     "errMoa": -1.9,
+     "errIn": -19.89
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.646",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "std",
+     "holdMil": 8.42,
+     "vFps": 1524,
+     "mach": 1.365,
+     "errMil": -0.28,
+     "errMoa": -0.96,
+     "errIn": -10.07
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.646",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "cold",
+     "holdMil": 8.561,
+     "vFps": 1494,
+     "mach": 1.363,
+     "errMil": -0.139,
+     "errMoa": -0.48,
+     "errIn": -5.01
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.646",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "hot",
+     "holdMil": 8.248,
+     "vFps": 1563,
+     "mach": 1.366,
+     "errMil": -0.452,
+     "errMoa": -1.56,
+     "errIn": -16.29
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.646",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "alt3000",
+     "holdMil": 7.96,
+     "vFps": 1629,
+     "mach": 1.459,
+     "errMil": -0.74,
+     "errMoa": -2.54,
+     "errIn": -26.63
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.616",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "std",
+     "holdMil": 8.65,
+     "vFps": 1477,
+     "mach": 1.323,
+     "errMil": -0.05,
+     "errMoa": -0.17,
+     "errIn": -1.81
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.616",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "cold",
+     "holdMil": 8.804,
+     "vFps": 1446,
+     "mach": 1.32,
+     "errMil": 0.104,
+     "errMoa": 0.36,
+     "errIn": 3.73
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.616",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "hot",
+     "holdMil": 8.461,
+     "vFps": 1518,
+     "mach": 1.326,
+     "errMil": -0.239,
+     "errMoa": -0.82,
+     "errIn": -8.6
+    },
+    {
+     "rangeYd": 1000,
+     "bc": "G1 0.616",
+     "zero": 100,
+     "h": 2.17,
+     "atm": "alt3000",
+     "holdMil": 8.149,
+     "vFps": 1584,
+     "mach": 1.419,
+     "errMil": -0.551,
+     "errMoa": -1.89,
+     "errIn": -19.83
+    }
+   ]
+  },
+  "DS-F": {
+   "status": "drag-only-not-a-trajectory",
+   "toleranceCdRelPct": 3,
+   "rows": 26,
+   "withinAtNominal": 21,
+   "withinAtAllSos": 19,
+   "outside": [
+    {
+     "bullet": "Sp FB",
+     "wt": 200,
+     "v": 1172,
+     "model": "G1",
+     "bc": 0.41,
+     "relPct": 8.29
+    },
+    {
+     "bullet": "NP",
+     "wt": 220,
+     "v": 1306,
+     "model": "G1",
+     "bc": 0.469,
+     "relPct": 3.26
+    },
+    {
+     "bullet": "NP",
+     "wt": 220,
+     "v": 1206,
+     "model": "G1",
+     "bc": 0.445,
+     "relPct": 7.27
+    },
+    {
+     "bullet": "NET",
+     "wt": 150,
+     "v": 1257,
+     "model": "G1",
+     "bc": 0.259,
+     "relPct": 6.53
+    },
+    {
+     "bullet": "NBT",
+     "wt": 125,
+     "v": 1677,
+     "model": "G7",
+     "bc": 0.154,
+     "relPct": -3.41
+    }
+   ],
+   "predictionsMade": false,
+   "note": "drag coefficients only; BC fitted from the same shots"
+  }
+ },
+ "diagnostics": {
+  "DS-D-altitude": {
+   "note": "held at 59 F, no humidity; altitude is NOT stated by the source",
+   "rows": [
+    {
+     "altFt": 0,
+     "rangeYd": 1000,
+     "measuredMil": 5.9,
+     "holdMil": 6.939,
+     "errMil": 1.039,
+     "errMoa": 3.57,
+     "errIn": 37.4
+    },
+    {
+     "altFt": 0,
+     "rangeYd": 1220,
+     "measuredMil": 8.47,
+     "holdMil": 9.932,
+     "errMil": 1.462,
+     "errMoa": 5.03,
+     "errIn": 64.2
+    },
+    {
+     "altFt": 3000,
+     "rangeYd": 1000,
+     "measuredMil": 5.9,
+     "holdMil": 6.522,
+     "errMil": 0.622,
+     "errMoa": 2.14,
+     "errIn": 22.39
+    },
+    {
+     "altFt": 3000,
+     "rangeYd": 1220,
+     "measuredMil": 8.47,
+     "holdMil": 9.164,
+     "errMil": 0.694,
+     "errMoa": 2.38,
+     "errIn": 30.46
+    },
+    {
+     "altFt": 5000,
+     "rangeYd": 1000,
+     "measuredMil": 5.9,
+     "holdMil": 6.284,
+     "errMil": 0.384,
+     "errMoa": 1.32,
+     "errIn": 13.81
+    },
+    {
+     "altFt": 5000,
+     "rangeYd": 1220,
+     "measuredMil": 8.47,
+     "holdMil": 8.737,
+     "errMil": 0.267,
+     "errMoa": 0.92,
+     "errIn": 11.71
+    },
+    {
+     "altFt": 7000,
+     "rangeYd": 1000,
+     "measuredMil": 5.9,
+     "holdMil": 6.072,
+     "errMil": 0.172,
+     "errMoa": 0.59,
+     "errIn": 6.18
+    },
+    {
+     "altFt": 7000,
+     "rangeYd": 1220,
+     "measuredMil": 8.47,
+     "holdMil": 8.364,
+     "errMil": -0.106,
+     "errMoa": -0.36,
+     "errIn": -4.65
+    },
+    {
+     "altFt": 10000,
+     "rangeYd": 1000,
+     "measuredMil": 5.9,
+     "holdMil": 5.795,
+     "errMil": -0.105,
+     "errMoa": -0.36,
+     "errIn": -3.77
+    },
+    {
+     "altFt": 10000,
+     "rangeYd": 1220,
+     "measuredMil": 8.47,
+     "holdMil": 7.888,
+     "errMil": -0.582,
+     "errMoa": -2,
+     "errIn": -25.56
+    }
+   ]
+  },
+  "mv-sensitivity": [
+   {
+    "id": "DS-A",
+    "rangeYd": 1000,
+    "mv": 2570,
+    "holdMil": 11.756,
+    "holdMilAtMvPlus1pct": 11.488,
+    "holdMilAtMvMinus1pct": 12.033,
+    "changePerPctMil": 0.273
+   },
+   {
+    "id": "DS-A",
+    "rangeYd": 1323,
+    "mv": 2570,
+    "holdMil": 20.109,
+    "holdMilAtMvPlus1pct": 19.67,
+    "holdMilAtMvMinus1pct": 20.558,
+    "changePerPctMil": 0.444
+   },
+   {
+    "id": "DS-D",
+    "rangeYd": 1000,
+    "mv": 3107,
+    "holdMil": 6.939,
+    "holdMilAtMvPlus1pct": 6.774,
+    "holdMilAtMvMinus1pct": 7.109,
+    "changePerPctMil": 0.167
+   },
+   {
+    "id": "DS-D",
+    "rangeYd": 1220,
+    "mv": 3107,
+    "holdMil": 9.932,
+    "holdMilAtMvPlus1pct": 9.691,
+    "holdMilAtMvMinus1pct": 10.181,
+    "changePerPctMil": 0.245
+   },
+   {
+    "id": "DS-E",
+    "rangeYd": 1000,
+    "mv": 2750,
+    "holdMil": 8.408,
+    "holdMilAtMvPlus1pct": 8.211,
+    "holdMilAtMvMinus1pct": 8.611,
+    "changePerPctMil": 0.2
+   }
+  ],
+  "coriolis-vertical": [
+   {
+    "id": "DS-A",
+    "rangeYd": 1323,
+    "latDeg": 30,
+    "azimuth": 90,
+    "corVIn": 9.25,
+    "corVMil": 0.194,
+    "corHIn": 5.34
+   },
+   {
+    "id": "DS-A",
+    "rangeYd": 1323,
+    "latDeg": 30,
+    "azimuth": 270,
+    "corVIn": -9.25,
+    "corVMil": -0.194,
+    "corHIn": 5.34
+   },
+   {
+    "id": "DS-A",
+    "rangeYd": 1323,
+    "latDeg": 45,
+    "azimuth": 90,
+    "corVIn": 7.55,
+    "corVMil": 0.159,
+    "corHIn": 7.55
+   },
+   {
+    "id": "DS-A",
+    "rangeYd": 1323,
+    "latDeg": 45,
+    "azimuth": 270,
+    "corVIn": -7.55,
+    "corVMil": -0.159,
+    "corHIn": 7.55
+   },
+   {
+    "id": "DS-A",
+    "rangeYd": 1323,
+    "latDeg": 60,
+    "azimuth": 90,
+    "corVIn": 5.34,
+    "corVMil": 0.112,
+    "corHIn": 9.25
+   },
+   {
+    "id": "DS-A",
+    "rangeYd": 1323,
+    "latDeg": 60,
+    "azimuth": 270,
+    "corVIn": -5.34,
+    "corVMil": -0.112,
+    "corHIn": 9.25
+   },
+   {
+    "id": "DS-D",
+    "rangeYd": 1220,
+    "latDeg": 30,
+    "azimuth": 90,
+    "corVIn": 5.63,
+    "corVMil": 0.128,
+    "corHIn": 3.25
+   },
+   {
+    "id": "DS-D",
+    "rangeYd": 1220,
+    "latDeg": 30,
+    "azimuth": 270,
+    "corVIn": -5.63,
+    "corVMil": -0.128,
+    "corHIn": 3.25
+   },
+   {
+    "id": "DS-D",
+    "rangeYd": 1220,
+    "latDeg": 45,
+    "azimuth": 90,
+    "corVIn": 4.6,
+    "corVMil": 0.105,
+    "corHIn": 4.6
+   },
+   {
+    "id": "DS-D",
+    "rangeYd": 1220,
+    "latDeg": 45,
+    "azimuth": 270,
+    "corVIn": -4.6,
+    "corVMil": -0.105,
+    "corHIn": 4.6
+   },
+   {
+    "id": "DS-D",
+    "rangeYd": 1220,
+    "latDeg": 60,
+    "azimuth": 90,
+    "corVIn": 3.25,
+    "corVMil": 0.074,
+    "corHIn": 5.63
+   },
+   {
+    "id": "DS-D",
+    "rangeYd": 1220,
+    "latDeg": 60,
+    "azimuth": 270,
+    "corVIn": -3.25,
+    "corVMil": -0.074,
+    "corHIn": 5.63
+   },
+   {
+    "id": "DS-E",
+    "rangeYd": 1000,
+    "latDeg": 30,
+    "azimuth": 90,
+    "corVIn": 3.67,
+    "corVMil": 0.102,
+    "corHIn": 2.12
+   },
+   {
+    "id": "DS-E",
+    "rangeYd": 1000,
+    "latDeg": 30,
+    "azimuth": 270,
+    "corVIn": -3.67,
+    "corVMil": -0.102,
+    "corHIn": 2.12
+   },
+   {
+    "id": "DS-E",
+    "rangeYd": 1000,
+    "latDeg": 45,
+    "azimuth": 90,
+    "corVIn": 3,
+    "corVMil": 0.083,
+    "corHIn": 3
+   },
+   {
+    "id": "DS-E",
+    "rangeYd": 1000,
+    "latDeg": 45,
+    "azimuth": 270,
+    "corVIn": -3,
+    "corVMil": -0.083,
+    "corHIn": 3
+   },
+   {
+    "id": "DS-E",
+    "rangeYd": 1000,
+    "latDeg": 60,
+    "azimuth": 90,
+    "corVIn": 2.12,
+    "corVMil": 0.059,
+    "corHIn": 3.67
+   },
+   {
+    "id": "DS-E",
+    "rangeYd": 1000,
+    "latDeg": 60,
+    "azimuth": 270,
+    "corVIn": -2.12,
+    "corVMil": -0.059,
+    "corHIn": 3.67
+   }
+  ],
+  "DS-A-zero": [
+   {
+    "zero": 50,
+    "rangeYd": 300,
+    "measuredMil": 1.1,
+    "holdMil": 1.47,
+    "errMil": 0.37,
+    "errMoa": 1.27,
+    "errIn": 3.99
+   },
+   {
+    "zero": 50,
+    "rangeYd": 600,
+    "measuredMil": 4.3,
+    "holdMil": 4.858,
+    "errMil": 0.558,
+    "errMoa": 1.92,
+    "errIn": 12.04
+   },
+   {
+    "zero": 50,
+    "rangeYd": 1000,
+    "measuredMil": 11.2,
+    "holdMil": 11.731,
+    "errMil": 0.531,
+    "errMoa": 1.83,
+    "errIn": 19.13
+   },
+   {
+    "zero": 50,
+    "rangeYd": 1101,
+    "measuredMil": 13.7,
+    "holdMil": 14.042,
+    "errMil": 0.342,
+    "errMoa": 1.18,
+    "errIn": 13.57
+   },
+   {
+    "zero": 50,
+    "rangeYd": 1166,
+    "measuredMil": 15.5,
+    "holdMil": 15.672,
+    "errMil": 0.172,
+    "errMoa": 0.59,
+    "errIn": 7.22
+   },
+   {
+    "zero": 50,
+    "rangeYd": 1200,
+    "measuredMil": 16.6,
+    "holdMil": 16.57,
+    "errMil": -0.03,
+    "errMoa": -0.1,
+    "errIn": -1.29
+   },
+   {
+    "zero": 50,
+    "rangeYd": 1323,
+    "measuredMil": 19.9,
+    "holdMil": 20.084,
+    "errMil": 0.184,
+    "errMoa": 0.63,
+    "errIn": 8.76
+   },
+   {
+    "zero": 100,
+    "rangeYd": 300,
+    "measuredMil": 1.1,
+    "holdMil": 1.495,
+    "errMil": 0.395,
+    "errMoa": 1.36,
+    "errIn": 4.26
+   },
+   {
+    "zero": 100,
+    "rangeYd": 600,
+    "measuredMil": 4.3,
+    "holdMil": 4.882,
+    "errMil": 0.582,
+    "errMoa": 2,
+    "errIn": 12.58
+   },
+   {
+    "zero": 100,
+    "rangeYd": 1000,
+    "measuredMil": 11.2,
+    "holdMil": 11.756,
+    "errMil": 0.556,
+    "errMoa": 1.91,
+    "errIn": 20.02
+   },
+   {
+    "zero": 100,
+    "rangeYd": 1101,
+    "measuredMil": 13.7,
+    "holdMil": 14.067,
+    "errMil": 0.367,
+    "errMoa": 1.26,
+    "errIn": 14.55
+   },
+   {
+    "zero": 100,
+    "rangeYd": 1166,
+    "measuredMil": 15.5,
+    "holdMil": 15.697,
+    "errMil": 0.197,
+    "errMoa": 0.68,
+    "errIn": 8.26
+   },
+   {
+    "zero": 100,
+    "rangeYd": 1200,
+    "measuredMil": 16.6,
+    "holdMil": 16.595,
+    "errMil": -0.005,
+    "errMoa": -0.02,
+    "errIn": -0.22
+   },
+   {
+    "zero": 100,
+    "rangeYd": 1323,
+    "measuredMil": 19.9,
+    "holdMil": 20.109,
+    "errMil": 0.209,
+    "errMoa": 0.72,
+    "errIn": 9.94
+   },
+   {
+    "zero": 150,
+    "rangeYd": 300,
+    "measuredMil": 1.1,
+    "holdMil": 1.223,
+    "errMil": 0.123,
+    "errMoa": 0.42,
+    "errIn": 1.32
+   },
+   {
+    "zero": 150,
+    "rangeYd": 600,
+    "measuredMil": 4.3,
+    "holdMil": 4.61,
+    "errMil": 0.31,
+    "errMoa": 1.07,
+    "errIn": 6.7
+   },
+   {
+    "zero": 150,
+    "rangeYd": 1000,
+    "measuredMil": 11.2,
+    "holdMil": 11.484,
+    "errMil": 0.284,
+    "errMoa": 0.98,
+    "errIn": 10.23
+   },
+   {
+    "zero": 150,
+    "rangeYd": 1101,
+    "measuredMil": 13.7,
+    "holdMil": 13.795,
+    "errMil": 0.095,
+    "errMoa": 0.33,
+    "errIn": 3.77
+   },
+   {
+    "zero": 150,
+    "rangeYd": 1166,
+    "measuredMil": 15.5,
+    "holdMil": 15.425,
+    "errMil": -0.075,
+    "errMoa": -0.26,
+    "errIn": -3.16
+   },
+   {
+    "zero": 150,
+    "rangeYd": 1200,
+    "measuredMil": 16.6,
+    "holdMil": 16.323,
+    "errMil": -0.277,
+    "errMoa": -0.95,
+    "errIn": -11.97
+   },
+   {
+    "zero": 150,
+    "rangeYd": 1323,
+    "measuredMil": 19.9,
+    "holdMil": 19.837,
+    "errMil": -0.063,
+    "errMoa": -0.22,
+    "errIn": -3.02
+   },
+   {
+    "zero": 200,
+    "rangeYd": 300,
+    "measuredMil": 1.1,
+    "holdMil": 0.861,
+    "errMil": -0.239,
+    "errMoa": -0.82,
+    "errIn": -2.59
+   },
+   {
+    "zero": 200,
+    "rangeYd": 600,
+    "measuredMil": 4.3,
+    "holdMil": 4.248,
+    "errMil": -0.052,
+    "errMoa": -0.18,
+    "errIn": -1.12
+   },
+   {
+    "zero": 200,
+    "rangeYd": 1000,
+    "measuredMil": 11.2,
+    "holdMil": 11.122,
+    "errMil": -0.078,
+    "errMoa": -0.27,
+    "errIn": -2.8
+   },
+   {
+    "zero": 200,
+    "rangeYd": 1101,
+    "measuredMil": 13.7,
+    "holdMil": 13.433,
+    "errMil": -0.267,
+    "errMoa": -0.92,
+    "errIn": -10.58
+   },
+   {
+    "zero": 200,
+    "rangeYd": 1166,
+    "measuredMil": 15.5,
+    "holdMil": 15.063,
+    "errMil": -0.437,
+    "errMoa": -1.5,
+    "errIn": -18.35
+   },
+   {
+    "zero": 200,
+    "rangeYd": 1200,
+    "measuredMil": 16.6,
+    "holdMil": 15.961,
+    "errMil": -0.639,
+    "errMoa": -2.2,
+    "errIn": -27.61
+   },
+   {
+    "zero": 200,
+    "rangeYd": 1323,
+    "measuredMil": 19.9,
+    "holdMil": 19.475,
+    "errMil": -0.425,
+    "errMoa": -1.46,
+    "errIn": -20.26
+   },
+   {
+    "zero": 300,
+    "rangeYd": 300,
+    "measuredMil": 1.1,
+    "holdMil": 0,
+    "errMil": -1.1,
+    "errMoa": -3.78,
+    "errIn": -11.88
+   },
+   {
+    "zero": 300,
+    "rangeYd": 600,
+    "measuredMil": 4.3,
+    "holdMil": 3.388,
+    "errMil": -0.912,
+    "errMoa": -3.14,
+    "errIn": -19.71
+   },
+   {
+    "zero": 300,
+    "rangeYd": 1000,
+    "measuredMil": 11.2,
+    "holdMil": 10.262,
+    "errMil": -0.938,
+    "errMoa": -3.23,
+    "errIn": -33.78
+   },
+   {
+    "zero": 300,
+    "rangeYd": 1101,
+    "measuredMil": 13.7,
+    "holdMil": 12.572,
+    "errMil": -1.128,
+    "errMoa": -3.88,
+    "errIn": -44.69
+   },
+   {
+    "zero": 300,
+    "rangeYd": 1166,
+    "measuredMil": 15.5,
+    "holdMil": 14.202,
+    "errMil": -1.298,
+    "errMoa": -4.46,
+    "errIn": -54.48
+   },
+   {
+    "zero": 300,
+    "rangeYd": 1200,
+    "measuredMil": 16.6,
+    "holdMil": 15.1,
+    "errMil": -1.5,
+    "errMoa": -5.16,
+    "errIn": -64.79
+   },
+   {
+    "zero": 300,
+    "rangeYd": 1323,
+    "measuredMil": 19.9,
+    "holdMil": 18.614,
+    "errMil": -1.286,
+    "errMoa": -4.42,
+    "errIn": -61.25
+   }
+  ]
+ }
+}
