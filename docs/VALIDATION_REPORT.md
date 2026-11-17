@@ -19,7 +19,7 @@ shift at 19:04. The comparison below uses the corrected pairing.
 | Achievement | Question | Where it stands |
 | --- | --- | --- |
 | Software correctness | Does the program calculate consistently? | Supported by automated tests. |
-| Reference agreement | Does it reproduce published data? | Partly, not established: one bullet, and the reference copy has not been reproduced by an independent reviewer. |
+| Reference agreement | Does it reproduce published data? | Partly, not established: one bullet, and the reference copy is owner-checked only (an independent reproduction was waived by the owner on 2026-11-16). |
 | Physical accuracy | Does it predict what an actual bullet does? | Not demonstrated. No measured flight data. |
 
 Stage 5 is not complete. See `docs/STAGE5_COMPLETION.md`.
@@ -92,7 +92,7 @@ Hornady defines or bands its BC, the atmosphere Hornady used, or how Hornady com
 
 ## What would resolve the rest
 
-1. An independent reviewer reproduces the Hornady table from the original page without the project's copy (`docs/REVIEWER_PROTOCOL.md`, `node tests/tools/compare-reviewer.js`). The owner's own check of each row, including the 50 yd column, is useful but is not independent.
+1. (Waived by the owner on 2026-11-16.) An independent reviewer would reproduce the Hornady table from the original page without the project's copy (`docs/REVIEWER_PROTOCOL.md`). Until then the reference copy is owner-checked only. The owner's own check of each row, including the 50 yd column, is still wanted.
 2. Find how Hornady computes the table (BC type, velocity banding, atmosphere, zero) and explain the 1.8% offset.
 3. Open the primary documents behind the G tables and compare every point, not one.
 4. Compare against fired-round data, such as Doppler tracks or measured drop at known ranges.

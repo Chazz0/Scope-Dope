@@ -1,5 +1,7 @@
 # Independent reviewer protocol: reproduce the Hornady comparison from the original manufacturer data
 
+**Status: this criterion was waived by the project owner on 2026-11-16. The protocol is kept in case it is reversed. See `docs/STAGE5_COMPLETION.md`.**
+
 Purpose: remove the chance that the engine is being checked against reference numbers that were copied wrongly.
 The project's copy has already been wrong once (a page-reader output that shifted every row one distance column).
 This protocol produces a second copy made without the project's copy.

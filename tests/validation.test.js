@@ -149,16 +149,35 @@ test('the reviewer protocol says the reviewer must not be shown the project valu
   assert.match(t, /original manufacturer/i);
 });
 
-test('Stage 5 is only called complete when every criterion is checked, and the reviewer criterion needs a real review file', () => {
+test('Stage 5 is only called complete when every criterion is checked or formally waived, and the reviewer box needs a real review file', () => {
   const t = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
-  const boxes = t.match(/^- \[[ x]\] /gm) || [];
+  const boxes = t.match(/^- \[[ x~]\] /gm) || [];
   assert.ok(boxes.length >= 6, 'criteria list is missing');
-  const allChecked = boxes.every(b => b.includes('[x]'));
+  const settled = boxes.every(b => b.includes('[x]') || b.includes('[~]'));
   const status = (t.match(/^\*\*Stage 5 status: ([A-Z ]+)\*\*/m) || [])[1];
   assert.ok(status, 'status line missing');
-  assert.strictEqual(status === 'COMPLETE', allChecked, 'status says ' + status + ' but the checklist ' + (allChecked ? 'is' : 'is not') + ' fully checked');
+  assert.strictEqual(status === 'COMPLETE', settled, 'status says ' + status + ' but the checklist ' + (settled ? 'is' : 'is not') + ' fully settled');
   const reviewerLine = t.split('\n').find(l => /independent reviewer reproduced/i.test(l)) || '';
   if (reviewerLine.includes('[x]')) assert.ok(fs.existsSync(path.join(__dirname, 'validation', 'reviewer-results.json')), 'reviewer criterion is checked but there is no reviewer-results.json');
+});
+
+test('a waived criterion carries who waived it, when, and what it leaves unestablished', () => {
+  const t = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
+  const waived = t.split('\n').filter(l => l.startsWith('- [~] '));
+  assert.ok(waived.length >= 1, 'the reviewer criterion should be recorded as waived');
+  for (const l of waived) {
+    assert.match(l, /WAIVED by the project owner on 20\d\d-\d\d-\d\d/, 'waiver needs who and when: ' + l.slice(0, 60));
+    assert.match(l, /owner-checked only/, 'waiver must say what it leaves unestablished: ' + l.slice(0, 60));
+  }
+  assert.ok(waived.some(l => /independent reviewer reproduced/i.test(l)), 'the reviewer criterion is not the waived one');
+});
+
+test('a waived reviewer does not let the Hornady data support a Verified label', () => {
+  const t = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
+  assert.match(t, /no component[^.]*Verified[^.]*Hornady/i);
+  const rows = sources.split('\n').filter(l => /^\| (Drag equation|G1 drag table|G7 drag table)/.test(l));
+  assert.strictEqual(rows.length, 3);
+  for (const l of rows) assert.ok(/\*\*Unverified\*\*/.test(l), l.slice(0, 40));
 });
 
 test('the sources document separates software correctness, reference agreement and physical accuracy', () => {

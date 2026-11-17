@@ -5,17 +5,24 @@ Stage 5 is complete only when the evidence supports the claims. It is not comple
 **Stage 5 status: NOT COMPLETE**
 
 `tests/validation.test.js` fails if the status above says COMPLETE while any box below is unchecked, or if the
-reviewer box is checked without `tests/validation/reviewer-results.json`. Check a box only with evidence in the repo.
+reviewer box is checked without `tests/validation/reviewer-results.json`. Check a box only with evidence in the repo. `[~]` means formally waived by the project owner. A waiver is not evidence: it records a decision and what it leaves unestablished.
 
 ## Criteria
 
-- [ ] An independent reviewer reproduced the Hornady comparison from the original manufacturer page, without the project's transcription (`tests/validation/reviewer-results.json`)
+- [~] An independent reviewer reproduced the Hornady comparison from the original manufacturer page, without the project's transcription. WAIVED by the project owner on 2026-11-16 (20:23). The Hornady reference copy stays owner-checked only: it rests on the author's transcription and the owner's correction, and was not independently reproduced.
 - [ ] A second, different manufacturer data set has been reproduced the same way, covering something the first does not (a G7 bullet, another velocity, altitude or temperature)
 - [ ] The origin of the G1 and G7 tables is established and every point of each was compared with that source
 - [ ] The steady offset of about 1.8% in effective BC against the Hornady table is explained
 - [ ] The standard atmosphere was compared with a source that was opened and read
 - [ ] The spin-drift, stability and Coriolis formulas were compared with sources that were opened and read
 - [ ] Every claim in the reports and in `docs/MODEL_SOURCES.md` is backed by evidence in the repo, and no component is labeled Verified without it
+
+## What the waiver means
+
+- The Hornady numbers were copied by the author and corrected by the owner. Nobody who had not seen them has reproduced them.
+- Because of that, no component may be labeled Verified on the strength of the Hornady table alone. The drag tables and the drag equation stay Unverified.
+- Reports keep saying the reference copy was owner-checked only. The waiver does not change what the evidence shows.
+- The protocol and tool remain in the repo (`docs/REVIEWER_PROTOCOL.md`, `tests/tools/compare-reviewer.js`) if the decision is reversed.
 
 ## Three separate achievements
 
