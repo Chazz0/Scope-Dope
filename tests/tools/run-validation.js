@@ -40,6 +40,45 @@ for (const c of R.trajectoryCases) {
   }
 }
 
+// Labeled sensitivity, not a validation and not a correction: the Hornady LE 6.5 CM case re-run in the Aberdeen atmosphere.
+// The ICAO run above stays the primary pre-registered assumption. BC and solver are unchanged. Neither atmosphere is selected.
+for (const c of R.trajectoryCases) {
+  const a = c.assumptions, pub = c.inputsPublished, ab = R.atmospheres.HORNADY_ABERDEEN;
+  for (const [name, reading] of Object.entries(c.readings)) {
+    const inp = baseInputs({ v0: pub.v0Fps, bc: pub.bcG1, wt: pub.weightGr, diam: a.diamIn, h: a.sightHeightIn, zero: reading.zeroYd, tempF: ab.tempF, pressInHg: ab.pressInHg, humidity: ab.humidity, altFt: ab.altFt, model: 'G1' });
+    const ranges = Object.keys(reading.rows).map(Number);
+    const M = S.buildModel(inp, Math.max(...ranges) * 1.05);
+    for (const r of ranges) {
+      const w = reading.rows[r]; if (w === null) continue;
+      const d = S.dopeAt(M, inp, r), vDiff = pct(d.vFps, w.v), dDiff = d.dropIn - w.drop, dTol = Math.max(T.dropIn.minAbs, Math.abs(w.drop) * T.dropIn.pct / 100);
+      results.push({ kind: 'sensitivity', id: c.id, reading: name, atmosphere: 'HORNADY_ABERDEEN', range: r, vPub: w.v, vOurs: Number(d.vFps.toFixed(1)), vPct: Number(vDiff.toFixed(2)), dropPub: w.drop, dropOurs: Number(d.dropIn.toFixed(2)), dropDiff: Number(dDiff.toFixed(2)), pass: Math.abs(vDiff) <= T.velocityPct.value && Math.abs(dDiff) <= dTol });
+    }
+  }
+}
+
+// Second-manufacturer and worked-example datasets. Each is run under every atmosphere listed for it and all results are
+// reported. No atmosphere is selected as correct and no BC is changed.
+for (const d of R.datasets || []) {
+  for (const an of d.atmospheresRun) {
+    const atm = an === 'STATED_CONDITIONS' ? d.statedConditions : R.atmospheres[an];
+    const bc = an === 'STATED_CONDITIONS' ? d.bcUncorrected : d.bc;
+    const inp = baseInputs({ v0: d.muzzle.v, bc, wt: d.weightGr || 150, diam: d.diamIn || 0.308, h: d.sightHeightIn, zero: d.zeroYd,
+      tempF: atm.tempF, pressInHg: atm.pressInHg, humidity: atm.humidity, altFt: atm.altFt, model: d.model });
+    const ranges = Object.keys(d.rows).map(Number);
+    const M = S.buildModel(inp, Math.max(...ranges) * 1.05);
+    for (const r of ranges) {
+      const w = d.rows[r];
+      const x = S.dopeAt(M, inp, r);
+      const row = { kind: 'dataset', id: d.id, atmosphere: an, bcUsed: bc, range: r };
+      let pass = true;
+      if (w.v !== null) { const vd = pct(x.vFps, w.v); Object.assign(row, { vPub: w.v, vOurs: Number(x.vFps.toFixed(1)), vPct: Number(vd.toFixed(2)), vPass: Math.abs(vd) <= T.velocityPct.value }); pass = pass && row.vPass; }
+      if (w.drop !== null) { const dd = x.dropIn - w.drop, tol = Math.max(T.dropIn.minAbs, Math.abs(w.drop) * T.dropIn.pct / 100); Object.assign(row, { dropPub: w.drop, dropOurs: Number(x.dropIn.toFixed(2)), dropDiff: Number(dd.toFixed(2)), dropTol: Number(tol.toFixed(2)), dropPass: Math.abs(dd) <= tol }); pass = pass && row.dropPass; }
+      row.pass = pass;
+      results.push(row);
+    }
+  }
+}
+
 // Diagnostic only, never a validation: the G1 BC that would make the engine's velocity equal each published velocity.
 // If these differ a lot from the published BC, the published numbers and the published BC are not describing the same
 // calculation (or the numbers were not transcribed correctly). It does not say which one is wrong.
@@ -57,7 +96,9 @@ if (process.argv.includes('--json')) { console.log(JSON.stringify(results, null,
 for (const x of results) {
   if (x.kind === 'table') console.log((x.pass ? 'MATCH   ' : 'DIFFERS ') + x.id + '  ' + x.what + '  published ' + x.published + '  ours ' + x.ours + '  diff ' + x.diff + '  (tolerance ' + x.tol + ')');
   else if (x.kind === 'notObtained') console.log('NOT OBTAINED ' + x.id + ' [' + x.reading + '] ' + x.range + ' yd  no usable published value for this row (missing or placeholder in the source), so no comparison was made');
+  else if (x.kind === 'sensitivity') console.log('SENSITIVITY ' + x.id + ' [' + x.atmosphere + ', not a validation] ' + x.range + ' yd  velocity ' + x.vPub + ' vs ' + x.vOurs + ' (' + x.vPct + '%)  drop ' + x.dropPub + ' vs ' + x.dropOurs + ' in (diff ' + x.dropDiff + ')');
+  else if (x.kind === 'dataset') console.log((x.pass ? 'MATCH   ' : 'DIFFERS ') + x.id + ' [' + x.atmosphere + ', BC ' + x.bcUsed + '] ' + x.range + ' yd  ' + (x.vPub !== undefined ? 'velocity ' + x.vPub + ' vs ' + x.vOurs + ' (' + x.vPct + '%)  ' : '') + (x.dropPub !== undefined ? 'drop ' + x.dropPub + ' vs ' + x.dropOurs + ' in (diff ' + x.dropDiff + ', tol ' + x.dropTol + ')' : ''));
   else console.log((x.vPass && x.dropPass ? 'MATCH   ' : 'DIFFERS ') + x.id + ' [' + x.reading + '] ' + x.range + ' yd  velocity ' + x.vPub + ' vs ' + x.vOurs + ' (' + x.vPct + '%)  drop ' + x.dropPub + ' vs ' + x.dropOurs + ' in (diff ' + x.dropDiff + ', tol ' + x.dropTol + ')');
 }
-const n = results.filter(x => x.kind !== 'notObtained').length, m = results.filter(x => x.kind === 'notObtained' ? false : (x.kind === 'table' ? x.pass : (x.vPass && x.dropPass))).length;
+const n = results.filter(x => x.kind !== 'notObtained' && x.kind !== 'sensitivity').length, m = results.filter(x => x.kind === 'notObtained' ? false : (x.kind === 'table' || x.kind === 'dataset' ? x.pass : (x.vPass && x.dropPass))).length;
 console.log('\n' + m + ' of ' + n + ' comparisons within tolerance. This is not proof of accuracy.');

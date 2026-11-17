@@ -34,7 +34,7 @@ A component can be Tested and also Unverified. Most of this app is.
 | G1 drag table (`G1`) | Tested | **Unverified** | One point agrees: Cd 0.5133 at Mach 3 against 0.51 printed by Applied Ballistics (evidence AB-G1-M3). The other points were not checked. The origin of the table in this file is not established, see below. |
 | G7 drag table (`G7`) | Tested | **Unverified** | One point agrees: Cd 0.2424 at Mach 3 against 0.24 (evidence AB-G7-M3). The other points were not checked. Origin not established. |
 | BC to SI factor, 703.0696 | Tested | **Verified**, scope: the unit conversion only | Arithmetic from the exact definitions of the pound and the inch: 0.45359237 kg divided by 0.0254 squared. Checked in `tests/validation.test.js`. |
-| Drag equation, `a = (pi/8) rho Cd(M) v / BC` | Tested | **Unverified** | One manufacturer table agrees within tolerance from 100 to 500 yd, with a steady offset of about 1.8% in effective BC (see the validation report). That is one bullet, not verification, and the offset is unexplained. |
+| Drag equation, `a = (pi/8) rho Cd(M) v / BC` | Tested | **Unverified** | Agrees within tolerance with published tables from Hornady (several bullets) and Federal (a G7 bullet), 100 comparisons of 103 in total across both candidate atmospheres. The 1.8% BC offset in the first Hornady case disappears in the Aberdeen atmosphere (hypothesis, not confirmed). The reference copies were read by a page tool and not independently reproduced, so this is not verification. |
 | Atmosphere: ISA pressure, moist-air density, speed of sound with gamma 1.4 | Tested | **Unverified** | Sea-level results are close to the commonly quoted ICAO values, but those values were quoted from memory and no source was opened for this. |
 | RK2 integrator, 0.5 ms step | Tested | **Unverified** | Tests measure sensitivity to the step size. That compares the code with itself. |
 | Zeroing and angled shots | Tested | **Unverified** | No external comparison. |
@@ -57,6 +57,20 @@ This is not settled, and this document does not claim it is.
 
 None of the primary documents behind the G tables was found and compared line by line with the tables in
 `index.html`. Until that is done, both tables stay **Unverified**, even though one point on each agrees.
+
+### Comparison of every point with a secondary copy (2026-11-16)
+
+`node tests/tools/compare-g-tables.js` compares all 79 G1 and 83 G7 points in `index.html` with a secondary transcription of another open-source project's data files (`tests/validation/third-party-tables/`, see its `PROVENANCE.md`). G1: identical at 79 of 79. G7: identical at all 83 shared Mach points; the other copy has one extra point at Mach 1.125 (Cd 0.3987 against 0.39845 interpolated here, a difference of 0.00025). The origin of that copy is unknown, so this does not verify either table. Both stay **Unverified**.
+
+## Atmosphere and the 1.8% offset (hypothesis)
+
+Hornady's own pages disagree on its standard atmosphere: hornady.com/bc says ICAO (59 F, 29.92 inHg, 0% RH); the Hornady external-ballistics page says Aberdeen (59 F, 29.53 inHg, 78% RH). Both were declared before any run. In the Aberdeen atmosphere the engine reproduces the Hornady LE table and the Hornady resource-page tables to within about 0.07% in velocity; in ICAO they differ by up to 1.4% for the round-nose bullet. This is consistent with Hornady using the Aberdeen atmosphere, but no Hornady page says so for the LE table, so it is a hypothesis. Federal does not state its atmosphere and agrees under both. Nothing was selected, and no BC or solver code changed.
+
+## Formulas checked against opened sources (qualitative only)
+
+- **Miller stability.** The formula was reconstructed from an opened description; the constants 30 and 2800 fps match. The pressure reference may differ (29.92 inHg here, 750 mmHg = 29.53 inHg in some descriptions), worth about 1.3% in the stability factor. Flagged, not changed. The code was not compared with Miller's original paper.
+- **Spin drift and Coriolis.** The Applied Ballistics article opened gives magnitudes (spin drift about 8 to 9 in at 1000 yd for a typical match bullet; Coriolis at most about 10 to 12 in) and directions, and no formulas. Magnitudes are not a quantitative check, so both stay Unverified.
+- **Atmosphere constants.** No readable authoritative source has been opened. Unverified.
 
 ## Known limits of this model
 

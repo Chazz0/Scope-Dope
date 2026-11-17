@@ -220,3 +220,89 @@ test('the sources document separates software correctness, reference agreement a
   for (const w of ['Software correctness', 'Reference agreement', 'Physical accuracy']) assert.ok(sources.includes(w), w + ' is missing');
   assert.match(sources, /Physical accuracy[^\n]*NOT DEMONSTRATED/);
 });
+
+// ---- Second manufacturer datasets and the atmosphere sensitivity (validation round of 21:02) ----
+const runJson = () => JSON.parse(execFileSync('node', [path.join(root, 'tests', 'tools', 'run-validation.js'), '--json'], { encoding: 'utf8' }));
+
+test('two candidate atmospheres are declared before any dataset is run, each with its source', () => {
+  assert.ok(refs.atmospheres.ICAO && refs.atmospheres.HORNADY_ABERDEEN);
+  assert.deepStrictEqual([refs.atmospheres.ICAO.tempF, refs.atmospheres.ICAO.pressInHg, refs.atmospheres.ICAO.humidity], [59, 29.92, 0]);
+  assert.deepStrictEqual([refs.atmospheres.HORNADY_ABERDEEN.tempF, refs.atmospheres.HORNADY_ABERDEEN.pressInHg, refs.atmospheres.HORNADY_ABERDEEN.humidity], [59, 29.53, 78]);
+  for (const a of Object.values(refs.atmospheres)) assert.ok(a.source && a.source.length > 20);
+});
+
+test('a second manufacturer and a G7 bullet are in the data, with what the source does not publish', () => {
+  const ids = refs.datasets.map(d => d.id);
+  assert.ok(ids.includes('FEDERAL-GM-6.5CM-130-G7'), 'Federal G7 dataset missing');
+  const fed = refs.datasets.find(d => d.id === 'FEDERAL-GM-6.5CM-130-G7');
+  assert.strictEqual(fed.model, 'G7'); assert.strictEqual(fed.bc, 0.287);
+  assert.notStrictEqual(fed.manufacturer, 'Hornady');
+  assert.ok(fed.notPublished.some(x => /atmosphere/i.test(x)));
+  assert.ok(ids.filter(i => i.startsWith('HORNADY-')).length >= 6, 'the Hornady resource-page tables are missing');
+});
+
+test('placeholder cells in a source stay null and are never filled in by inference', () => {
+  const fed = refs.datasets.find(d => d.id === 'FEDERAL-GM-6.5CM-130-G7');
+  assert.strictEqual(fed.rows['100'].drop, null, 'Federal 100 yd average-range trajectory is an image placeholder');
+  assert.ok(fed.cellNotes && /placeholder/i.test(JSON.stringify(fed.cellNotes)));
+  assert.ok(fed.excludedTables && /long range/i.test(JSON.stringify(fed.excludedTables)) && /zero/i.test(JSON.stringify(fed.excludedTables)));
+});
+
+test('transcription check for every dataset: each row\'s energy matches its velocity', () => {
+  let checked = 0;
+  for (const d of refs.datasets) {
+    const energy = (v) => v * v * d.weightGr / 450240;
+    if (d.muzzle && d.muzzle.e) { assert.ok(Math.abs(energy(d.muzzle.v) - d.muzzle.e) <= 2, d.id + ' muzzle'); checked++; }
+    for (const [r, w] of Object.entries(d.rows)) if (w.v !== null && w.e) {
+      const ok = Math.abs(energy(w.v) - w.e) <= 2;
+      if (!ok) assert.ok(d.energyCheckExceptions && d.energyCheckExceptions[r], d.id + ' ' + r + ' yd: ' + w.v + ' fps vs ' + w.e + ' ft-lb, and no documented exception');
+      checked++;
+    }
+  }
+  assert.ok(checked >= 20, 'too few rows were checked: ' + checked);
+});
+
+test('every dataset is run under every atmosphere that applies, and failures are reported with the passes', () => {
+  const out = runJson().filter(x => x.kind === 'dataset');
+  assert.ok(out.length > 0);
+  for (const d of refs.datasets) {
+    const mine = out.filter(x => x.id === d.id);
+    const atmos = new Set(mine.map(x => x.atmosphere));
+    for (const a of d.atmospheresRun) assert.ok(atmos.has(a), d.id + ' was not run under ' + a);
+    if (d.atmospheresRun.length > 1) assert.ok(d.atmospheresRun.length >= 2);
+  }
+  assert.ok(out.some(x => x.pass === false) || out.every(x => x.pass === true), 'results must carry a pass flag');
+});
+
+test('the dataset runner does not change the tolerances', () => {
+  assert.strictEqual(refs.tolerances.velocityPct.value, 1.0);
+  assert.strictEqual(refs.tolerances.dropIn.pct, 2.0);
+  assert.strictEqual(refs.tolerances.dropIn.minAbs, 0.3);
+});
+
+test('the G table comparison reports every point and states that agreement between copies is not verification', () => {
+  const out = JSON.parse(execFileSync('node', [path.join(root, 'tests', 'tools', 'compare-g-tables.js'), '--json'], { encoding: 'utf8' }));
+  assert.strictEqual(out.G1.ourPoints, 79); assert.strictEqual(out.G7.ourPoints, 83);
+  assert.strictEqual(out.G1.theirPoints, 79); assert.strictEqual(out.G7.theirPoints, 84);
+  assert.strictEqual(out.G1.valuesIdentical + out.G1.valueDiffs.length, out.G1.machPointsInBoth);
+  const txt = execFileSync('node', [path.join(root, 'tests', 'tools', 'compare-g-tables.js')], { encoding: 'utf8' });
+  assert.match(txt, /does not verify either/);
+  const readme = fs.readFileSync(path.join(__dirname, 'validation', 'third-party-tables', 'PROVENANCE.md'), 'utf8');
+  assert.match(readme, /secondary/i); assert.match(readme, /not authoritative/i);
+});
+
+test('the atmosphere finding is labeled a hypothesis and neither atmosphere is declared correct', () => {
+  for (const f of ['docs/MODEL_SOURCES.md', 'docs/VALIDATION_REPORT.md', 'docs/STAGE5_COMPLETION.md']) {
+    const t = fs.readFileSync(path.join(root, f), 'utf8');
+    assert.match(t, /hypothesis/i, f);
+    assert.doesNotMatch(t, /offset (is|was) explained by|the offset is now explained/i, f);
+  }
+  assert.match(refs.atmosphereNote, /neither is selected/i);
+});
+
+test('the second-dataset and G-table criteria stay open until the evidence exists', () => {
+  const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
+  for (const k of ['A second, different manufacturer', 'The origin of the G1 and G7 tables', 'The steady offset']) {
+    assert.match(c, new RegExp('- \\[ \\] ' + k), k + ' must stay open');
+  }
+});

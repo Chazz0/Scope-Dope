@@ -128,5 +128,458 @@
     }
    }
   }
+ ],
+ "atmospheres": {
+  "ICAO": {
+   "tempF": 59,
+   "pressInHg": 29.92,
+   "humidity": 0,
+   "altFt": 0,
+   "source": "https://www.hornady.com/bc states BCs are corrected to the ICAO standard atmosphere (59 F, 29.92 inHg, 0% RH), as read by a summarizing page reader."
+  },
+  "HORNADY_ABERDEEN": {
+   "tempF": 59,
+   "pressInHg": 29.53,
+   "humidity": 78,
+   "altFt": 0,
+   "source": "Hornady External Ballistics page quotes 'standard conditions for the Aberdeen test site': sea level, 59 F, 29.53 inHg, 78% RH, as read by a summarizing page reader."
+  }
+ },
+ "atmosphereNote": "Hornady's own pages disagree on which standard atmosphere its BCs use. Both are declared here before any dataset was run. Every dataset is run under each applicable atmosphere, both results are reported, and neither is selected as correct. STATED_CONDITIONS means the dataset's own printed conditions, used only where the source prints them.",
+ "preRegistration": "Datasets, interpretations, atmospheres and tolerances below were written before the first run of tests/tools/run-validation.js on them (2026-11-16, after the 21:02 request). Tolerances are unchanged from the original three.",
+ "datasets": [
+  {
+   "id": "FEDERAL-GM-6.5CM-130-G7",
+   "manufacturer": "Federal Premium",
+   "source": "Gold Medal Berger 6.5 Creedmoor 130 gr Berger AR Hybrid OTM, part GM65CRDBH130",
+   "url": "https://www.federalpremium.com/rifle/gold-medal/gold-medal-berger/11-GM65CRDBH130.html",
+   "model": "G7",
+   "bc": 0.287,
+   "weightGr": 130,
+   "diamIn": 0.264,
+   "sightHeightIn": 1.5,
+   "zeroYd": 100,
+   "muzzle": {
+    "v": 2875,
+    "e": 2386,
+    "drop": null
+   },
+   "rows": {
+    "50": {
+     "v": null,
+     "e": null,
+     "drop": -0.2
+    },
+    "100": {
+     "v": 2709,
+     "e": 2119,
+     "drop": null
+    },
+    "200": {
+     "v": 2550,
+     "e": 1877,
+     "drop": -3.2
+    },
+    "300": {
+     "v": 2396,
+     "e": 1657,
+     "drop": -11.8
+    },
+    "400": {
+     "v": 2247,
+     "e": 1457,
+     "drop": null
+    },
+    "500": {
+     "v": 2104,
+     "e": 1277,
+     "drop": null
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere",
+    "barrel length",
+    "drag-model velocity banding"
+   ],
+   "cellNotes": {
+    "100": "The Average Range 100 yd trajectory cell is an image placeholder (symbol.gif) with no value. It is left null and not inferred as 0.",
+    "400": "Average Range table stops at 300 yd.",
+    "500": "Average Range table stops at 300 yd."
+   },
+   "excludedTables": {
+    "Long Range trajectory": "Excluded. Its zero range is not stated (the caption says zeroed at 100 yd but the 100 yd value is +1.6 in, so the caption does not describe this table), and its 200 yd cell is a placeholder.",
+    "Wind drift at 10 mph": "Not compared. The heading has no values on the page as read, and the crosswind model is a separate question."
+   },
+   "pairingNote": "Read by a page-reading tool, not seen by the author. Tables are labeled Muzzle/100/200/300/400/500 Y (velocity, energy) and 50/100/200/300 Y (Average Range). The 130 gr and 2875 fps figures reproduce the printed energies (energy check in tests). A second person has not reproduced this copy."
+  },
+  {
+   "id": "HORNADY-SPIRE-180-G1-0.425",
+   "manufacturer": "Hornady",
+   "source": "Hornady External Ballistics page, 30 cal 180 gr spire point",
+   "url": "https://www.hornady.com/team-hornady/external-ballistics",
+   "model": "G1",
+   "bc": 0.425,
+   "weightGr": 180,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 100,
+   "muzzle": {
+    "v": 3000,
+    "e": 3597,
+    "drop": -1.5
+   },
+   "rows": {
+    "50": {
+     "v": 2887,
+     "e": 3331,
+     "drop": -0.2
+    },
+    "100": {
+     "v": 2777,
+     "e": 3082,
+     "drop": 0.0
+    },
+    "200": {
+     "v": 2565,
+     "e": 2629,
+     "drop": -3.0
+    },
+    "300": {
+     "v": 2362,
+     "e": 2230,
+     "drop": -11.3
+    },
+    "400": {
+     "v": 2169,
+     "e": 1880,
+     "drop": -25.9
+    },
+    "500": {
+     "v": 1985,
+     "e": 1574,
+     "drop": -47.8
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere for this table (the page states standard conditions for the book generally, not for this table)"
+   ],
+   "note": "Printed BC 0.425, sectional density 0.271."
+  },
+  {
+   "id": "HORNADY-ROUNDNOSE-180-G1-0.241",
+   "manufacturer": "Hornady",
+   "source": "Hornady External Ballistics page, 30 cal 180 gr round nose",
+   "url": "https://www.hornady.com/team-hornady/external-ballistics",
+   "model": "G1",
+   "bc": 0.241,
+   "weightGr": 180,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 100,
+   "muzzle": {
+    "v": 3000,
+    "e": 3597,
+    "drop": -1.5
+   },
+   "rows": {
+    "50": {
+     "v": 2803,
+     "e": 3139,
+     "drop": -0.2
+    },
+    "100": {
+     "v": 2614,
+     "e": 2731,
+     "drop": 0.0
+    },
+    "200": {
+     "v": 2259,
+     "e": 2040,
+     "drop": -3.6
+    },
+    "300": {
+     "v": 1933,
+     "e": 1493,
+     "drop": -14.1
+    },
+    "400": {
+     "v": 1639,
+     "e": 1073,
+     "drop": -34.0
+    },
+    "500": {
+     "v": 1385,
+     "e": 767,
+     "drop": -67.0
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere for this table (the page states standard conditions for the book generally, not for this table)"
+   ],
+   "note": "Printed BC 0.241. A round-nose bullet fits the G1 shape poorly, so a larger difference here would say something about G1 BC use, not necessarily about the engine.",
+   "energyCheckExceptions": {
+    "50": "Printed energy 3139 ft-lb; 2803 fps at 180 gr gives 3141.1, a 2.05 ft-lb gap, just over the 2 ft-lb check. Not corrected. It may be a typo in the source or in the page read. Only the velocity and drop are compared, never the energy, so this does not enter any comparison."
+   }
+  },
+  {
+   "id": "HORNADY-CORR-TEST1",
+   "manufacturer": "Hornady",
+   "source": "Hornady External Ballistics page, correction test #1 (Standard conditions)",
+   "url": "https://www.hornady.com/team-hornady/external-ballistics",
+   "model": "G1",
+   "bc": 0.338,
+   "bcUncorrected": 0.338,
+   "weightGr": null,
+   "diamIn": null,
+   "sightHeightIn": 1.5,
+   "zeroYd": 100,
+   "muzzle": {
+    "v": 2900,
+    "e": null,
+    "drop": -1.5
+   },
+   "rows": {
+    "100": {
+     "v": 2627,
+     "e": null,
+     "drop": 0.0
+    },
+    "200": {
+     "v": 2371,
+     "e": null,
+     "drop": -3.6
+    },
+    "300": {
+     "v": 2129,
+     "e": null,
+     "drop": -13.3
+    },
+    "400": {
+     "v": 1901,
+     "e": null,
+     "drop": -30.8
+    },
+    "500": {
+     "v": 1690,
+     "e": null,
+     "drop": -57.9
+    }
+   },
+   "statedConditions": {
+    "tempF": 59,
+    "pressInHg": 29.53,
+    "humidity": 78,
+    "altFt": 0
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN",
+    "STATED_CONDITIONS"
+   ],
+   "interpretations": "Three runs, none preferred. (1) and (2): the printed 'BC used' (the BC Hornady corrected for these conditions) in each standard atmosphere. (3) STATED_CONDITIONS: the uncorrected BC 0.338 in the printed conditions, which is what Hornady's correction is meant to reproduce.",
+   "notPublished": [
+    "bullet weight and diameter (do not affect this engine's drag, only spin drift and stability)",
+    "energy column"
+   ],
+   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here."
+  },
+  {
+   "id": "HORNADY-CORR-TEST2",
+   "manufacturer": "Hornady",
+   "source": "Hornady External Ballistics page, correction test #2 (Higher temperature)",
+   "url": "https://www.hornady.com/team-hornady/external-ballistics",
+   "model": "G1",
+   "bc": 0.355,
+   "bcUncorrected": 0.338,
+   "weightGr": null,
+   "diamIn": null,
+   "sightHeightIn": 1.5,
+   "zeroYd": 100,
+   "muzzle": {
+    "v": 2900,
+    "e": null,
+    "drop": -1.5
+   },
+   "rows": {
+    "100": {
+     "v": 2640,
+     "e": null,
+     "drop": 0.0
+    },
+    "200": {
+     "v": 2395,
+     "e": null,
+     "drop": -3.5
+    },
+    "300": {
+     "v": 2162,
+     "e": null,
+     "drop": -13.1
+    },
+    "400": {
+     "v": 1943,
+     "e": null,
+     "drop": -30.1
+    },
+    "500": {
+     "v": 1739,
+     "e": null,
+     "drop": -56.4
+    }
+   },
+   "statedConditions": {
+    "tempF": 89,
+    "pressInHg": 29.53,
+    "humidity": 78,
+    "altFt": 0
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN",
+    "STATED_CONDITIONS"
+   ],
+   "interpretations": "Three runs, none preferred. (1) and (2): the printed 'BC used' (the BC Hornady corrected for these conditions) in each standard atmosphere. (3) STATED_CONDITIONS: the uncorrected BC 0.338 in the printed conditions, which is what Hornady's correction is meant to reproduce.",
+   "notPublished": [
+    "bullet weight and diameter (do not affect this engine's drag, only spin drift and stability)",
+    "energy column"
+   ],
+   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here."
+  },
+  {
+   "id": "HORNADY-CORR-TEST3",
+   "manufacturer": "Hornady",
+   "source": "Hornady External Ballistics page, correction test #3 (Higher barometric pressure)",
+   "url": "https://www.hornady.com/team-hornady/external-ballistics",
+   "model": "G1",
+   "bc": 0.322,
+   "bcUncorrected": 0.338,
+   "weightGr": null,
+   "diamIn": null,
+   "sightHeightIn": 1.5,
+   "zeroYd": 100,
+   "muzzle": {
+    "v": 2900,
+    "e": null,
+    "drop": -1.5
+   },
+   "rows": {
+    "100": {
+     "v": 2614,
+     "e": null,
+     "drop": 0.0
+    },
+    "200": {
+     "v": 2346,
+     "e": null,
+     "drop": -3.6
+    },
+    "300": {
+     "v": 2094,
+     "e": null,
+     "drop": -13.6
+    },
+    "400": {
+     "v": 1858,
+     "e": null,
+     "drop": -31.5
+    },
+    "500": {
+     "v": 1641,
+     "e": null,
+     "drop": -59.5
+    }
+   },
+   "statedConditions": {
+    "tempF": 59,
+    "pressInHg": 31.0,
+    "humidity": 78,
+    "altFt": 0
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN",
+    "STATED_CONDITIONS"
+   ],
+   "interpretations": "Three runs, none preferred. (1) and (2): the printed 'BC used' (the BC Hornady corrected for these conditions) in each standard atmosphere. (3) STATED_CONDITIONS: the uncorrected BC 0.338 in the printed conditions, which is what Hornady's correction is meant to reproduce.",
+   "notPublished": [
+    "bullet weight and diameter (do not affect this engine's drag, only spin drift and stability)",
+    "energy column"
+   ],
+   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here."
+  },
+  {
+   "id": "HORNADY-CORR-TEST4",
+   "manufacturer": "Hornady",
+   "source": "Hornady External Ballistics page, correction test #4 (Higher altitude)",
+   "url": "https://www.hornady.com/team-hornady/external-ballistics",
+   "model": "G1",
+   "bc": 0.448,
+   "bcUncorrected": 0.338,
+   "weightGr": null,
+   "diamIn": null,
+   "sightHeightIn": 1.5,
+   "zeroYd": 100,
+   "muzzle": {
+    "v": 2900,
+    "e": null,
+    "drop": -1.5
+   },
+   "rows": {
+    "100": {
+     "v": 2693,
+     "e": null,
+     "drop": 0.0
+    },
+    "200": {
+     "v": 2495,
+     "e": null,
+     "drop": -3.3
+    },
+    "300": {
+     "v": 2306,
+     "e": null,
+     "drop": -12.2
+    },
+    "400": {
+     "v": 2124,
+     "e": null,
+     "drop": -27.6
+    },
+    "500": {
+     "v": 1952,
+     "e": null,
+     "drop": -50.8
+    }
+   },
+   "statedConditions": {
+    "tempF": 29,
+    "pressInHg": 21.0,
+    "humidity": 78,
+    "altFt": 0
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN",
+    "STATED_CONDITIONS"
+   ],
+   "interpretations": "Three runs, none preferred. (1) and (2): the printed 'BC used' (the BC Hornady corrected for these conditions) in each standard atmosphere. (3) STATED_CONDITIONS: the uncorrected BC 0.338 in the printed conditions, which is what Hornady's correction is meant to reproduce.",
+   "notPublished": [
+    "bullet weight and diameter (do not affect this engine's drag, only spin drift and stability)",
+    "energy column"
+   ],
+   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here. The page labels this 'Higher Altitude' but lists altitude as sea level; the 21.00 inHg pressure is used as printed."
+  }
  ]
 }

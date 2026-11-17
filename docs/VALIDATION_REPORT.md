@@ -80,6 +80,21 @@ Hornady defines or bands its BC, the atmosphere Hornady used, or how Hornady com
 - **Not ruled out:** the G1 table itself (both checks use it), the drag equation, the stated BC, how Hornady built
   the table, and the unconfirmed pairing.
 
+## Second-manufacturer data and the atmosphere sensitivity (2026-11-16, later)
+
+Registered before running: two candidate atmospheres (ICAO; Hornady's Aberdeen) and all tolerances unchanged. Each dataset is run under each applicable atmosphere and every result is reported; neither atmosphere was chosen. `node tests/tools/run-validation.js`.
+
+| Dataset | ICAO | Aberdeen | Notes |
+| --- | --- | --- | --- |
+| Federal GM 6.5 CM 130 gr, G7 .287 (atmosphere unstated) | 6 of 6 | 6 of 6 | Velocity differs 0.07 to 0.12% in ICAO, 0.17 to 0.68% in Aberdeen. 100 yd Average Range cell is a placeholder, left empty. |
+| Hornady 180 gr spire, G1 .425 | 6 of 6 | 6 of 6 | ICAO up to -0.76%; Aberdeen within 0.02%. |
+| Hornady 180 gr round nose, G1 .241 | 4 of 6 | 6 of 6 | ICAO -1.13% and -1.38% at 400 and 500 yd, outside the 1% tolerance. |
+| Hornady correction tests 1 to 4 (2900 fps) | 19 of 20 | 20 of 20 | Test 3 at 500 yd misses 1% in ICAO. Stated-conditions runs with the uncorrected BC 0.338: 20 of 20. |
+
+LE 6.5 CM case in Aberdeen (sensitivity only): velocity within 0.06% at 100 to 500 yd, drop within 0.04 in. In ICAO the same case was -0.09% to -0.60%.
+
+Reading: for the Hornady tables the Aberdeen atmosphere fits clearly better than ICAO, which supports the hypothesis that this explains the 1.8% BC offset. Hornady does not state this for the LE table, so it remains a hypothesis. The Federal table, whose atmosphere is unstated, fits ICAO a little better. One round-nose energy figure (3139 ft-lb at 50 yd) is 2 ft-lb from what its velocity implies; it is documented as an exception and not used in any comparison. These copies were read by a page tool and are unreproduced, and a pass does not verify the model.
+
 ## What this does and does not show
 
 - Under the owner's corrected pairing, the engine reproduces one manufacturer table within the stated tolerances
