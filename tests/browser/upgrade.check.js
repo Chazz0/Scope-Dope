@@ -50,6 +50,11 @@ const newPageWith = async (data) => {
   await page.goto(newBase + '/index.html'); await page.waitForTimeout(250); return { ctx, page };
 };
 
+// Step 7 records where each velocity came from. A rifle saved before that has no v0src or ''; either way it is treated as the user's own, so
+// presets never overwrite it. Nothing else may differ, so compare with that one field removed and require it to be absent or ''.
+const stripSrc = (people) => people.map(p => p.profiles.map(r => { const c = Object.assign({}, r); delete c.v0src; return c; }));
+const allLegacy = (people) => people.every(p => p.profiles.every(r => r.v0src == null || r.v0src === ''));
+
 let OLD;
 test('the old app built realistic saved data: 2 profiles, 3 rifles, non-default settings', async () => {
   OLD = await buildOldData(); const o = JSON.parse(OLD['scopedope.v2']);
@@ -60,7 +65,7 @@ test('loading it in the new code keeps every person, rifle field and session val
   const { ctx, page } = await newPageWith(OLD);
   await page.evaluate(() => { location.hash = '#rifle'; }); await page.waitForTimeout(150);
   const before = JSON.parse(OLD['scopedope.v2']), after = JSON.parse((await dump(page))['scopedope.v2']);
-  eq(after.people, before.people, 'people and every rifle field'); eq(after.session, before.session, 'session values'); eq(after.pi, before.pi, 'selected profile');
+  eq(stripSrc(after.people), stripSrc(before.people), 'every rifle field'); eq(after.people.map(p => p.name), before.people.map(p => p.name)); ok(allLegacy(after.people), 'legacy velocities are marked as the user\'s own'); eq(after.session, before.session, 'session values'); eq(after.pi, before.pi, 'selected profile');
   eq(after.schema, 1, 'only addition is the schema number');
   eq(Object.keys(after).sort(), Object.keys(before).concat(['schema']).sort(), 'no other top-level change');
   eq(page.errors, []); await ctx.close();
@@ -80,7 +85,7 @@ test('using every profile and rifle in the new code (viewing, switching, reloadi
     for (let i = 0; i < n; i++) { await page.selectOption('#profSel', String(i)); await page.waitForTimeout(80); } }
   await page.reload(); await page.waitForTimeout(250);
   const before = JSON.parse(OLD['scopedope.v2']), after = JSON.parse((await dump(page))['scopedope.v2']);
-  eq(after.people.map(p => p.profiles), before.people.map(p => p.profiles), 'every rifle, all fields'); eq(after.people.map(p => p.name), before.people.map(p => p.name));
+  eq(stripSrc(after.people), stripSrc(before.people), 'every rifle, all fields'); ok(allLegacy(after.people), 'legacy velocities stay marked as the user\'s own'); eq(after.people.map(p => p.name), before.people.map(p => p.name));
   eq(page.errors, []); await ctx.close();
 });
 test('rolling back is safe: the OLD app reads data the new code saved, with every rifle intact', async () => {

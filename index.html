@@ -305,7 +305,7 @@ input[type=range]{height:20px}
         <div class="col">
           <section class="panel" aria-label="Scope adjustment">
             <div class="dist">
-              <label class="lbl" for="dist" style="text-align:center">Distance to target</label>
+              <label class="lbl" for="dist" style="text-align:center">Distance to target (yards)</label>
               <div class="dist-row">
                 <button type="button" class="step" id="distDn" aria-label="Distance down 5 yards">&minus;</button>
                 <div class="dist-main"><input id="dist" type="number" inputmode="numeric" min="10" max="2000" step="5" value="400"><span class="dist-unit">yd</span></div>
@@ -388,10 +388,11 @@ input[type=range]{height:20px}
         <section class="card" aria-labelledby="h-range">
           <h2 id="h-range">Range card</h2>
           <p class="sub" id="cSummary"></p>
+          <details class="assess" id="cAssess"><summary id="cAssessSum">Calculated estimate. Not independently verified against measured bullet flight.</summary><p class="hint" id="cAssessNote"></p><ul id="cAssessList"></ul></details>
           <div class="grid3">
-            <div class="field"><label for="cStart">From (yd)</label><input id="cStart" type="number" inputmode="numeric" min="10" max="2000" step="5" value="100"></div>
-            <div class="field"><label for="cEnd">To (yd)</label><input id="cEnd" type="number" inputmode="numeric" min="10" max="2000" step="5" value="1000"></div>
-            <div class="field"><label for="cStep">Every (yd)</label><input id="cStep" type="number" inputmode="numeric" min="5" max="500" step="5" value="50"></div>
+            <div class="field"><label for="cStart">From (yards)</label><input id="cStart" type="number" inputmode="numeric" min="10" max="2000" step="5" value="100"></div>
+            <div class="field"><label for="cEnd">To (yards)</label><input id="cEnd" type="number" inputmode="numeric" min="10" max="2000" step="5" value="1000"></div>
+            <div class="field"><label for="cStep">Every (yards)</label><input id="cStep" type="number" inputmode="numeric" min="5" max="500" step="5" value="50"></div>
           </div>
           <div class="btnrow">
             <button type="button" class="btn" id="saveCsv" hidden>Save CSV</button>
@@ -438,7 +439,7 @@ input[type=range]{height:20px}
 
         <section class="card" aria-labelledby="h-load">
           <h2 id="h-load">Cartridge and bullet</h2>
-          <p class="sub">Picking a cartridge fills in a typical G1 factory load. Changing the grain rescales the coefficient to match. Hornady lists both a G1 and a G7 value for its bullets, so pick the drag model that matches the number you enter.</p>
+          <p class="sub">Picking a cartridge fills in a typical G1 factory load, but never replaces a muzzle velocity you entered. Changing the grain rescales the coefficient to match. Hornady lists both a G1 and a G7 value for its bullets, so pick the drag model that matches the number you enter.</p>
           <div class="grid2">
             <div class="field"><label for="preset">Cartridge</label><select id="preset"></select></div>
             <div class="field"><label for="model">Drag model</label><select id="model"><option value="G1" selected>G1</option><option value="G7">G7</option></select></div>
@@ -448,10 +449,18 @@ input[type=range]{height:20px}
             <input id="cname" type="text" maxlength="40" autocomplete="off" placeholder="e.g. .22-250 Rem">
           </div>
           <div class="grid2">
-            <div class="field"><label for="wt">Bullet weight (gr)</label><input id="wt" type="number" inputmode="decimal" min="15" max="800" step="1" value="168"></div>
+            <div class="field"><label for="wt">Bullet weight (grains)</label><input id="wt" type="number" inputmode="decimal" min="15" max="800" step="1" value="168"></div>
             <div class="field"><label for="bc">Ballistic coefficient</label><input id="bc" type="number" inputmode="decimal" min="0.05" max="1.2" step="any" value="0.462"></div>
-            <div class="field"><label for="v0">Muzzle velocity (fps)</label><input id="v0" type="number" inputmode="numeric" min="500" max="4500" step="10" value="2650"></div>
-            <div class="field"><label for="diam">Bullet diameter (in)</label><input id="diam" type="number" inputmode="decimal" min="0.17" max="0.6" step="any" value="0.308"></div>
+            <div class="field"><label for="v0">Your measured muzzle velocity (fps)</label><input id="v0" type="number" inputmode="numeric" min="500" max="4500" step="10" value="2650"></div>
+            <div class="field"><label for="diam">Bullet diameter (inches)</label><input id="diam" type="number" inputmode="decimal" min="0.17" max="0.6" step="any" value="0.308"></div>
+          </div>
+          <input type="hidden" id="v0src" value="factory">
+          <p class="hint" id="v0Src"></p>
+          <p class="hint" id="v0Factory"></p>
+          <div class="btnrow" id="v0Offer" hidden>
+            <button type="button" class="btn ghost" id="v0Use"></button>
+            <button type="button" class="btn warn" id="v0Confirm" hidden></button>
+            <button type="button" class="btn" id="v0Cancel" hidden></button>
           </div>
           <p class="hint" id="loadMsg" aria-live="polite" hidden></p>
           <div class="grid2">
@@ -464,9 +473,9 @@ input[type=range]{height:20px}
         <section class="card" aria-labelledby="h-scope">
           <h2 id="h-scope">Rifle and scope</h2>
           <div class="grid2">
-            <div class="field"><label for="zero">Zero distance (yd)</label><input id="zero" type="number" inputmode="numeric" min="25" max="1000" step="5" value="100"></div>
-            <div class="field"><label for="h">Scope height (in)</label><input id="h" type="number" inputmode="decimal" min="0.5" max="4" step="any" value="1.5"></div>
-            <div class="field"><label for="twist">Barrel twist, 1 in (in)</label><input id="twist" type="number" inputmode="decimal" min="5" max="20" step="any" value="10"></div>
+            <div class="field"><label for="zero">Zero distance (yards)</label><input id="zero" type="number" inputmode="numeric" min="25" max="1000" step="5" value="100"></div>
+            <div class="field"><label for="h">Scope height (inches)</label><input id="h" type="number" inputmode="decimal" min="0.5" max="4" step="any" value="1.5"></div>
+            <div class="field"><label for="twist">Twist rate: 1 turn in (inches)</label><input id="twist" type="number" inputmode="decimal" min="5" max="20" step="any" value="10"></div>
             <div class="field"><label for="tdir">Twist direction</label><select id="tdir"><option value="R" selected>Right</option><option value="L">Left</option></select></div>
           </div>
           <div class="field">
@@ -763,7 +772,7 @@ function assessResult(inp, ctx){
   const rangeYd = ctx && ctx.rangeYd != null ? ctx.rangeYd : null;
   const pEff = inp.pressInHg != null ? inp.pressInHg : 29.92 * Math.pow(1 - 2.25577e-5 * inp.altFt * 0.3048, 5.25588);
   // Warnings: the input is outside the conditions the reference comparisons covered.
-  if (rangeYd != null && rangeYd > V.rangeYd[1]) add('warning', 'range', 'Distance ' + rangeYd + ' yd is beyond the ' + V.rangeYd[1] + ' yd covered by reference comparisons. Treat this result with extra caution.');
+  if (rangeYd != null && rangeYd > V.rangeYd[1]) add('warning', 'range', ((ctx && ctx.rangeLabel) || 'Distance') + ' ' + rangeYd + ' yd, which is beyond the ' + V.rangeYd[1] + ' yd covered by reference comparisons. Treat this result with extra caution.');
   if (outside(inp.v0nom != null ? inp.v0nom : inp.v0, V.muzzleFps)) add('warning', 'muzzle', 'Muzzle velocity ' + Math.round(inp.v0nom != null ? inp.v0nom : inp.v0) + ' fps is outside the ' + V.muzzleFps[0] + ' to ' + V.muzzleFps[1] + ' fps covered by reference comparisons.');
   const bcr = inp.model === 'G7' ? V.bcG7 : V.bcG1;
   const bcOut = outside(inp.bc, bcr);
@@ -776,6 +785,7 @@ function assessResult(inp, ctx){
   const refCovered = !bcOut && !calOut;
   if (!refCovered) add('warning', 'noref', 'No reference comparison covers this load (caliber, weight or coefficient). Nothing in testing checked a load like it.');
   // Notes: incomplete inputs (what the result assumes or leaves out).
+  if (inp.v0src === 'factory') add('notice', 'v0factory', 'Muzzle velocity is a typical factory starting value, not a velocity you measured. Enter your own measured velocity for a result that fits your rifle.');
   if (inp.pressInHg == null) add('notice', 'pressureEst', 'Pressure not entered, so it is estimated from altitude with a standard atmosphere. Enter station pressure for a better estimate.');
   if (inp.latDeg == null) add('notice', 'noLat', 'Latitude not entered, so Coriolis effect is not included.');
   if (!(inp.twist > 0)) add('notice', 'noTwist', 'Twist rate is 0, so spin drift is not included.');
@@ -812,7 +822,7 @@ function assessResult(inp, ctx){
     diam:[0.17,0.6,0.308], twist:[5,20,10], humidity:[0,100,50], az:[0,360,0],
     vsens:[-5,10,0], vref:[-40,130,59]
   };
-  const PKEYS = ['pname','preset','cname','model','bc','wt','diam','v0','vref','vsens','zero','h','twist','tdir','click','temp','press','humidity','alt','lat'];
+  const PKEYS = ['pname','preset','cname','model','bc','wt','diam','v0','v0src','vref','vsens','zero','h','twist','tdir','click','temp','press','humidity','alt','lat'];
   const CHIP_DISTS = [100,200,300,400,500,600,800,1000];
   const CARD = ['N','NE','E','SE','S','SW','W','NW'];
 
@@ -822,7 +832,7 @@ function assessResult(inp, ctx){
 
   function profileDefaults(pid){
     const p = PRESETS.find(x => x.id === pid) || PRESETS[4];
-    return { pname:'My rifle', preset:p.id, cname:'', model:'G1', bc:String(p.bc), wt:String(p.wt), diam:String(p.d), v0:String(p.v0),
+    return { pname:'My rifle', preset:p.id, cname:'', model:'G1', bc:String(p.bc), wt:String(p.wt), diam:String(p.d), v0:String(p.v0), v0src:'factory',
       vref:'59', vsens:'0', zero:'100', h:'1.5', twist:String(p.tw), tdir:'R', click:'MOA:0.25', temp:'59', press:'', humidity:'50', alt:'0', lat:'' };
   }
   const sessionDefaults = () => ({ dist:'400', wind:'10', windHr:'3', angle:'0', az:'0', cStart:'100', cEnd:'1000', cStep:'50' });
@@ -910,7 +920,7 @@ function assessResult(inp, ctx){
           const old = store.session || {};
           store.session = Object.assign(sessionDefaults(), old);
           if (!old.windHr && old.side === 'L') store.session.windHr = '9';
-          store.profiles = store.profiles.map(p => Object.assign(profileDefaults('p308'), p));
+          store.profiles = store.profiles.map(p => Object.assign(profileDefaults('p308'), { v0src:'' }, p));
           return;
         }
       }
@@ -918,6 +928,7 @@ function assessResult(inp, ctx){
       if (v1){
         const o = JSON.parse(v1);
         const p = profileDefaults('p308');
+        p.v0src = '';
         PKEYS.forEach(k => { if (o[k] != null && k !== 'pname') p[k] = o[k]; });
         store.profiles = [p];
         store.session = Object.assign(sessionDefaults(), { dist:o.dist || '400', wind:o.wind || '10', angle:o.angle || '0', windHr: o.side === 'L' ? '9' : '3' });
@@ -932,8 +943,9 @@ function assessResult(inp, ctx){
   }
   function applyProfile(p){
     PKEYS.forEach(k => { if (p[k] != null) $(k).value = p[k]; });
+    if (p.v0src == null) $('v0src').value = '';   // saved before the source of the velocity was recorded: treated as the user's own
     if (!$('preset').value) $('preset').value = 'custom';
-    lastSelPreset = $('preset').value; setAnchor(); setLoadMsg('');
+    lastSelPreset = $('preset').value; setAnchor(); setLoadMsg(''); v0Offer = null; renderV0();
   }
   function applySession(s){
     ['dist','wind','angle','az','cStart','cEnd','cStep'].forEach(k => {
@@ -970,6 +982,7 @@ function assessResult(inp, ctx){
       const v = p[k];
       out[k] = typeof v === 'string' ? v.slice(0, 80) : (typeof v === 'number' && isFinite(v)) ? String(v) : d[k];
     });
+    if (typeof p.v0src !== 'string' || (p.v0src !== 'user' && p.v0src !== 'factory')) out.v0src = '';
     return out;
   }
   function exportCode(){
@@ -1011,15 +1024,25 @@ function assessResult(inp, ctx){
     const rifles = incoming.reduce((n, p) => n + p.profiles.length, 0);
     msg('Imported ' + incoming.length + (incoming.length === 1 ? ' profile' : ' profiles') + ' with ' + rifles + (rifles === 1 ? ' rifle' : ' rifles') + '. Nothing you already had was changed. Pick them under Saved profiles.');
   }
+  // Two entries with the same rifle name (two loads for one rifle) get the cartridge and weight added so they can be told apart.
+  function rifleLabel(p, i){
+    const all = store.profiles.map((q, j) => j === store.active ? collectProfile() : q);   // the open entry may have unsaved edits
+    if (i === store.active) p = all[i];
+    const base = p.pname || ('Rifle ' + (i + 1));
+    const dup = all.some((q, j) => j !== i && (q.pname || ('Rifle ' + (j + 1))) === base);
+    if (!dup) return base;
+    const pr = PRESETS.find(x => x.id === p.preset);
+    return base + ' · ' + (pr ? pr.name : (p.cname || 'Custom load')) + ' ' + (p.wt || '?') + ' gr';
+  }
   function rebuildProfiles(){
     const s = $('profSel'); s.innerHTML = '';
     store.profiles.forEach((p, i) => {
       const o = document.createElement('option'); o.value = String(i);
-      o.textContent = p.pname || ('Rifle ' + (i + 1)); s.appendChild(o);
+      o.textContent = rifleLabel(p, i); s.appendChild(o);
     });
     s.value = String(store.active);
     const q = $('quickProf'); q.innerHTML = '';
-    store.profiles.forEach((p, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = p.pname || ('Rifle ' + (i + 1)); q.appendChild(o); });
+    store.profiles.forEach((p, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = rifleLabel(p, i); q.appendChild(o); });
     people.forEach((p, j) => { if (j === pi) return; const po = document.createElement('option'); po.value = 'p' + j; po.textContent = 'Switch to ' + (p.name || ('Profile ' + (j + 1))); q.appendChild(po); });
     const m = document.createElement('option'); m.value = '__new'; m.textContent = '+ Add new rifle'; q.appendChild(m);
     q.value = String(store.active);
@@ -1089,7 +1112,7 @@ function assessResult(inp, ctx){
       distYd: num('dist'), windSpd: spd, windHr: windHr, windMph: Math.abs(cross), windFrom: cross >= 0 ? 'R' : 'L', headMph: head,
       angleDeg: num('angle'), azimuth: num('az'), latDeg: latDeg,
       tempF: tempF, altFt: num('alt'), pressInHg: pressInHg, humidity: num('humidity'),
-      v0nom: v0nom, v0: v0, bc: num('bc'), wt: num('wt'), h: num('h'), zero: num('zero'),
+      v0nom: v0nom, v0src: $('v0src').value, v0: v0, bc: num('bc'), wt: num('wt'), h: num('h'), zero: num('zero'),
       diam: num('diam'), twist: num('twist'), model: $('model').value === 'G7' ? 'G7' : 'G1',
       twistDir: $('tdir').value === 'L' ? 'L' : 'R',
       click: { unit: parts[0], size: parseFloat(parts[1]) }, problems: problems,
@@ -1280,6 +1303,7 @@ function assessResult(inp, ctx){
     const lines = [];
     lines.push('Scope Dope range card');
     lines.push(q($('cSummary').textContent));
+    lines.push(q('Calculated estimate. Not independently verified against measured bullet flight. Reference comparisons cover limited conditions.'));
     if (last){
       const i = last.inp;
       lines.push(q(Math.round(i.tempF) + 'F, ' + (i.pressInHg != null ? i.pressInHg + ' inHg' : 'pressure from altitude') + ', ' + i.humidity + '% humidity, ' + i.altFt + ' ft'));
@@ -1320,6 +1344,52 @@ function assessResult(inp, ctx){
     $('windArrow').setAttribute('transform', 'rotate(' + (h * 30) + ')');
   }
 
+  /* Muzzle velocity: yours versus the typical factory value (Step 7). The factory value is shown for reference and only
+     ever enters the field when the field was empty, still a starting value, or the user confirms. */
+  let v0Offer = null;
+  function renderV0(){
+    const src = $('v0src').value, pr = PRESETS.find(x => x.id === $('preset').value);
+    $('v0Src').textContent = src === 'factory'
+      ? 'Starting value: a typical factory velocity, not yet your own. Replace it with your chronograph reading.'
+      : (src === 'user' ? 'Your entered velocity. This is the velocity the calculation uses.' : 'Your saved velocity. This is the velocity the calculation uses.');
+    $('v0Factory').textContent = pr ? 'Typical factory velocity for ' + pr.name + ': ' + pr.v0 + ' fps. Reference only; the calculation uses the velocity above.' : '';
+    const p = v0Offer && PRESETS.find(x => x.id === v0Offer.preset);
+    $('v0Offer').hidden = !p;
+    if (p){
+      $('v0Use').textContent = 'Use the factory velocity (' + p.v0 + ' fps) instead'; $('v0Use').hidden = v0Offer.armed;
+      $('v0Confirm').textContent = 'Replace my ' + $('v0').value.trim() + ' fps with ' + p.v0 + ' fps'; $('v0Confirm').hidden = !v0Offer.armed;
+      $('v0Cancel').textContent = 'Keep my ' + $('v0').value.trim() + ' fps'; $('v0Cancel').hidden = !v0Offer.armed;
+    }
+  }
+  $('v0Use').addEventListener('click', () => { if (v0Offer){ v0Offer.armed = true; renderV0(); $('v0Confirm').focus(); } });
+  $('v0Cancel').addEventListener('click', () => { if (v0Offer){ v0Offer.armed = false; renderV0(); } });
+  $('v0Confirm').addEventListener('click', () => {
+    const p = v0Offer && PRESETS.find(x => x.id === v0Offer.preset); if (!p) return;
+    const mine = $('v0').value.trim();
+    $('v0').value = p.v0; $('v0src').value = 'factory'; v0Offer = null; renderV0();
+    setLoadMsg('Replaced your ' + mine + ' fps with the typical factory velocity ' + p.v0 + ' fps, as you confirmed. Enter your own measured velocity when you have it.');
+    update();
+  });
+
+  function renderChartAssess(inp){
+    const box = $('cAssess'), list = $('cAssessList'), sum = $('cAssessSum'), note = $('cAssessNote');
+    const head = 'Calculated estimate. Not independently verified against measured bullet flight.';
+    note.textContent = 'Reference comparisons cover limited conditions: manufacturer tables, up to ' + VALIDATED.rangeYd[1] + ' yd. Being inside those conditions does not establish accuracy. Wind, spin drift and Coriolis notes are on the main screen.';
+    list.textContent = '';
+    if (inp.bad){ sum.textContent = head + ' No range card until the highlighted fields are fixed.'; return; }
+    const rg = readRange();
+    const top = rg.problems.length ? inp.distYd : Math.max(rg.b, inp.distYd);
+    const warns = assessResult(inp, { rangeYd: top, rangeLabel: 'The range card reaches' }).findings.filter(f => f.level === 'warning');
+    sum.textContent = head + (warns.length ? ' ' + warns.length + (warns.length === 1 ? ' warning.' : ' warnings.') : '');
+    for (const f of warns){
+      const li = document.createElement('li'); li.dataset.level = f.level; li.dataset.id = f.id;
+      const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = 'Warning: ';
+      li.appendChild(tag); li.appendChild(document.createTextNode(f.text)); list.appendChild(li);
+    }
+    if (warns.length && !box.dataset.touched) box.open = true;
+  }
+  $('cAssess').addEventListener('toggle', () => { $('cAssess').dataset.touched = '1'; });
+
   function renderAssess(inp){
     const box = $('assess'), list = $('assessList'), sum = $('assessSum');
     list.textContent = '';
@@ -1336,7 +1406,7 @@ function assessResult(inp, ctx){
   }
 
   function renderMeta(inp){
-    renderAssess(inp);
+    renderAssess(inp); renderChartAssess(inp); renderV0();
     const pr = PRESETS.find(x => x.id === $('preset').value);
     const cal = pr ? pr.name : ($('cname').value.trim() || 'Custom load');
     const name = $('pname').value.trim() || 'My rifle';
@@ -1344,9 +1414,10 @@ function assessResult(inp, ctx){
     $('chipName').textContent = cal + ' · ' + (badIds.indexOf('wt') >= 0 ? ($('wt').value.trim() || '—') : inp.wt) + ' gr';
     $('chipLoad').textContent = people.length > 1 ? (people[pi].name || 'Profile') + ' · ' + name : name;
     $('cnameField').hidden = $('preset').value !== 'custom';
-    const opt = $('profSel').options[store.active];
-    if (opt) opt.textContent = name;
-    const qo = $('quickProf').options[store.active]; if (qo) qo.textContent = name;
+    store.profiles.forEach((q, i) => {   // every entry, so two loads of one rifle stay distinguishable as either is edited
+      const lab = rifleLabel(q, i), o1 = $('profSel').options[i], o2 = $('quickProf').options[i];
+      if (o1) o1.textContent = lab; if (o2) o2.textContent = lab;
+    });
     if (inp.bad){
       // Derived lines would be built from placeholder values, so they say what is wrong instead.
       $('mvLine').textContent = FIX_LINE; $('sgHint').textContent = FIX_LINE; $('crossLine').textContent = FIX_LINE;
@@ -1409,6 +1480,7 @@ function assessResult(inp, ctx){
     if (id === 'windRange') $('wind').value = e.target.value;
     if (id === 'wind') $('windRange').value = e.target.value;
     if (id === 'bc') setAnchor();
+    if (id === 'v0'){ $('v0src').value = 'user'; v0Offer = null; renderV0(); }
     if (id === 'wt'){
       // The coefficient is scaled from the last weight and coefficient you set yourself (the anchor), never from the
       // previous keystroke, so typing 1, 9, 0 gives the same result as entering 190 at once.
@@ -1426,10 +1498,19 @@ function assessResult(inp, ctx){
       lastSelPreset = sel.value;
       const p = PRESETS.find(x => x.id === sel.value);
       if (p){
-        const was = $('v0').value + ' fps, ' + $('wt').value + ' gr, ' + $('model').value + ' ' + $('bc').value + ', ' + $('diam').value + ' in, 1:' + $('twist').value + ' twist';
-        $('v0').value = p.v0; $('bc').value = p.bc; $('wt').value = p.wt; $('diam').value = p.d; $('twist').value = p.tw; $('model').value = 'G1';
+        // A preset may fill what is empty, and a velocity that was only a starting value may follow it. It never silently
+        // replaces a muzzle velocity the user entered (or one saved before the source was recorded).
+        const keep = $('v0').value.trim() !== '' && $('v0src').value !== 'factory';
+        const kept = $('v0').value.trim();
+        const was = (keep ? '' : $('v0').value + ' fps, ') + $('wt').value + ' gr, ' + $('model').value + ' ' + $('bc').value + ', ' + $('diam').value + ' in, 1:' + $('twist').value + ' twist';
+        $('bc').value = p.bc; $('wt').value = p.wt; $('diam').value = p.d; $('twist').value = p.tw; $('model').value = 'G1';
+        if (keep){ v0Offer = { preset: p.id, armed: false }; }
+        else { $('v0').value = p.v0; $('v0src').value = 'factory'; v0Offer = null; }
         setAnchor();
-        setLoadMsg('Loaded ' + p.name + ' starting values: ' + p.v0 + ' fps, ' + p.wt + ' gr, G1 ' + p.bc + ', ' + p.d + ' in, 1:' + p.tw + ' twist. These replaced your entries (' + was + '). Check them against your ammunition.');
+        setLoadMsg(keep
+          ? 'Loaded ' + p.name + ' starting values: ' + p.wt + ' gr, G1 ' + p.bc + ', ' + p.d + ' in, 1:' + p.tw + ' twist. Your muzzle velocity of ' + kept + ' fps was kept. The typical factory velocity for ' + p.name + ' is ' + p.v0 + ' fps (reference only, not used). The other values replaced your entries (' + was + '). Check them against your ammunition.'
+          : 'Loaded ' + p.name + ' starting values: ' + p.v0 + ' fps, ' + p.wt + ' gr, G1 ' + p.bc + ', ' + p.d + ' in, 1:' + p.tw + ' twist. These replaced your entries (' + was + '). The velocity is a typical factory value, not yours: enter your own measured velocity.');
+        renderV0();
       }
     }
     update();
@@ -1472,7 +1553,7 @@ function assessResult(inp, ctx){
       if (Math.abs(val - inp.bc) / inp.bc > 0.2) msg += 'That is far from the ' + inp.bc.toFixed(3) + ' you had. ';
     } else {
       const nominal = val - (inp.v0 - inp.v0nom);
-      $('v0').value = String(Math.round(nominal));
+      $('v0').value = String(Math.round(nominal)); $('v0src').value = 'user'; v0Offer = null; renderV0();
       msg = 'Muzzle velocity set to ' + Math.round(nominal) + ' fps. ';
       if (Math.abs(nominal - inp.v0nom) / inp.v0nom > 0.08) msg += 'That is far from the ' + Math.round(inp.v0nom) + ' fps you had. ';
     }
@@ -1497,7 +1578,7 @@ function assessResult(inp, ctx){
     store.profiles.push(copy);
     store.active = store.profiles.length - 1;
     applyProfile(copy); rebuildProfiles();
-    $('profMsg').textContent = 'Created a copy of your current setup. Rename it and change what is different.';
+    $('profMsg').textContent = 'Created a copy of your current setup.' + ($('v0').value ? ' Its muzzle velocity (' + $('v0').value + ' fps) was copied from the original, so change it if this load is different.' : '') + ' Rename it and change what is different.';
     update();
     $('pname').focus();
   }

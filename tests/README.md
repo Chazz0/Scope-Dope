@@ -65,3 +65,4 @@ The code at tag `baseline-before-accuracy-work` is the state before any accuracy
 None of these show that the ballistics are accurate. See `docs/VALIDATION_REPORT.md` for what was and was not compared.
 
 **Stage 6 update:** `tests/assess.test.js` and `tests/browser/transparency.check.js` cover the advisory transparency panel (see `docs/STAGE6_TRANSPARENCY.md`). They also pin that the calculation block is unchanged.
+- `tests/step7.test.js` and `tests/browser/step7.check.js`: Step 7 velocity protection, profile isolation, chart transparency, units and phone layout.

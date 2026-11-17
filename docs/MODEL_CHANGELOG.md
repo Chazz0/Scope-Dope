@@ -22,3 +22,6 @@ Litz spin drift, first-order Coriolis, and the Miller stability estimate.
 ## Stage 6 (no model change)
 
 Model version stays 1.0.0. Stage 6 added an advisory transparency panel and no calculation change; the solver block is byte-identical to Stage 5. See `docs/STAGE6_TRANSPARENCY.md`.
+
+## Step 7 (UX and data integrity): no model change
+Interface and storage only (`v0src` flag, chart panel, labels). Solver block unchanged, model version stays 1.0.0. Physical accuracy: NOT DEMONSTRATED.
