@@ -336,7 +336,7 @@ test('the owner check sheet lists every dataset and every entry, and says it has
   assert.match(sheet, /leave the recorded value alone/);
   const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
   assert.match(c, /- \[ \] The project owner checked every Federal and Hornady reference entry/);
-  assert.match(c, /252 of 253/);
+  assert.match(c, /265 of 266/);
 });
 
 test('the Aberdeen question is documented with temperature, pressure, humidity, and what is not confirmed', () => {
@@ -376,7 +376,7 @@ test('the second-manufacturer criterion separates registered, checked and reprod
   assert.match(line, /every source entry checked against the original manufacturer page: OPEN/);
   assert.match(line, /independent reproduction: not performed/);
   assert.match(line, /not independently verified/);
-  assert.match(c, /Criteria: 0 complete, 1 waived, 7 open\./);
+  assert.match(c, /Criteria: 1 complete, 1 waived, 6 open\./);
   assert.match(c, /\*\*Stage 5 status: NOT COMPLETE\*\*/);
 });
 
@@ -439,9 +439,9 @@ test('Federal is not called verified, and its criterion parts are stated', () =>
 // ---- Round 2, source audit, measured-data, and no-engine-change guards (2026-11-16) ----
 const runTool = (f, ...a) => execFileSync('node', [path.join(root, 'tests', 'tools', f), ...a], { encoding: 'utf8', maxBuffer: 1 << 26 });
 
-test('reference-data audit: 252 of 253 cells agree and the retailer BC mismatch is recorded', () => {
+test('reference-data audit: 265 of 266 cells agree and the retailer BC mismatch is recorded', () => {
   const out = runTool('audit-reference-data.js');
-  assert.match(out, /252 of 253/);
+  assert.match(out, /265 of 266/);
   assert.match(out, /\.286/);
 });
 
@@ -458,4 +458,20 @@ test('engine inputs are unchanged relative to the Stage 5 base commit', () => {
   assert.strictEqual(diff.trim(), '');
   const refs = JSON.parse(fs.readFileSync(path.join(root, 'tests', 'validation', 'references.json'), 'utf8'));
   assert.deepStrictEqual(refs.tolerances, JSON.parse(execFileSync('git', ['show', '9f37df7:tests/validation/references.json'], { cwd: root, encoding: 'utf8' })).tolerances);
+});
+
+test('close-out round: the 10 failures are classified, diagnostic is reproducible, criteria status stays honest', () => {
+  const dg = JSON.parse(runTool('diagnose-failures.js', '--json'));
+  assert.strictEqual(dg.out.length, 10);
+  assert.strictEqual(dg.out.filter(x => x.id.startsWith('FEDERAL-GM308M-168-G7')).length, 7);
+  const g1 = dg.cross.find(c => c.atmosphere === 'HORNADY_ABERDEEN');
+  assert.ok(Math.abs(g1.fittedG1BC - 0.4615) < 0.001);
+  assert.ok(g1.residualVelocityPct.every(r => Math.abs(r) <= 0.05));
+  const fa = JSON.parse(runTool('formula-audit.js', '--json'));
+  for (const id of ['COR-H-INTEGRAL', 'SPIN-FORMULA', 'SPIN-AB-LIMIT', 'ATM-PV', 'ATM-VAPOUR-CONC']) assert.ok(fa.find(x => x.id === id && x.pass), id);
+  const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
+  assert.match(c, /\*\*Stage 5 status: NOT COMPLETE\*\*/);
+  assert.match(c, /Physical accuracy: NOT DEMONSTRATED/);
+  const vr = fs.readFileSync(path.join(root, 'docs', 'VALIDATION_REPORT.md'), 'utf8');
+  assert.match(vr, /3 explained by the atmosphere assumption/); assert.match(vr, /0 attributed to a calculation error/);
 });

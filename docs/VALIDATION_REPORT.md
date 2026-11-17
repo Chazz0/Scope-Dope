@@ -6,7 +6,7 @@ Model version 1.0.0. Run date 2026-11-16. Reproduce with `node tests/tools/run-v
 
 **Summary.** Reference agreement is partly demonstrated across several manufacturer datasets, but remains incomplete. The Federal and Hornady datasets have been registered and compared under two candidate atmospheres (and, for four Hornady worked examples, their own printed conditions). 100 of 103 comparisons pass. The three misses occur under ICAO conditions. The 103 is a total, not a per-atmosphere figure. It is 2 drag-table points, 5 Hornady LE rows in ICAO (the primary run), 38 dataset rows run under ICAO, 38 under Aberdeen, and 20 under the printed conditions of the four Hornady correction tests. Passes: 2 of 2, 5 of 5, 35 of 38 (3 fail, all ICAO), 38 of 38, 20 of 20. Five further LE rows re-run in Aberdeen as a sensitivity (5 of 5 within tolerance) are not part of the 103. The reference entries still need owner checking against their original pages, and the drag-table origin remains unknown. None of this establishes physical accuracy.
 
-**Round 2 (registered before running, 2026-11-16).** Eleven further Federal datasets (6.5 CM 130 gr G7 and G1 variants, .308 168 gr and 175 gr, average and long-range zero) added 108 comparisons: 101 within tolerance, 7 outside. Combined total across both rounds: 211 compared, 201 within, 10 outside, tolerances unchanged. All 7 new misses are the Federal .308 168 gr table run with its stated G7 BC (.224); the same table with the G1 BC passes. Under Aberdeen with G1 BCs the Hornady and Federal tables match to rounding (mean absolute velocity error about 0.02%) while ICAO gives 0.36 to 0.53%. That supports the Aberdeen hypothesis. It is not manufacturer confirmation, Aberdeen is not selected, and the offset is not called resolved. Seven page reads (252 of 253 cells agree; one retailer BC mismatch, .286 vs .287) are in `docs/REFERENCE_DATA_AUDIT.md`. They came from a page-summarizing tool, so this is corroboration, not independent verification, and the owner check criterion stays open. A third open-source G-table copy agreed on a 20-row spot check; the origin of the tables is still unknown. A measured Doppler drag comparison (arXiv 1608.06500, .308 bullets, about 100 m) puts 21 of 26 rows within 3% of the app's predicted Cd. It is measured drag, not a trajectory.
+**Round 2 (registered before running, 2026-11-16).** Eleven further Federal datasets (6.5 CM 130 gr G7 and G1 variants, .308 168 gr and 175 gr, average and long-range zero) added 108 comparisons: 101 within tolerance, 7 outside. Combined total across both rounds: 211 compared, 201 within, 10 outside, tolerances unchanged. All 7 new misses are the Federal .308 168 gr table run with its stated G7 BC (.224); the same table with the G1 BC passes. Under Aberdeen with G1 BCs the Hornady and Federal tables match to rounding (mean absolute velocity error about 0.02%) while ICAO gives 0.36 to 0.53%. That supports the Aberdeen hypothesis. It is not manufacturer confirmation, Aberdeen is not selected, and the offset is not called resolved. Eight reads (265 of 266 cells agree; one retailer BC mismatch, .286 vs .287) are in `docs/REFERENCE_DATA_AUDIT.md`. They came from a page-summarizing tool, so this is corroboration, not independent verification, and the owner check criterion stays open. A third open-source G-table copy agreed on a 20-row spot check; the origin of the tables is still unknown. A measured Doppler drag comparison (arXiv 1608.06500, .308 bullets, about 100 m) puts 21 of 26 rows within 3% of the app's predicted Cd. It is measured drag, not a trajectory.
 
 Physical accuracy: NOT DEMONSTRATED. The list of open unknowns is in `docs/SOURCE_RESEARCH.md`.
 
@@ -120,7 +120,7 @@ Reading: for the Hornady tables the Aberdeen atmosphere fits clearly better than
 ## Round of 2026-11-16 (21:15 request): sourcing, formula audit and checks
 
 - **Aberdeen atmosphere.** Documented in `docs/MODEL_SOURCES.md`: Hornady's External Ballistics page states 59 F, 29.53 inHg, 78% RH as the Aberdeen standard for "this book"; hornady.com/bc states ICAO (59 F, 29.92 inHg, 0%). No opened source says which one the LE table uses. Two Hornady statements are in play, and neither proves how the LE product-page trajectory was calculated. (1) A Hornady page refers to standard conditions for an unnamed book: 59 F, 29.53 inHg, 78% RH. (2) Hornady's website says BCs are corrected to ICAO conditions (59 F, 29.92 inHg, 0%). Neither statement proves the LE trajectory was calculated under Aberdeen conditions. Both atmosphere comparisons are kept. Aberdeen is not selected as correct, and the offset is not resolved: its disappearance under Aberdeen is a hypothesis, not proof. The primary ICAO comparison above is unchanged and no BC was fitted.
-- **Reference data check.** `docs/REFERENCE_DATA_AUDIT.md` compares every Federal and Hornady entry with seven page reads (252 of 253 cells agree). The owner has declined manual checks, and `docs/OWNER_CHECK_REFERENCE_DATA.md` is optional and blank. Only page-reading tools have checked those copies.
+- **Reference data check.** `docs/REFERENCE_DATA_AUDIT.md` compares every Federal and Hornady entry with seven page reads (265 of 266 cells agree). The owner has declined manual checks, and `docs/OWNER_CHECK_REFERENCE_DATA.md` is optional and blank. Only page-reading tools have checked those copies.
 - **Drag-table origin.** Not found. See `docs/MODEL_SOURCES.md`. This is a point-for-point comparison against a secondary copy of unknown origin. It establishes consistency between the copies, not the provenance or accuracy of the tables. Neither table is Verified.
 - **Formula audit.** `node tests/tools/formula-audit.js`: sea-level density and speed of sound within 0.002% of the 1976 standard constants; the Miller formula equals its printed form; spin drift and Coriolis magnitudes for one chosen bullet are slightly outside the ranges Applied Ballistics prints (9.31 in against 8 to 9; 3.34 in against 2.5 to 3.0), which are not tied to a bullet.
 - **Tests.** All four browser suites pass: storage 27, inputs 27, layout 9, upgrade 5.
@@ -143,3 +143,56 @@ Reading: for the Hornady tables the Aberdeen atmosphere fits clearly better than
 4. Compare against fired-round data, such as Doppler tracks or measured drop at known ranges.
 5. Add more manufacturer tables: G7 bullets, other velocities, altitude, hot and cold air.
 6. Have a person who did not write the code review the comparison.
+
+## Failure investigation (2026-11-16, close-out round)
+
+All 10 comparisons that are outside tolerance were investigated with `node tests/tools/diagnose-failures.js` (diagnostic only; it changes nothing). Tolerances are the pre-registered ones: velocity 1%, drop the larger of 2% or 0.3 in. The 201 passing comparisons are kept as they were and were not re-examined.
+
+| # | Data set | Atmosphere | Range | Published | Calculated | Difference | Tolerance | Cause (status) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Hornady round nose 180 gr G1 .241 | ICAO | 400 yd velocity | 1639 fps | 1620.5 fps | -1.13% | 1% | atmosphere assumption (explained, hypothesis) |
+| 2 | Hornady round nose 180 gr G1 .241 | ICAO | 500 yd velocity | 1385 fps | 1365.9 fps | -1.38% | 1% | atmosphere assumption (explained, hypothesis) |
+| 3 | Hornady correction test 3, G1 .322 | ICAO | 500 yd velocity | 1641 fps | 1623.6 fps | -1.06% | 1% | atmosphere assumption (explained, hypothesis) |
+| 4 | Federal .308 168 gr, stated G7 .224, average range | ICAO | 300 yd velocity | 2103 fps | 2075.4 fps | -1.31% | 1% | stated G7 BC does not match the table (source data) |
+| 5 | same | ICAO | 400 yd velocity | 1936 fps | 1901.4 fps | -1.79% | 1% | same |
+| 6 | same | ICAO | 500 yd velocity | 1778 fps | 1734.7 fps | -2.44% | 1% | same |
+| 7 | same | Aberdeen | 400 yd velocity | 1936 fps | 1912.9 fps | -1.19% | 1% | same |
+| 8 | same | Aberdeen | 500 yd velocity | 1778 fps | 1748.5 fps | -1.66% | 1% | same |
+| 9 | Federal .308 168 gr, stated G7 .224, long range | ICAO | 400 yd drop | -25.5 in | -26.07 in | -0.57 in (2.2%) | 0.51 in | same |
+| 10 | same | ICAO | 500 yd drop | -51.5 in | -52.79 in | -1.29 in (2.5%) | 1.03 in | same |
+
+**Failures 1 to 3 (Hornady, ICAO).** Velocity misses by 1.06% to 1.38%. The drops for those same rows are inside tolerance. The same BCs and the same solver pass every comparison for these sets under the Aberdeen atmosphere (round nose 6 of 6, test 3 5 of 5) and test 3 also passes under its own printed conditions (5 of 5). The BC that would match the published velocities under ICAO is 1.68% above the stated one, close to the 1.80% difference in air density between Aberdeen and ICAO. This points to the atmosphere assumption, not the solver. It does not establish which atmosphere Hornady used for those tables, so the Aberdeen explanation stays a hypothesis and neither atmosphere is selected.
+
+**Failures 4 to 10 (Federal .308 168 gr, stated G7 BC .224).** These are not an atmosphere effect. Fitting a G7 BC to the published velocities needs .2363 under ICAO and .2323 under Aberdeen, which is 5.5% and 3.7% above the stated .224, more than the 1.8% density difference can explain. A G1 BC fitted to the same rows is .4695 (ICAO) and .4615 (Aberdeen), with residual velocity error of 0.02% or less at every row. Federal prints a G1-like .462 for this load (R5, R6 and the R8 PDF, where it is the only BC printed). The same ammunition run with its .462 BC passes 24 of 24 comparisons, and the Federal 6.5 CM 130 gr G7 .287 sets pass 24 of 24 through the same G7 code path. So the solver's G7 handling is not the problem for this load: Federal's published table was calculated with a G1-style BC near .462, and the stated G7 .224 does not reproduce it. Why Federal prints a G7 .224 next to a table that does not follow it is **unresolved**. The long-range drops (failures 9 and 10) have no velocity rows and share the same BC; their Aberdeen pass should not be read as support, because the BC mismatch is unchanged.
+
+Classification summary: 3 explained by the atmosphere assumption (hypothesis); 7 traced to the stated BC not matching the published table (source data), cause of the printed G7 value unresolved; 0 attributed to a calculation error. "Calculation error" is not ruled out in general. It is not indicated by anything here, because the same code reproduces 24 of 24 Federal G7 6.5 CM comparisons and 24 of 24 G1 .308 comparisons.
+
+The diagnostic output, verbatim:
+
+```
+{"id":"HORNADY-ROUNDNOSE-180-G1-0.241","atmosphere":"ICAO","range":400,"publishedV":1639,"calcV":1620.5,"vPct":-1.13,"vTolPct":1,"publishedDrop":-34,"calcDrop":-34.39,"dropDiff":-0.39,"dropTol":0.68}
+{"id":"HORNADY-ROUNDNOSE-180-G1-0.241","atmosphere":"ICAO","range":500,"publishedV":1385,"calcV":1365.9,"vPct":-1.38,"vTolPct":1,"publishedDrop":-67,"calcDrop":-67.91,"dropDiff":-0.91,"dropTol":1.34}
+{"id":"HORNADY-CORR-TEST3","atmosphere":"ICAO","range":500,"publishedV":1641,"calcV":1623.6,"vPct":-1.06,"vTolPct":1,"publishedDrop":-59.5,"calcDrop":-60.11,"dropDiff":-0.61,"dropTol":1.19}
+{"id":"FEDERAL-GM308M-168-G7-AVG","atmosphere":"ICAO","range":300,"publishedV":2103,"calcV":2075.4,"vPct":-1.31,"vTolPct":1,"publishedDrop":-15.3,"calcDrop":-15.45,"dropDiff":-0.15,"dropTol":0.31}
+{"id":"FEDERAL-GM308M-168-G7-AVG","atmosphere":"ICAO","range":400,"publishedV":1936,"calcV":1901.4,"vPct":-1.79,"vTolPct":1}
+{"id":"FEDERAL-GM308M-168-G7-AVG","atmosphere":"ICAO","range":500,"publishedV":1778,"calcV":1734.7,"vPct":-2.44,"vTolPct":1}
+{"id":"FEDERAL-GM308M-168-G7-AVG","atmosphere":"HORNADY_ABERDEEN","range":400,"publishedV":1936,"calcV":1912.9,"vPct":-1.19,"vTolPct":1}
+{"id":"FEDERAL-GM308M-168-G7-AVG","atmosphere":"HORNADY_ABERDEEN","range":500,"publishedV":1778,"calcV":1748.5,"vPct":-1.66,"vTolPct":1}
+{"id":"FEDERAL-GM308M-168-G7-LONG","atmosphere":"ICAO","range":400,"vTolPct":1,"publishedDrop":-25.5,"calcDrop":-26.07,"dropDiff":-0.57,"dropTol":0.51}
+{"id":"FEDERAL-GM308M-168-G7-LONG","atmosphere":"ICAO","range":500,"vTolPct":1,"publishedDrop":-51.5,"calcDrop":-52.79,"dropDiff":-1.29,"dropTol":1.03}
+
+Fitted BC that reproduces the published velocities (diagnostic only):
+{"id":"HORNADY-ROUNDNOSE-180-G1-0.241","atmosphere":"ICAO","model":"G1","statedBC":0.241,"fittedBC":0.245,"fittedVsStatedPct":1.68}
+{"id":"HORNADY-CORR-TEST3","atmosphere":"ICAO","model":"G1","statedBC":0.322,"fittedBC":0.3274,"fittedVsStatedPct":1.68}
+{"id":"FEDERAL-GM308M-168-G7-AVG","atmosphere":"ICAO","model":"G7","statedBC":0.224,"fittedBC":0.2363,"fittedVsStatedPct":5.47}
+{"id":"FEDERAL-GM308M-168-G7-AVG","atmosphere":"HORNADY_ABERDEEN","model":"G7","statedBC":0.224,"fittedBC":0.2323,"fittedVsStatedPct":3.69}
+
+G1 BC fitted to the G7-labelled tables, with residual velocity % at each row:
+{"id":"FEDERAL-GM308M-168-G7-AVG","atmosphere":"ICAO","fittedG1BC":0.4695,"residualVelocityPct":[-0.01,0.02,-0.01,0,0]}
+{"id":"FEDERAL-GM308M-168-G7-AVG","atmosphere":"HORNADY_ABERDEEN","fittedG1BC":0.4615,"residualVelocityPct":[-0.01,0.02,-0.01,0,0]}
+
+Drop-only failures (no velocity row, so no BC fit): FEDERAL-GM308M-168-G7-LONG
+Same ammunition, G1 BC .462 variants: 24 of 24 comparisons within tolerance (ICAO and Aberdeen).
+
+The fit shows what BC would match the numbers. It is not a correction and was not applied.
+```

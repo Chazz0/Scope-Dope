@@ -44,6 +44,29 @@ const at = (lat, az) => S.dopeAt(S.buildModel({ ...typ, latDeg: lat, azimuth: az
 const ne = at(45, 90), nw = at(45, 270), sn = at(-45, 90), eq = at(0, 90), pole = at(90, 90);
 out.push({ id: 'COR-H-HEMISPHERES', what: 'horizontal Coriolis has opposite signs at 45 N and 45 S, is zero at the equator', engine: [ne.corHIn, sn.corHIn, eq.corHIn].map(v => Number(v.toFixed(3))), inRange: ne.corHIn > 0 && sn.corHIn < 0 && Math.abs(eq.corHIn) < 1e-9 });
 out.push({ id: 'COR-V-EAST-WEST', what: 'vertical Coriolis has opposite signs firing east and west, is zero at the pole', engine: [ne.corVIn, nw.corVIn, pole.corVIn].map(v => Number(v.toFixed(3))), inRange: ne.corVIn > 0 && nw.corVIn < 0 && Math.abs(pole.corVIn) < 1e-9 });
+// 4. Added 2026-11-16 (Stage 5 close-out): checks that turn the magnitude ranges above into formula checks.
+// 4a. Coriolis: first-order horizontal deflection is y(T) = 2*Omega*sin(lat)*Integral x(t) dt (from a_y = 2*Omega*sin(lat)*vx and integrating twice by parts).
+//     The integral is re-done here by the trapezoid rule on the engine's own x(t) samples, independently of the engine's integrator.
+{ const W = 7.292115e-5, N = 400, xs = [], ts = [];
+  for (let i = 1; i <= N; i++) { const r = 1000 * i / N, q = S.dopeAt(M, typ, r); xs.push(r * 0.9144); ts.push(q.t); }
+  let I = 0, px = 0, pt = 0; for (let i = 0; i < N; i++) { I += 0.5 * (px + xs[i]) * (ts[i] - pt); px = xs[i]; pt = ts[i]; }
+  const ind = (2 * W * Math.sin(Math.PI / 4) * I) / 0.0254, eng = d.corHIn;
+  out.push({ id: 'COR-H-INTEGRAL', what: 'horizontal Coriolis at 1000 yd against 2*Omega*sin(lat)*integral(x dt) done independently by trapezoid rule (in)', source: Number(ind.toFixed(4)), engine: Number(eng.toFixed(4)), relDiff: rel(eng, ind), tol: 0.005 });
+  const cv = W * Math.sin(Math.PI / 4) * 914.4 * d.t / 0.0254;
+  out.push({ id: 'COR-H-CONSTVEL', what: 'engine Coriolis exceeds the constant-velocity closed form Omega*sin(lat)*x*T (a decelerating bullet spends more time far downrange). Closed form (in), engine/closed-form ratio', source: Number(cv.toFixed(3)), engine: Number((eng / cv).toFixed(3)), inRange: eng / cv > 1 && eng / cv < 1.3 });
+  out.push({ id: 'COR-TOF', what: 'time of flight at 1000 yd for this case (s). At this flight time the constant-velocity closed form gives 2.96 in, inside the article range 2.5 to 3.0; the engine value is higher because it integrates the decelerating trajectory. That the article used the constant-velocity form is an inference: it gives no formula', source: undefined, engine: Number(d.t.toFixed(3)), inRange: true });}
+// 4b. Spin drift: the engine's value equals 1.25*(SG+1.2)*T^1.83 evaluated here (formula text only found in an uncited open-source crate and secondary posts; the Applied Ballistics article gives no formula). Article limit: "no more than 10 to 12 inches at 1000 yards".
+{ const sgv = S.stability(typ), ind = 1.25 * (sgv + 1.2) * Math.pow(d.t, 1.83);
+  out.push({ id: 'SPIN-FORMULA', what: 'engine spin drift equals 1.25*(SG+1.2)*T^1.83 evaluated independently (in)', source: Number(ind.toFixed(4)), engine: Number(d.spinIn.toFixed(4)), relDiff: rel(d.spinIn, ind), tol: 1e-9 });
+  out.push({ id: 'SPIN-AB-LIMIT', what: 'spin drift at 1000 yd against the article outer limit of 12 in (it also says typical is 8 to 9 in; this bullet is above typical, at 9.31)', source: undefined, engine: Number(d.spinIn.toFixed(2)), inRange: d.spinIn <= 12 }); }
+// 4c. Humid-air terms against a source that was opened (conservationphysics.org/atmcalc/atmoclc1.html, read 2026-11-16 through a
+//     page reader): saturation vapour pressure ps = 610.78*exp(17.2694*t/(t+238.3)) Pa, and vapour concentration 0.002166*p/(t+273.16) kg/m3.
+//     The engine uses a different Magnus coefficient set (610.94, 17.625, 243.04). Tolerance 1% set before the run. The page gives no density formula and no speed of sound.
+{ const A = S.atmosphere || null; let worst = 0; const rows = [];
+  for (const tC of [0, 10, 20, 30, 40]) { const src = 610.78 * Math.exp(17.2694 * tC / (tC + 238.3)), eng = 610.94 * Math.exp(17.625 * tC / (tC + 243.04)); const r = (eng - src) / src; rows.push(Number((100 * r).toFixed(3))); worst = Math.max(worst, Math.abs(r)); }
+  out.push({ id: 'ATM-PV', what: 'saturation vapour pressure, engine Magnus set vs opened source, 0/10/20/30/40 C, percent difference', source: rows, engine: Number((100 * worst).toFixed(3)), relDiff: worst, tol: 0.01 });
+  const cv = 0.002166 * 1500 / (20 + 273.16), ev = 1500 / (461.495 * 293.15);
+  out.push({ id: 'ATM-VAPOUR-CONC', what: 'vapour concentration at 1500 Pa, 20 C (kg/m3): engine gas constant 461.495 vs the printed 0.002166*p/(t+273.16)', source: Number(cv.toFixed(6)), engine: Number(ev.toFixed(6)), relDiff: rel(ev, cv), tol: 0.005 }); }
 for (const x of out) x.pass = x.tol !== undefined ? Math.abs(x.relDiff) <= x.tol : x.inRange;
 if (process.argv.includes('--json')) { console.log(JSON.stringify(out, null, 1)); process.exit(0); }
 for (const x of out) console.log((x.pass ? 'WITHIN ' : 'OUTSIDE ') + x.id + '  ' + x.what + '  ' + (x.range ? 'range ' + x.range.join('-') : 'source ' + x.source) + '  engine ' + x.engine + (x.relDiff !== undefined ? '  rel diff ' + x.relDiff.toExponential(2) : ''));

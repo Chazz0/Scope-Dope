@@ -676,6 +676,45 @@
    ],
    "accessed": "2026-11-16",
    "reader": "WebFetch page reader (returns a model-written extraction of the page, not raw HTML)"
+  },
+  {
+   "readId": "R8",
+   "url": "https://308ar.com/wp-content/uploads/2016/03/Federal-Gold-Medal-Match-308-Winchester-Match-Ammunition.pdf",
+   "note": "Third-party-hosted copy of a Federal Gold Medal Match .308 PDF (undated; file path says 2016). Different document from R5/R6, so it is a second, independent-format source for the 168 gr load. It prints one BC for the load, .462, and does not label it G1 or G7; it prints no G7 .224. Velocity and energy rows match R5. Drop rows were not copied: the reader could not tell which range each drop value belongs to. Stated trajectory zeros are generic (100 and 200 yd, 1.5 in sight height), not linked to a load. No atmosphere stated.",
+   "targets": [
+    {
+     "datasetId": "FEDERAL-GM308M-168-G1-AVG",
+     "bc": 0.462,
+     "muzzle": {
+      "v": 2650,
+      "e": 2619
+     },
+     "rows": {
+      "100": {
+       "v": 2460,
+       "e": 2257
+      },
+      "200": {
+       "v": 2277,
+       "e": 1935
+      },
+      "300": {
+       "v": 2103,
+       "e": 1650
+      },
+      "400": {
+       "v": 1936,
+       "e": 1398
+      },
+      "500": {
+       "v": 1778,
+       "e": 1179
+      }
+     }
+    }
+   ],
+   "accessed": "2026-11-16",
+   "reader": "WebFetch PDF reader (returns a model-written extraction of the PDF, not the raw file)"
   }
  ]
 }
