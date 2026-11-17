@@ -53,7 +53,9 @@ const newPageWith = async (data) => {
 // Step 7 records where each velocity came from. A rifle saved before that has no v0src or ''; either way it is treated as the user's own, so
 // presets never overwrite it. Nothing else may differ, so compare with that one field removed and require it to be absent or ''.
 // Stage 9 adds bcsrc ('' = saved before the source was recorded) and Stage 9.1 adds bcwt (the weight the coefficient belongs to); both are compared the way v0src is.
-const stripSrc = (people) => people.map(p => p.profiles.map(r => { const c = Object.assign({}, r); delete c.v0src; delete c.bcwt; if (c.bcsrc == null || c.bcsrc === '') delete c.bcsrc; return c; }));
+// Stage 16: the six new scope fields may appear as empty strings on a rifle that never had them (nothing is filled in). Any other change, or any non-empty value, still fails.
+const SCOPE_NEW = ['eUnit', 'eClick', 'eCf', 'wUnit', 'wClick', 'wCf'];
+const stripSrc = (people) => people.map(p => p.profiles.map(r => { const c = Object.assign({}, r); delete c.v0src; delete c.bcwt; if (c.bcsrc == null || c.bcsrc === '') delete c.bcsrc; for (const k of SCOPE_NEW) if (c[k] === '') delete c[k]; if (c.click === '') delete c.click; return c; }));
 const allLegacy = (people) => people.every(p => p.profiles.every(r => r.v0src == null || r.v0src === ''));
 
 let OLD;

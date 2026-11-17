@@ -136,11 +136,11 @@ test('adding, renaming and deleting profiles and rifles persists across reload',
   await page.click('#newPerson'); await page.fill('#personName', 'Dad'); await page.waitForTimeout(80);
   await page.fill('#pname', 'Dad rifle'); await page.click('#newProf'); await page.fill('#pname', 'Dad second'); await page.waitForTimeout(80);
   await page.reload(); await page.waitForTimeout(150); await go(page, '#rifle');
-  eq(await opts(page, 'person'), ['Me', 'Dad']); eq(await opts(page, 'profSel'), ['Dad rifle', 'Dad second']);
+  eq(await opts(page, 'person'), ['Me', 'Dad']); eq(await opts(page, 'profSel'), ['Dad rifle (scope not set)', 'Dad second (scope not set)']);   // Stage 16: new rifles have no scope settings and are marked
   await page.click('#delProf'); await page.click('#delProf'); await page.waitForTimeout(80);
-  eq(await opts(page, 'profSel'), ['Dad rifle']);
+  eq(await opts(page, 'profSel'), ['Dad rifle (scope not set)']);
   await page.reload(); await page.waitForTimeout(150); await go(page, '#rifle');
-  eq(await opts(page, 'profSel'), ['Dad rifle']); eq(await opts(page, 'person'), ['Me', 'Dad']);
+  eq(await opts(page, 'profSel'), ['Dad rifle (scope not set)']); eq(await opts(page, 'person'), ['Me', 'Dad']);
   eq(page.errors, []); await ctx.close();
 });
 test('the last rifle and the last profile cannot be deleted', async () => {

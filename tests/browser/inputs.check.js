@@ -248,7 +248,8 @@ test('moving target is gone: no input, no Lead dial, no Lead text, two equal dia
   const w = await page.$$eval('.dials .dial', d => d.map(x => Math.round(x.getBoundingClientRect().width))); ok(Math.abs(w[0] - w[1]) <= 1, 'dials are equal width: ' + w);
   ok(!/\blead\b/i.test(await page.$eval('body', b => b.innerText)), 'the word Lead does not appear on the HUD');
   await page.click('.tab#tabChart'); await page.waitForTimeout(250);
-  eq(await page.$$eval('#thead th', t => t.map(x => x.textContent)), ['Yd', 'Drop in', 'Calc up mil', 'Calc up true MOA', 'Calc wind mil', 'Calc wind true MOA', 'Dial up (true MOA)', 'Up clicks', 'Dial wind (true MOA)', 'Wind clicks', 'fps', 'ft·lb', 'Time s', 'Mach']   // Stage 16 column names; still no Lead columns);
+  // Stage 16 column names (calculated and dial columns); still no Lead columns
+  eq(await page.$$eval('#thead th', t => t.map(x => x.textContent)), ['Yd', 'Drop in', 'Calc up mil', 'Calc up true MOA', 'Calc wind mil', 'Calc wind true MOA', 'Dial up (true MOA)', 'Up clicks', 'Dial wind (true MOA)', 'Wind clicks', 'fps', 'ft·lb', 'Time s', 'Mach']);
   ok(!/moving target/i.test(await page.$eval('body', b => b.innerText)), 'no mention of moving target anywhere');
   eq(page.errors, []); await ctx.close();
 });
