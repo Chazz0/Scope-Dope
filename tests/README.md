@@ -12,6 +12,10 @@ The solver tests and golden baseline are unchanged.
 coefficient, distance below the minimum calculated as 10 yd, silent coefficient rescale, wind field/slider mismatch,
 silent preset overwrite) were replaced by 15 checks of the fixed behavior. No `[known gap]` checks remain.
 
+**Stage 4:** the moving-target (lead) code was removed. Golden case K and the two lead fields were removed from
+`tests/golden/` by deleting keys only (no number regenerated). `tests/tools/compare-solvers.js` replays random valid inputs
+through the old and new solver and compares every field bit for bit (`OLD_REF=<git ref> node tests/tools/compare-solvers.js`).
+
 **Stage 3 follow-up:** `tests/browser/inputs.check.js` now has 26 checks (added: opening or viewing a rifle never changes a
 saved weight or coefficient; blank coefficient is left alone when the weight changes; Chart tab From/To/Every are validated
 like every other field). Two read-only analysis tools were added in `tests/tools/`: `coefficient-exposure.js` (replays the

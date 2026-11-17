@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: three screens behind a bottom tab bar. HUD is the one-target field screen (distance, wind clock, angle, moving target in; clicks, lead and wind out). Chart is the full range card with save and copy. Rifle is the settings page (profile, load, scope, weather, location, truing). A dark turret-style panel carries the solution. */
+/* Layout: three screens behind a bottom tab bar. HUD is the one-target field screen (distance, wind clock, angle in; elevation and wind clicks out). Chart is the full range card with save and copy. Rifle is the settings page (profile, load, scope, weather, location, truing). A dark turret-style panel carries the solution. */
 :root{
   --bg:#E8EBE4; --surface:#F6F7F2; --ink:#151A16; --muted:#586259; --line:#CDD3C8; --grid:#DBE0D5;
   --accent:#D4480B; --accent-ink:#FFFFFF; --hl:#F4E2D6; --warn:#B42318;
@@ -82,7 +82,6 @@ input[type=range]{width:100%; margin:0; accent-color:var(--accent); height:28px}
 .dir{font:600 11.5px/1 var(--body); padding:5px 7px; border-radius:4px; background:var(--panel-accent); color:#1A0E05; white-space:nowrap}
 .dir.off{background:var(--panel-line); color:var(--panel-ink)}
 .dial-num{display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; font:600 66px/1 var(--display); font-variant-numeric:tabular-nums}
-.dials.three .dial-num{font-size:48px; gap:4px}
 .dial-unit{font:500 13px var(--body); color:var(--panel-muted)}
 .dial-sub{font:400 12px/1.4 var(--mono); color:var(--panel-muted)}
 .stats{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px 10px; margin:0; padding-top:16px; border-top:1px solid var(--panel-line)}
@@ -320,11 +319,6 @@ input[type=range]{height:20px}
                 <div class="dial-num"><span id="windClicks">0</span><span class="dial-unit">clicks</span></div>
                 <div class="dial-sub" id="windSub"></div>
               </div>
-              <div class="dial" id="leadDial" hidden>
-                <div class="dial-head"><span class="lbl">Lead</span><span class="dir" id="leadDir">&rarr; Right</span></div>
-                <div class="dial-num"><span id="leadClicks">0</span><span class="dial-unit">clicks</span></div>
-                <div class="dial-sub" id="leadSub"></div>
-              </div>
             </div>
 
             <dl class="stats">
@@ -403,7 +397,7 @@ input[type=range]{height:20px}
               <tbody id="tbody"></tbody>
             </table>
           </div>
-          <p class="hint">Up clicks are positive, down clicks negative. The wind letter is the way to dial. Wind, angle, direction and moving target settings from the HUD apply to every row. The highlighted row is the HUD distance.</p>
+          <p class="hint">Up clicks are positive, down clicks negative. The wind letter is the way to dial. Wind, angle and direction settings from the HUD apply to every row. The highlighted row is the HUD distance.</p>
         </section>
       </div>
     </section>
@@ -730,11 +724,6 @@ function dopeAt(M, inp, rangeYd){
     elevRad -= corV / x;
   }
   const windRad = rightM / x;
-  let leadRad = 0;
-  if (inp.tgtMph > 0){
-    const leadM = inp.tgtMph * 0.44704 * s.t * Math.sin((inp.tgtAngle == null ? 90 : inp.tgtAngle) * Math.PI / 180);
-    leadRad = (inp.tgtDir === 'RL' ? -1 : 1) * leadM / x;
-  }
   const vFps = s.v / 0.3048;
   return {
     dropIn: dropM / 0.0254,
@@ -742,7 +731,6 @@ function dopeAt(M, inp, rangeYd){
     driftIn: driftM / 0.0254, spinIn: spinIn,
     corHIn: corH / 0.0254, corVIn: corV / 0.0254,
     windMoa: windRad * 3437.7468, windMil: windRad * 1000,
-    leadMoa: leadRad * 3437.7468, leadMil: leadRad * 1000,
     vFps, energy: inp.wt * vFps * vFps / 450240,
     t: s.t, mach: s.v / M.p.sos
   };
@@ -765,7 +753,7 @@ function dopeAt(M, inp, rangeYd){
   const RANGES = {
     dist:[10,2000,400], wind:[0,60,10], angle:[-75,75,0], temp:[-40,130,59], alt:[-500,15000,0],
     v0:[500,4500,2650], bc:[0.05,1.2,0.462], wt:[15,800,168], h:[0.5,4,1.5], zero:[25,1000,100],
-    diam:[0.17,0.6,0.308], twist:[5,20,10], humidity:[0,100,50], az:[0,360,0], tgt:[0,60,0], tgtAng:[0,90,90],
+    diam:[0.17,0.6,0.308], twist:[5,20,10], humidity:[0,100,50], az:[0,360,0],
     vsens:[-5,10,0], vref:[-40,130,59]
   };
   const PKEYS = ['pname','preset','cname','model','bc','wt','diam','v0','vref','vsens','zero','h','twist','tdir','click','temp','press','humidity','alt','lat'];
@@ -781,7 +769,7 @@ function dopeAt(M, inp, rangeYd){
     return { pname:'My rifle', preset:p.id, cname:'', model:'G1', bc:String(p.bc), wt:String(p.wt), diam:String(p.d), v0:String(p.v0),
       vref:'59', vsens:'0', zero:'100', h:'1.5', twist:String(p.tw), tdir:'R', click:'MOA:0.25', temp:'59', press:'', humidity:'50', alt:'0', lat:'' };
   }
-  const sessionDefaults = () => ({ dist:'400', wind:'10', windHr:'3', angle:'0', az:'0', tgt:'0', tgtAng:'90', tgtDir:'LR', cStart:'100', cEnd:'1000', cStep:'50' });
+  const sessionDefaults = () => ({ dist:'400', wind:'10', windHr:'3', angle:'0', az:'0', cStart:'100', cEnd:'1000', cStep:'50' });
 
   let store = { active:0, profiles:[profileDefaults('p308')], session:sessionDefaults() };
   // The weight and coefficient last set by you, a profile or a preset. Weight edits scale the coefficient from here.
@@ -1044,7 +1032,6 @@ function dopeAt(M, inp, rangeYd){
     return {
       distYd: num('dist'), windSpd: spd, windHr: windHr, windMph: Math.abs(cross), windFrom: cross >= 0 ? 'R' : 'L', headMph: head,
       angleDeg: num('angle'), azimuth: num('az'), latDeg: latDeg,
-      tgtMph: 0, tgtAngle: 90, tgtDir: 'LR',
       tempF: tempF, altFt: num('alt'), pressInHg: pressInHg, humidity: num('humidity'),
       v0nom: v0nom, v0: v0, bc: num('bc'), wt: num('wt'), h: num('h'), zero: num('zero'),
       diam: num('diam'), twist: num('twist'), model: $('model').value === 'G7' ? 'G7' : 'G1',
@@ -1066,28 +1053,23 @@ function dopeAt(M, inp, rangeYd){
     const mil = clk.unit !== 'MOA';
     return {
       elev: Math.round((mil ? d.elevMil : d.elevMoa) / clk.size),
-      wind: Math.round((mil ? d.windMil : d.windMoa) / clk.size),
-      lead: Math.round((mil ? d.leadMil : d.leadMoa) / clk.size)
+      wind: Math.round((mil ? d.windMil : d.windMoa) / clk.size)
     };
   }
 
   function renderPanel(M, inp){
     const d = inp.bad ? null : dopeAt(M, inp, inp.distYd);
     const notes = [];
-    const leadOn = inp.tgtMph > 0;
-    $('leadDial').hidden = !leadOn;
-    $('dials').style.setProperty('--cols', leadOn ? '3' : '2');
-    $('dials').classList.toggle('three', leadOn);
-    const ids = ['elevClicks','windClicks','leadClicks','sDrop','sVel','sEn','sTime'];
+    const ids = ['elevClicks','windClicks','sDrop','sVel','sEn','sTime'];
     if (inp.bad){
       ids.forEach(i => $(i).textContent = '—');
-      $('elevSub').textContent = ''; $('windSub').textContent = ''; $('leadSub').textContent = '';
-      ['elevDir','windDir','leadDir'].forEach(i => { $(i).textContent = 'Check inputs'; $(i).className = 'dir off'; });
+      $('elevSub').textContent = ''; $('windSub').textContent = '';
+      ['elevDir','windDir'].forEach(i => { $(i).textContent = 'Check inputs'; $(i).className = 'dir off'; });
       notes.push('Fix the highlighted fields to see a result. ' + inp.problems.map(p => p.text).join(' '));
     } else if (!d){
       ids.forEach(i => $(i).textContent = '—');
-      $('elevSub').textContent = ''; $('windSub').textContent = ''; $('leadSub').textContent = '';
-      ['elevDir','windDir','leadDir'].forEach(i => { $(i).textContent = 'No solution'; $(i).className = 'dir off'; });
+      $('elevSub').textContent = ''; $('windSub').textContent = '';
+      ['elevDir','windDir'].forEach(i => { $(i).textContent = 'No solution'; $(i).className = 'dir off'; });
       notes.push('The bullet does not reach this distance with these inputs. Check the velocity and coefficient.');
     } else {
       const c = clicksFor(d, inp);
@@ -1109,13 +1091,6 @@ function dopeAt(M, inp, rangeYd){
       if (d.spinIn >= 0.05) ws += ', spin ' + fx(d.spinIn, 1) + ' in';
       if (inp.latDeg != null && Math.abs(d.corHIn) >= 0.05) ws += ', Coriolis ' + fx(d.corHIn, 1) + ' in';
       $('windSub').textContent = ws;
-      if (leadOn){
-        $('leadClicks').textContent = Math.abs(c.lead);
-        const ld = $('leadDir');
-        if (c.lead === 0){ ld.textContent = 'None'; ld.className = 'dir off'; }
-        else { ld.textContent = c.lead < 0 ? '← Left' : '→ Right'; ld.className = 'dir'; }
-        $('leadSub').textContent = fx(Math.abs(d.leadMoa), 1) + ' MOA · ' + fx(Math.abs(d.leadMil), 2) + ' mil';
-      }
       $('sDrop').textContent = fx(d.dropIn, 1);
       $('sVel').textContent = fint(d.vFps);
       $('sEn').textContent = fint(d.energy);
@@ -1206,7 +1181,6 @@ function dopeAt(M, inp, rangeYd){
   }
   function renderTable(M, inp){
     const mil = inp.click.unit !== 'MOA';
-    const leadOn = inp.tgtMph > 0;
     const rg = readRange();
     if (rg.problems.length){
       lastRows = []; $('tbody').innerHTML = '';
@@ -1217,7 +1191,7 @@ function dopeAt(M, inp, rangeYd){
     const msgs = [];
     let n = Math.floor((b - a) / st) + 1;
     if (n > 120){ n = 120; msgs.push('Showing the first 120 rows. Raise Every to see further.'); }
-    const cols = ['Yd','Drop in','Up MOA','Up mil','Up clicks','Wind MOA','Wind clicks'].concat(leadOn ? ['Lead MOA','Lead clicks'] : [], ['fps','ft·lb','Time s','Mach']);
+    const cols = ['Yd','Drop in','Up MOA','Up mil','Up clicks','Wind MOA','Wind clicks'].concat(['fps','ft·lb','Time s','Mach']);
     $('thead').innerHTML = '<tr>' + cols.map(c => '<th>' + c + '</th>').join('') + '</tr>';
     const dists = [inp.distYd];
     for (let i = 0; i < n; i++){ const y = a + i * st; if (y !== inp.distYd) dists.push(y); }
@@ -1229,9 +1203,7 @@ function dopeAt(M, inp, rangeYd){
       if (!d) return '<tr' + (now ? ' class="now"' : '') + '><td>' + fx(yd, 0) + tag + '</td><td colspan="' + (cols.length - 1) + '">out of range</td></tr>';
       const c = clicksFor(d, inp);
       const wl = c.wind === 0 ? '0' : Math.abs(c.wind) + ' ' + (c.wind < 0 ? 'L' : 'R');
-      const ll = c.lead === 0 ? '0' : Math.abs(c.lead) + ' ' + (c.lead < 0 ? 'L' : 'R');
       const row = [fx(yd, 0), fx(d.dropIn, 1), fx(d.elevMoa, 1), fx(d.elevMil, 2), fx(c.elev, 0), fx(d.windMoa, 1), wl];
-      if (leadOn) row.push(fx(d.leadMoa, 1), ll);
       row.push(fint(d.vFps), fint(d.energy), d.t.toFixed(2), d.mach.toFixed(2));
       lastRows.push({ now: now, cells: row });
       return '<tr' + (now ? ' class="now"' : '') + '>' + row.map((v, i) => '<td>' + (i === 0 ? v + tag : v) + '</td>').join('') + '</tr>';
