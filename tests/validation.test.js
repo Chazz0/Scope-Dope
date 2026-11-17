@@ -388,3 +388,36 @@ test('the G-table comparison and the Aberdeen statements carry their qualificati
     assert.match(t, /Aberdeen is not selected|Aberdeen is not selected as correct/, f);
   }
 });
+
+// ---- Comparison counts (21:36): the documented breakdown must equal the runner's output ----
+test('the documented 100 of 103 breakdown equals what the runner produces, and every failure is listed', () => {
+  const out = runJson();
+  const ok = (x) => x.kind === 'trajectory' ? x.vPass && x.dropPass : x.pass;
+  const counted = out.filter(x => ['table', 'trajectory', 'dataset'].includes(x.kind));
+  const by = (f) => { const g = counted.filter(f); return [g.length, g.filter(ok).length]; };
+  assert.deepStrictEqual(by(() => true), [103, 100]);
+  assert.deepStrictEqual(by(x => x.kind === 'table'), [2, 2]);
+  assert.deepStrictEqual(by(x => x.kind === 'trajectory'), [5, 5]);
+  assert.deepStrictEqual(by(x => x.kind === 'dataset' && x.atmosphere === 'ICAO'), [38, 35]);
+  assert.deepStrictEqual(by(x => x.kind === 'dataset' && x.atmosphere === 'HORNADY_ABERDEEN'), [38, 38]);
+  assert.deepStrictEqual(by(x => x.kind === 'dataset' && x.atmosphere === 'STATED_CONDITIONS'), [20, 20]);
+  const sens = out.filter(x => x.kind === 'sensitivity');
+  assert.strictEqual(sens.length, 5); assert.ok(sens.every(x => x.pass));
+  const failed = counted.filter(x => !ok(x)).map(x => x.id + ' ' + x.atmosphere + ' ' + x.range);
+  assert.deepStrictEqual(failed, ['HORNADY-ROUNDNOSE-180-G1-0.241 ICAO 400', 'HORNADY-ROUNDNOSE-180-G1-0.241 ICAO 500', 'HORNADY-CORR-TEST3 ICAO 500']);
+  const rep = fs.readFileSync(path.join(root, 'docs', 'VALIDATION_REPORT.md'), 'utf8');
+  assert.match(rep, /\| Datasets, ICAO \| 38 \| 35 \| 3 \|/);
+  assert.match(rep, /\| Datasets, Aberdeen \| 38 \| 38 \| 0 \|/);
+  assert.match(rep, /\| Datasets, printed conditions[^|]*\| 20 \| 20 \| 0 \|/);
+  for (const f of ['docs/MODEL_SOURCES.md', 'docs/VALIDATION_REPORT.md', 'docs/STAGE5_COMPLETION.md']) assert.match(fs.readFileSync(path.join(root, f), 'utf8'), /The 103 is a total, not a per-atmosphere figure/, f);
+});
+
+test('Federal is not called verified, and its criterion parts are stated', () => {
+  const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
+  const line = c.split('\n').find(l => l.includes('A second, different manufacturer data set'));
+  assert.match(line, /Federal/); assert.match(line, /not independently verified/); assert.match(line, /independent reproduction: not performed/);
+  assert.ok(line.startsWith('- [ ]'));
+  for (const f of ['docs/MODEL_SOURCES.md', 'docs/VALIDATION_REPORT.md', 'docs/STAGE5_COMPLETION.md', 'docs/OWNER_CHECK_REFERENCE_DATA.md']) {
+    assert.doesNotMatch(fs.readFileSync(path.join(root, f), 'utf8'), /Federal[^.\n]{0,60}(is|are|was) (independently )?verified/i, f);
+  }
+});

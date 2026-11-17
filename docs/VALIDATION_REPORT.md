@@ -4,7 +4,7 @@ Model version 1.0.0. Run date 2026-11-16. Reproduce with `node tests/tools/run-v
 (add `--diagnose` for the diagnostic below). The fuller Stage 5 report is the Claude Doc
 "Scope Dope Stage 5 Report (Preliminary)".
 
-**Summary.** Reference agreement is partly demonstrated across several manufacturer datasets, but remains incomplete. The Federal and Hornady datasets have been registered and compared under two candidate atmospheres. 100 of 103 comparisons pass. The three misses occur under ICAO conditions. The reference entries still need owner checking against their original pages, and the drag-table origin remains unknown. None of this establishes physical accuracy.
+**Summary.** Reference agreement is partly demonstrated across several manufacturer datasets, but remains incomplete. The Federal and Hornady datasets have been registered and compared under two candidate atmospheres (and, for four Hornady worked examples, their own printed conditions). 100 of 103 comparisons pass. The three misses occur under ICAO conditions. The 103 is a total, not a per-atmosphere figure. It is 2 drag-table points, 5 Hornady LE rows in ICAO (the primary run), 38 dataset rows run under ICAO, 38 under Aberdeen, and 20 under the printed conditions of the four Hornady correction tests. Passes: 2 of 2, 5 of 5, 35 of 38 (3 fail, all ICAO), 38 of 38, 20 of 20. Five further LE rows re-run in Aberdeen as a sensitivity (5 of 5 within tolerance) are not part of the 103. The reference entries still need owner checking against their original pages, and the drag-table origin remains unknown. None of this establishes physical accuracy.
 
 **Passing software tests is not proof of ballistic accuracy.** This report compares the engine with the few
 published numbers that could be read. It is preliminary, it is not an independent audit, and accuracy is not established.
@@ -21,7 +21,7 @@ shift at 19:04. The comparison below uses the corrected pairing.
 | Achievement | Question | Where it stands |
 | --- | --- | --- |
 | Software correctness | Does the program calculate consistently? | Supported by automated tests. |
-| Reference agreement | Does it reproduce published data? | Partial, with unresolved source and transcription checks. Federal and Hornady datasets were registered and compared under two candidate atmospheres (100 of 103 pass; the three misses are under ICAO). The entries have not been checked against the original pages, the drag-table origin is unknown, and the Hornady copy is owner-checked only (an independent reproduction was waived on 2026-11-16). |
+| Reference agreement | Does it reproduce published data? | Partial, with unresolved source and transcription checks. Federal and Hornady datasets were registered and compared under two candidate atmospheres (100 of 103 pass in total across all runs; the three misses are under ICAO; breakdown in `docs/VALIDATION_REPORT.md`). The entries have not been checked against the original pages, the drag-table origin is unknown, and the Hornady copy is owner-checked only (an independent reproduction was waived on 2026-11-16). |
 | Physical accuracy | Does it predict what an actual bullet does? | NOT DEMONSTRATED. No measured flight data. |
 
 Stage 5 is not complete. See `docs/STAGE5_COMPLETION.md`.
@@ -85,6 +85,22 @@ Hornady defines or bands its BC, the atmosphere Hornady used, or how Hornady com
 ## Second-manufacturer data and the atmosphere sensitivity (2026-11-16, later)
 
 Registered before running: two candidate atmospheres (ICAO; Hornady's Aberdeen) and all tolerances unchanged. Each dataset is run under each applicable atmosphere and every result is reported; neither atmosphere was chosen. `node tests/tools/run-validation.js`.
+
+### Exact comparison counts (from `node tests/tools/run-validation.js`)
+
+The 103 is a total, not a per-atmosphere figure. It is 2 drag-table points, 5 Hornady LE rows in ICAO (the primary run), 38 dataset rows run under ICAO, 38 under Aberdeen, and 20 under the printed conditions of the four Hornady correction tests. Passes: 2 of 2, 5 of 5, 35 of 38 (3 fail, all ICAO), 38 of 38, 20 of 20. Five further LE rows re-run in Aberdeen as a sensitivity (5 of 5 within tolerance) are not part of the 103.
+
+| Group | Comparisons | Within tolerance | Outside |
+| --- | --- | --- | --- |
+| Drag-table points (Mach 3) | 2 | 2 | 0 |
+| Hornady LE, ICAO (primary run) | 5 | 5 | 0 |
+| Datasets, ICAO | 38 | 35 | 3 |
+| Datasets, Aberdeen | 38 | 38 | 0 |
+| Datasets, printed conditions (correction tests 1 to 4 only) | 20 | 20 | 0 |
+| **Total in the 103** | **103** | **100** | **3** |
+| Not in the 103: Hornady LE, Aberdeen sensitivity | 5 | 5 | 0 |
+
+Per atmosphere, including the LE rows: ICAO 43 comparisons, 40 within tolerance, 3 outside; Aberdeen 43 (38 plus the 5 sensitivity rows), 43 within tolerance. The three outside are Hornady round nose at 400 yd and 500 yd, and Hornady correction test 3 at 500 yd, all under ICAO. A comparison is one distance row; a row with both velocity and drop passes only if both are within tolerance. The Federal table was within tolerance in 6 of 6 rows under each of ICAO and Aberdeen.
 
 | Dataset | ICAO | Aberdeen | Notes |
 | --- | --- | --- | --- |

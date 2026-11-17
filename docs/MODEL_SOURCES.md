@@ -2,7 +2,7 @@
 
 Model version: see `docs/MODEL_CHANGELOG.md`. Status as of 2026-11-16.
 
-**Summary.** Reference agreement is partly demonstrated across several manufacturer datasets, but remains incomplete. The Federal and Hornady datasets have been registered and compared under two candidate atmospheres. 100 of 103 comparisons pass. The three misses occur under ICAO conditions. The reference entries still need owner checking against their original pages, and the drag-table origin remains unknown. None of this establishes physical accuracy.
+**Summary.** Reference agreement is partly demonstrated across several manufacturer datasets, but remains incomplete. The Federal and Hornady datasets have been registered and compared under two candidate atmospheres (and, for four Hornady worked examples, their own printed conditions). 100 of 103 comparisons pass. The three misses occur under ICAO conditions. The 103 is a total, not a per-atmosphere figure. It is 2 drag-table points, 5 Hornady LE rows in ICAO (the primary run), 38 dataset rows run under ICAO, 38 under Aberdeen, and 20 under the printed conditions of the four Hornady correction tests. Passes: 2 of 2, 5 of 5, 35 of 38 (3 fail, all ICAO), 38 of 38, 20 of 20. Five further LE rows re-run in Aberdeen as a sensitivity (5 of 5 within tolerance) are not part of the 103. The reference entries still need owner checking against their original pages, and the drag-table origin remains unknown. None of this establishes physical accuracy.
 
 **Passing software tests is not proof of ballistic accuracy.** A test records what the code
 does. It cannot show that what the code does matches real bullets.
@@ -14,7 +14,7 @@ Passing tests, matching published data and predicting a real bullet are differen
 | Achievement | Question | Where it stands |
 | --- | --- | --- |
 | **Software correctness** | Does the program calculate consistently? | Supported by automated tests. This says nothing about the other two. |
-| **Reference agreement** | Does it reproduce published data? | Partial, with unresolved source and transcription checks. Federal and Hornady datasets were registered and compared under two candidate atmospheres (100 of 103 pass; the three misses are under ICAO). The entries have not been checked against the original pages, the drag-table origin is unknown, and the Hornady copy is owner-checked only (an independent reproduction was waived on 2026-11-16). |
+| **Reference agreement** | Does it reproduce published data? | Partial, with unresolved source and transcription checks. Federal and Hornady datasets were registered and compared under two candidate atmospheres (100 of 103 pass in total across all runs; the three misses are under ICAO; breakdown in `docs/VALIDATION_REPORT.md`). The entries have not been checked against the original pages, the drag-table origin is unknown, and the Hornady copy is owner-checked only (an independent reproduction was waived on 2026-11-16). |
 | **Physical accuracy** | Does it predict what an actual bullet does? | NOT DEMONSTRATED. No measured flight data has been compared. |
 
 Stage 5 completion criteria are in `docs/STAGE5_COMPLETION.md`.
@@ -36,7 +36,7 @@ A component can be Tested and also Unverified. Most of this app is.
 | G1 drag table (`G1`) | Tested | **Unverified** | One point agrees: Cd 0.5133 at Mach 3 against 0.51 printed by Applied Ballistics (evidence AB-G1-M3). The other points were not checked. The origin of the table in this file is not established, see below. |
 | G7 drag table (`G7`) | Tested | **Unverified** | One point agrees: Cd 0.2424 at Mach 3 against 0.24 (evidence AB-G7-M3). The other points were not checked. Origin not established. |
 | BC to SI factor, 703.0696 | Tested | **Verified**, scope: the unit conversion only | Arithmetic from the exact definitions of the pound and the inch: 0.45359237 kg divided by 0.0254 squared. Checked in `tests/validation.test.js`. |
-| Drag equation, `a = (pi/8) rho Cd(M) v / BC` | Tested | **Unverified** | Agrees within tolerance with published tables from Hornady (several bullets) and Federal (a G7 bullet), 100 comparisons of 103 in total across both candidate atmospheres. The 1.8% BC offset in the first Hornady case disappears in the Aberdeen atmosphere (hypothesis, not confirmed). The reference copies were read by a page tool and not independently reproduced, so this is not verification. |
+| Drag equation, `a = (pi/8) rho Cd(M) v / BC` | Tested | **Unverified** | Agrees within tolerance with published tables from Hornady (several bullets) and Federal (a G7 bullet), 100 of 103 comparisons in total across the ICAO, Aberdeen and printed-conditions runs. The 1.8% BC offset in the first Hornady case disappears in the Aberdeen atmosphere (hypothesis, not confirmed). The reference copies were read by a page tool and not independently reproduced, so this is not verification. |
 | Atmosphere: ISA pressure, moist-air density, speed of sound with gamma 1.4 | Tested | **Unverified** | Sea-level results are close to the commonly quoted ICAO values, but those values were quoted from memory and no source was opened for this. |
 | RK2 integrator, 0.5 ms step | Tested | **Unverified** | Tests measure sensitivity to the step size. That compares the code with itself. |
 | Zeroing and angled shots | Tested | **Unverified** | No external comparison. |
