@@ -12,6 +12,11 @@ The solver tests and golden baseline are unchanged.
 coefficient, distance below the minimum calculated as 10 yd, silent coefficient rescale, wind field/slider mismatch,
 silent preset overwrite) were replaced by 15 checks of the fixed behavior. No `[known gap]` checks remain.
 
+**Stage 3 follow-up:** `tests/browser/inputs.check.js` now has 26 checks (added: opening or viewing a rifle never changes a
+saved weight or coefficient; blank coefficient is left alone when the weight changes; Chart tab From/To/Every are validated
+like every other field). Two read-only analysis tools were added in `tests/tools/`: `coefficient-exposure.js` (replays the
+old per-keystroke arithmetic) and `check-coefficients.js` (lists saved rifles worth a second look; never writes).
+
 ## Run
 
 ```

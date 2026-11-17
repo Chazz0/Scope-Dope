@@ -20,10 +20,11 @@ const ok = (c, m) => { if (!c) throw new Error(m || 'assertion failed'); };
 let browser, base;
 const tests = [];
 const test = (n, f) => tests.push({ n, f });
-async function open() {
+async function open(seed) {
   const ctx = await browser.newContext({ viewport: { width: 400, height: 860 }, serviceWorkers: 'block' });
   const page = await ctx.newPage(); page.errors = [];
   page.on('pageerror', e => page.errors.push(e.message));
+  if (seed) await page.addInitScript((sd) => { if (!sessionStorage.getItem('__seeded')) { for (const k of Object.keys(sd)) localStorage.setItem(k, sd[k]); sessionStorage.setItem('__seeded', '1'); } }, seed);
   await page.goto(base + '/index.html'); await page.waitForTimeout(150);
   return { ctx, page };
 }
@@ -79,15 +80,15 @@ test('a velocity that the temperature adjustment pushes out of range is flagged,
   eq(await dials(page), ['—', '—']); ok(/velocity at the current temperature/i.test(await notice(page)) && /500 to 4500/.test(await notice(page)), await notice(page));
   await set(page, 'temp', '59'); ok(/\d/.test(await text(page, 'elevClicks'))); await ctx.close();
 });
-test('the wind field and the slider share one limit, 0 to 40 mph', async () => {
+test('the wind field and the slider share one limit, 0 to 60 mph', async () => {
   const { ctx, page } = await open();
   await page.click('#togWind');
-  eq(await page.$eval('#wind', e => e.max), '40'); eq(await page.$eval('#windRange', e => e.max), '40');
-  await set(page, 'wind', '40'); ok(/\d/.test(await text(page, 'elevClicks')) && !(await isBad(page, 'wind')), '40 is accepted');
-  await set(page, 'wind', '41'); ok(await isBad(page, 'wind'), '41 is flagged'); eq(await dials(page), ['—', '—']);
-  ok(/wind speed/i.test(await notice(page)) && /0 to 40/.test(await notice(page)));
-  ok(/41/.test(await page.$eval('#togWind', e => e.textContent)), 'the toggle shows what was typed, not a capped value');
-  await set(page, 'wind', '40'); await page.click('#windUp'); eq(await page.$eval('#wind', e => e.value), '40', 'stepper stops at 40');
+  eq(await page.$eval('#wind', e => e.max), '60'); eq(await page.$eval('#windRange', e => e.max), '60');
+  await set(page, 'wind', '60'); ok(/\d/.test(await text(page, 'elevClicks')) && !(await isBad(page, 'wind')), '60 is accepted');
+  await set(page, 'wind', '61'); ok(await isBad(page, 'wind'), '61 is flagged'); eq(await dials(page), ['—', '—']);
+  ok(/wind speed/i.test(await notice(page)) && /0 to 60/.test(await notice(page)));
+  ok(/61/.test(await page.$eval('#togWind', e => e.textContent)), 'the toggle shows what was typed, not a capped value');
+  await set(page, 'wind', '60'); await page.click('#windUp'); eq(await page.$eval('#wind', e => e.value), '60', 'stepper stops at 60');
   await ctx.close();
 });
 test('the range card is not built from substituted values and says why', async () => {
@@ -137,6 +138,104 @@ test('choosing a cartridge preset says which values were replaced and what they 
   const m = await text(page, 'loadMsg');
   ok(/replaced/i.test(m) && m.includes('2710') && m.includes('2650') && m.includes('168') && m.includes('140'), 'message: ' + m);
   await ctx.close();
+});
+
+// ---- Follow-up checks: the coefficient logic must never touch saved values just because they are opened or viewed ----
+const R = (name, e) => Object.assign({ pname: name, preset: 'p308', cname: '', model: 'G1', bc: '0.462', wt: '168', diam: '0.308', v0: '2650', vref: '59', vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', temp: '59', press: '', humidity: '50', alt: '0', lat: '' }, e);
+const odd = () => [
+  { name: 'Alex', active: 0, profiles: [R('A', { wt: '190', bc: '0.4625' }), R('B', { preset: 'p65cm', wt: '140', bc: '0.9', model: 'G7' })] },
+  { name: 'Sam', active: 0, profiles: [R('C', { preset: 'p223', wt: '55', bc: '0.123', v0: '3240' })] }
+];
+const oddSeed = () => ({ 'scopedope.v2': JSON.stringify({ schema: 1, pi: 0, people: odd(), session: { dist: '400' } }) });
+const snap = (people) => people.map(p => p.profiles.map(r => [r.pname, r.wt, r.bc, r.model, r.v0]));
+test('opening, viewing and switching rifles and profiles never changes a saved weight or coefficient', async () => {
+  const { ctx, page } = await open(oddSeed());
+  const want = snap(odd());
+  eq(await page.$eval('#bc', e => e.value), '0.4625', 'shown on open');
+  await page.click('.tab#tabRifle');
+  await page.selectOption('#profSel', '1'); await page.waitForTimeout(100); eq(await page.$eval('#bc', e => e.value), '0.9');
+  await page.selectOption('#profSel', '0'); await page.waitForTimeout(100); eq(await page.$eval('#bc', e => e.value), '0.4625');
+  await page.selectOption('#person', '1'); await page.waitForTimeout(100); eq(await page.$eval('#bc', e => e.value), '0.123');
+  await page.selectOption('#person', '0'); await page.waitForTimeout(100);
+  await page.reload(); await page.waitForTimeout(200);
+  const saved = JSON.parse(await page.evaluate(() => localStorage.getItem('scopedope.v2')));
+  eq(snap(saved.people), want, 'every saved weight and coefficient is exactly as seeded');
+  eq(await page.evaluate(() => document.getElementById('loadMsg').hidden), true, 'no coefficient message appeared');
+  eq(page.errors, []); await ctx.close();
+});
+test('focusing and leaving the weight field without typing changes nothing', async () => {
+  const { ctx, page } = await open(oddSeed());
+  await page.click('.tab#tabRifle'); await page.click('#wt'); await page.click('#pname'); await page.waitForTimeout(100);
+  eq(await page.$eval('#bc', e => e.value), '0.4625'); eq(await page.$eval('#wt', e => e.value), '190');
+  const saved = JSON.parse(await page.evaluate(() => localStorage.getItem('scopedope.v2')));
+  eq(snap(saved.people), snap(odd())); await ctx.close();
+});
+test('re-entering the same weight puts back the exact coefficient text, not a rounded one', async () => {
+  const { ctx, page } = await open(oddSeed());
+  await page.click('.tab#tabRifle');
+  await set(page, 'wt', '200'); await set(page, 'wt', '190');
+  eq(await page.$eval('#bc', e => e.value), '0.4625'); await ctx.close();
+});
+test('a blank or invalid coefficient is left alone when the weight changes', async () => {
+  const { ctx, page } = await open();
+  await page.click('.tab#tabRifle');
+  await set(page, 'bc', ''); await set(page, 'wt', '190');
+  eq(await page.$eval('#bc', e => e.value), '', 'still blank, not filled in for you'); eq(await page.evaluate(() => document.getElementById('loadMsg').hidden), true);
+  await ctx.close();
+});
+
+// ---- Chart tab From / To / Every: same rule as every other field. Named, flagged, no table, nothing swapped in ----
+const rows = (page) => page.$$eval('#tbody tr', r => r.length);
+const chart = async (page) => { await page.click('.tab#tabChart'); await page.waitForTimeout(250); };
+const setC = async (page, id, v) => { await set(page, id, v); await page.waitForTimeout(250); };
+test('chart: a From below 10 yd is flagged and named, the table is empty, and the typed value is kept', async () => {
+  const { ctx, page } = await open(); await chart(page);
+  ok((await rows(page)) > 0, 'the default range card has rows');
+  await setC(page, 'cStart', '5');
+  ok(await isBad(page, 'cStart')); eq(await rows(page), 0); eq(await page.$eval('#cStart', e => e.value), '5', 'not replaced with 100');
+  const m = await text(page, 'cMsg'); ok(/from/i.test(m) && /10 to 2000/.test(m) && /fix/i.test(m), m);
+  eq(page.errors, []); await ctx.close();
+});
+test('chart: a To below From is flagged on To and says so', async () => {
+  const { ctx, page } = await open(); await chart(page);
+  await setC(page, 'cStart', '500'); await setC(page, 'cEnd', '400');
+  ok(await isBad(page, 'cEnd')); eq(await rows(page), 0);
+  const m = await text(page, 'cMsg'); ok(/to \(400 yd\)/i.test(m) && /at or above from \(500 yd\)/i.test(m), m);
+  await ctx.close();
+});
+test('chart: Every must be 5 to 500 yd; blank, too small and too large are all flagged', async () => {
+  const { ctx, page } = await open(); await chart(page);
+  for (const v of ['2', '600', '']) {
+    await setC(page, 'cStep', v);
+    ok(await isBad(page, 'cStep'), 'flagged for "' + v + '"'); eq(await rows(page), 0, 'no rows for "' + v + '"');
+    ok(/every/i.test(await text(page, 'cMsg')) && /5 to 500/.test(await text(page, 'cMsg')));
+    eq(await page.$eval('#cStep', e => e.value), v, 'typed value kept');
+  }
+  await ctx.close();
+});
+test('chart: To above 2000 yd is flagged, matching the limit the page already declares', async () => {
+  const { ctx, page } = await open(); await chart(page);
+  await setC(page, 'cEnd', '2500'); ok(await isBad(page, 'cEnd')); eq(await rows(page), 0); ok(/10 to 2000/.test(await text(page, 'cMsg')));
+  await ctx.close();
+});
+test('chart: fixing the fields brings back the same table and clears the flags and message', async () => {
+  const { ctx, page } = await open(); await chart(page);
+  const n0 = await rows(page), first = await page.$eval('#tbody tr', r => r.textContent);
+  await setC(page, 'cStep', '2'); eq(await rows(page), 0);
+  await setC(page, 'cStep', '50');
+  eq(await rows(page), n0); eq(await page.$eval('#tbody tr', r => r.textContent), first);
+  ok(!(await isBad(page, 'cStep'))); eq(await text(page, 'cMsg'), ''); await ctx.close();
+});
+test('chart: a very long range is still shown, cut at 120 rows with a message saying so', async () => {
+  const { ctx, page } = await open(); await chart(page);
+  await setC(page, 'cStart', '10'); await setC(page, 'cEnd', '2000'); await setC(page, 'cStep', '5');
+  ok((await rows(page)) > 100 && (await rows(page)) <= 121); ok(/first 120 rows/.test(await text(page, 'cMsg'))); await ctx.close();
+});
+test('chart: a problem with the range fields does not hide the HUD result', async () => {
+  const { ctx, page } = await open(); await chart(page);
+  await setC(page, 'cStep', '2');
+  await page.click('.tab#tabHud'); await page.waitForTimeout(100);
+  ok(/\d/.test(await text(page, 'elevClicks')), 'dials still show a result'); eq(await notice(page), ''); await ctx.close();
 });
 test('moving target: no input exists and the lead dial is hidden', async () => {
   const { ctx, page } = await open();
