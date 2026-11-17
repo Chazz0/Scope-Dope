@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: three screens behind a bottom tab bar. HUD is the one-target field screen (distance, wind clock, angle, moving target in; clicks, lead and wind out). Chart is the full range card with save and copy. Rifle is the settings page (profile, load, scope, weather, location, truing). A dark turret-style panel carries the solution. */
+/* Layout: three screens behind a bottom tab bar. HUD is the one-target field screen (distance, wind clock, angle in; elevation and wind clicks out). Chart is the full range card with save and copy. Rifle is the settings page (profile, load, scope, weather, location, truing). A dark turret-style panel carries the solution. */
 :root{
   --bg:#E8EBE4; --surface:#F6F7F2; --ink:#151A16; --muted:#586259; --line:#CDD3C8; --grid:#DBE0D5;
   --accent:#D4480B; --accent-ink:#FFFFFF; --hl:#F4E2D6; --warn:#B42318;
@@ -82,7 +82,6 @@ input[type=range]{width:100%; margin:0; accent-color:var(--accent); height:28px}
 .dir{font:600 11.5px/1 var(--body); padding:5px 7px; border-radius:4px; background:var(--panel-accent); color:#1A0E05; white-space:nowrap}
 .dir.off{background:var(--panel-line); color:var(--panel-ink)}
 .dial-num{display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; font:600 66px/1 var(--display); font-variant-numeric:tabular-nums}
-.dials.three .dial-num{font-size:48px; gap:4px}
 .dial-unit{font:500 13px var(--body); color:var(--panel-muted)}
 .dial-sub{font:400 12px/1.4 var(--mono); color:var(--panel-muted)}
 .stats{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px 10px; margin:0; padding-top:16px; border-top:1px solid var(--panel-line)}
@@ -91,6 +90,12 @@ input[type=range]{width:100%; margin:0; accent-color:var(--accent); height:28px}
 .stats dd{margin:0; font:500 16px/1.2 var(--mono); font-variant-numeric:tabular-nums}
 .stats small{font:400 11px var(--body); color:var(--panel-muted); margin-left:4px}
 .notice{margin:0; font-size:13px; line-height:1.45; padding-left:10px; border-left:3px solid var(--panel-accent)}
+.assess{margin:0; font-size:12.5px; line-height:1.45; color:var(--panel-muted)}
+.assess summary{cursor:pointer; padding:6px 0; overflow-wrap:anywhere}
+.assess ul{margin:4px 0 0; padding:0; list-style:none; display:grid; gap:6px}
+.assess li{padding-left:10px; border-left:3px solid var(--panel-muted); overflow-wrap:anywhere}
+.assess li[data-level="warning"]{border-left-color:var(--warn); color:var(--panel-ink,inherit)}
+.assess .tag{font-weight:600}
 
 .toggles{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
 .tog{display:flex; align-items:center; justify-content:space-between; gap:8px; min-width:0; padding:13px 14px; border:1px solid var(--line); border-radius:12px; background:var(--surface); color:var(--ink); font:600 13px/1.25 var(--body); cursor:pointer; text-align:left}
@@ -110,6 +115,9 @@ input[type=number],input[type=text],select{
   border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--ink);
 }
 input[type=text],select{font-family:var(--body)}
+textarea{font:500 16px/1.35 var(--mono); padding:10px 11px; width:100%; min-width:0; resize:vertical; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--ink)}
+textarea:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+#storeMsg{margin:0 0 10px; padding:10px 12px; border:1px solid var(--warn); border-radius:8px; background:var(--surface); color:var(--warn); font:500 13px/1.4 var(--body)}
 input.bad{border-color:var(--warn)}
 input:focus-visible,select:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
 .grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
@@ -290,13 +298,14 @@ input[type=range]{height:20px}
   </header>
 
   <main>
+    <p id="storeMsg" role="alert" hidden></p>
     <!-- HUD -->
     <section id="viewHud" aria-label="HUD">
       <div class="cols">
         <div class="col">
           <section class="panel" aria-label="Scope adjustment">
             <div class="dist">
-              <label class="lbl" for="dist" style="text-align:center">Distance to target</label>
+              <label class="lbl" for="dist" style="text-align:center">Distance to target (yards)</label>
               <div class="dist-row">
                 <button type="button" class="step" id="distDn" aria-label="Distance down 5 yards">&minus;</button>
                 <div class="dist-main"><input id="dist" type="number" inputmode="numeric" min="10" max="2000" step="5" value="400"><span class="dist-unit">yd</span></div>
@@ -305,7 +314,7 @@ input[type=range]{height:20px}
               <div class="chips" id="distChips" role="group" aria-label="Common distances"></div>
             </div>
 
-            <div class="dials" id="dials" aria-live="polite">
+            <div class="dials" aria-live="polite">
               <div class="dial">
                 <div class="dial-head"><span class="lbl">Elevation</span><span class="dir" id="elevDir">&uarr; Up</span></div>
                 <div class="dial-num"><span id="elevClicks">0</span><span class="dial-unit">clicks</span></div>
@@ -316,11 +325,6 @@ input[type=range]{height:20px}
                 <div class="dial-num"><span id="windClicks">0</span><span class="dial-unit">clicks</span></div>
                 <div class="dial-sub" id="windSub"></div>
               </div>
-              <div class="dial" id="leadDial" hidden>
-                <div class="dial-head"><span class="lbl">Lead</span><span class="dir" id="leadDir">&rarr; Right</span></div>
-                <div class="dial-num"><span id="leadClicks">0</span><span class="dial-unit">clicks</span></div>
-                <div class="dial-sub" id="leadSub"></div>
-              </div>
             </div>
 
             <dl class="stats">
@@ -329,6 +333,7 @@ input[type=range]{height:20px}
               <div><dt>Energy</dt><dd><span id="sEn">0</span><small>ft&middot;lb</small></dd></div>
               <div><dt>Flight time</dt><dd><span id="sTime">0</span><small>s</small></dd></div>
             </dl>
+            <details class="assess" id="assess"><summary id="assessSum">Calculated estimate. Not independently verified. The model has not been shown to be physically accurate.</summary><ul id="assessList"></ul></details>
             <p class="notice" id="notice" hidden></p>
           </section>
 
@@ -355,7 +360,7 @@ input[type=range]{height:20px}
                     <input id="wind" type="number" inputmode="decimal" min="0" max="60" step="1" value="10">
                     <button type="button" class="step" id="windUp" aria-label="Wind up 1 mph">+</button>
                   </div>
-                  <input id="windRange" type="range" min="0" max="30" step="1" value="10" aria-label="Wind speed slider in miles per hour">
+                  <input id="windRange" type="range" min="0" max="60" step="1" value="10" aria-label="Wind speed slider in miles per hour">
                 </div>
                 <p class="hint" id="crossLine"></p>
                 <p class="hint">Tap the hour the wind comes from. 12 is straight at you, 3 is from your right, 9 is from your left.</p>
@@ -383,10 +388,11 @@ input[type=range]{height:20px}
         <section class="card" aria-labelledby="h-range">
           <h2 id="h-range">Range card</h2>
           <p class="sub" id="cSummary"></p>
+          <details class="assess" id="cAssess"><summary id="cAssessSum">Calculated estimate. Not independently verified against measured bullet flight. The model has not been shown to be physically accurate.</summary><p class="hint" id="cAssessNote"></p><ul id="cAssessList"></ul></details>
           <div class="grid3">
-            <div class="field"><label for="cStart">From (yd)</label><input id="cStart" type="number" inputmode="numeric" min="10" max="2000" step="5" value="100"></div>
-            <div class="field"><label for="cEnd">To (yd)</label><input id="cEnd" type="number" inputmode="numeric" min="10" max="2000" step="5" value="1000"></div>
-            <div class="field"><label for="cStep">Every (yd)</label><input id="cStep" type="number" inputmode="numeric" min="5" max="500" step="5" value="50"></div>
+            <div class="field"><label for="cStart">From (yards)</label><input id="cStart" type="number" inputmode="numeric" min="10" max="2000" step="5" value="100"></div>
+            <div class="field"><label for="cEnd">To (yards)</label><input id="cEnd" type="number" inputmode="numeric" min="10" max="2000" step="5" value="1000"></div>
+            <div class="field"><label for="cStep">Every (yards)</label><input id="cStep" type="number" inputmode="numeric" min="5" max="500" step="5" value="50"></div>
           </div>
           <div class="btnrow">
             <button type="button" class="btn" id="saveCsv" hidden>Save CSV</button>
@@ -399,7 +405,7 @@ input[type=range]{height:20px}
               <tbody id="tbody"></tbody>
             </table>
           </div>
-          <p class="hint">Up clicks are positive, down clicks negative. The wind letter is the way to dial. Wind, angle, direction and moving target settings from the HUD apply to every row. The highlighted row is the HUD distance.</p>
+          <p class="hint">Up clicks are positive, down clicks negative. The wind letter is the way to dial. Wind, angle and direction settings from the HUD apply to every row. The highlighted row is the HUD distance.</p>
         </section>
       </div>
     </section>
@@ -433,7 +439,7 @@ input[type=range]{height:20px}
 
         <section class="card" aria-labelledby="h-load">
           <h2 id="h-load">Cartridge and bullet</h2>
-          <p class="sub">Picking a cartridge fills in a typical G1 factory load. Changing the grain rescales the coefficient to match. Hornady lists both a G1 and a G7 value for its bullets, so pick the drag model that matches the number you enter.</p>
+          <p class="sub">Picking a cartridge fills in a typical G1 factory load, but never replaces a muzzle velocity you entered. Changing the grain rescales the coefficient to match. Hornady lists both a G1 and a G7 value for its bullets, so pick the drag model that matches the number you enter.</p>
           <div class="grid2">
             <div class="field"><label for="preset">Cartridge</label><select id="preset"></select></div>
             <div class="field"><label for="model">Drag model</label><select id="model"><option value="G1" selected>G1</option><option value="G7">G7</option></select></div>
@@ -443,11 +449,25 @@ input[type=range]{height:20px}
             <input id="cname" type="text" maxlength="40" autocomplete="off" placeholder="e.g. .22-250 Rem">
           </div>
           <div class="grid2">
-            <div class="field"><label for="wt">Bullet weight (gr)</label><input id="wt" type="number" inputmode="decimal" min="15" max="800" step="1" value="168"></div>
+            <div class="field"><label for="wt">Bullet weight (grains)</label><input id="wt" type="number" inputmode="decimal" min="15" max="800" step="1" value="168"></div>
             <div class="field"><label for="bc">Ballistic coefficient</label><input id="bc" type="number" inputmode="decimal" min="0.05" max="1.2" step="any" value="0.462"></div>
-            <div class="field"><label for="v0">Muzzle velocity (fps)</label><input id="v0" type="number" inputmode="numeric" min="500" max="4500" step="10" value="2650"></div>
-            <div class="field"><label for="diam">Bullet diameter (in)</label><input id="diam" type="number" inputmode="decimal" min="0.17" max="0.6" step="any" value="0.308"></div>
+            <div class="field"><label for="v0">Your measured muzzle velocity (fps)</label><input id="v0" type="number" inputmode="numeric" min="500" max="4500" step="10" value="2650"></div>
+            <div class="field"><label for="diam">Bullet diameter (inches)</label><input id="diam" type="number" inputmode="decimal" min="0.17" max="0.6" step="any" value="0.308"></div>
           </div>
+          <p class="hint" id="wtErr" role="alert" hidden style="color:var(--warn)"></p>
+          <input type="hidden" id="v0src" value="factory">
+          <input type="hidden" id="bcsrc" value="factory">
+          <input type="hidden" id="bcwt" value="168">
+          <p class="hint" id="bcSrc"></p>
+          <div class="btnrow" id="bcOffer" hidden><button type="button" class="btn" id="bcKeep"></button></div>
+          <p class="hint" id="v0Src"></p>
+          <p class="hint" id="v0Factory"></p>
+          <div class="btnrow" id="v0Offer" hidden>
+            <button type="button" class="btn ghost" id="v0Use"></button>
+            <button type="button" class="btn warn" id="v0Confirm" hidden></button>
+            <button type="button" class="btn" id="v0Cancel" hidden></button>
+          </div>
+          <p class="hint" id="loadMsg" aria-live="polite" hidden></p>
           <div class="grid2">
             <div class="field"><label for="vref">Velocity measured at (&deg;F)</label><input id="vref" type="number" inputmode="decimal" min="-40" max="130" step="1" value="59"></div>
             <div class="field"><label for="vsens">Velocity change per &deg;F (fps)</label><input id="vsens" type="number" inputmode="decimal" min="-5" max="10" step="any" value="0"></div>
@@ -458,9 +478,9 @@ input[type=range]{height:20px}
         <section class="card" aria-labelledby="h-scope">
           <h2 id="h-scope">Rifle and scope</h2>
           <div class="grid2">
-            <div class="field"><label for="zero">Zero distance (yd)</label><input id="zero" type="number" inputmode="numeric" min="25" max="1000" step="5" value="100"></div>
-            <div class="field"><label for="h">Scope height (in)</label><input id="h" type="number" inputmode="decimal" min="0.5" max="4" step="any" value="1.5"></div>
-            <div class="field"><label for="twist">Barrel twist, 1 in (in)</label><input id="twist" type="number" inputmode="decimal" min="5" max="20" step="any" value="10"></div>
+            <div class="field"><label for="zero">Zero distance (yards)</label><input id="zero" type="number" inputmode="numeric" min="25" max="1000" step="5" value="100"></div>
+            <div class="field"><label for="h">Scope height (inches)</label><input id="h" type="number" inputmode="decimal" min="0.5" max="4" step="any" value="1.5"></div>
+            <div class="field"><label for="twist">Twist rate: 1 turn in (inches)</label><input id="twist" type="number" inputmode="decimal" min="5" max="20" step="any" value="10"></div>
             <div class="field"><label for="tdir">Twist direction</label><select id="tdir"><option value="R" selected>Right</option><option value="L">Left</option></select></div>
           </div>
           <div class="field">
@@ -481,7 +501,7 @@ input[type=range]{height:20px}
           <div class="grid2">
             <div class="field"><label for="temp">Temperature (&deg;F)</label><input id="temp" type="number" inputmode="decimal" min="-40" max="130" step="1" value="59"></div>
             <div class="field"><label for="alt">Altitude (ft)</label><input id="alt" type="number" inputmode="numeric" min="-500" max="15000" step="100" value="0"></div>
-            <div class="field"><label for="press">Air pressure (inHg)</label><input id="press" type="number" inputmode="decimal" min="20" max="32.5" step="any" placeholder="Auto"></div>
+            <div class="field"><label for="press">Station pressure (not sea-level pressure)</label><input id="press" type="number" inputmode="decimal" min="15" max="32.5" step="any" placeholder="Auto (inHg)"></div>
             <div class="field"><label for="humidity">Humidity (%)</label><input id="humidity" type="number" inputmode="numeric" min="0" max="100" step="1" value="50"></div>
           </div>
           <p class="hint">Leave pressure blank to estimate it from altitude. If you enter it, use station pressure, which is what a barometer or phone sensor reads, not the sea-level pressure from weather reports.</p>
@@ -489,12 +509,12 @@ input[type=range]{height:20px}
             <label for="lat">Latitude (&deg;, north +, south &minus;)</label>
             <input id="lat" type="number" inputmode="decimal" min="-90" max="90" step="any" placeholder="Blank turns Coriolis off">
           </div>
-          <p class="hint">Coriolis effect needs your latitude and the shooting direction from the HUD. It is small, about 1 inch at 500 yards, and grows quickly at long range.</p>
+          <p class="hint">Coriolis effect needs your latitude and the shooting direction from the HUD. It is small, about 1 inch at 500 yards, and grows quickly at long range. The Coriolis calculation has a known, unresolved discrepancy against a full numerical integration (the closed-form estimate ran larger), so treat it as uncertain.</p>
         </section>
 
         <section class="card" aria-labelledby="h-fit">
           <h2 id="h-fit">True to a real impact</h2>
-          <p class="sub">Enter how many MOA up you needed to hit at one distance, from a real shot or from another app. Scope Dope adjusts the coefficient or the muzzle velocity to match, then fills in the rest of the card.</p>
+          <p class="sub">Enter how many MOA up you needed to hit at one distance, from a real shot or from another app. Scope Dope adjusts the coefficient or the muzzle velocity to match, then fills in the rest of the card. The value it sets is labelled fitted, not measured: matching one observation can absorb errors in the coefficient, the drag model or the air into it.</p>
           <div class="grid2">
             <div class="field"><label for="fitDist">Distance (yd)</label><input id="fitDist" type="number" inputmode="numeric" min="50" max="1500" step="5" value="500"></div>
             <div class="field"><label for="fitMoa">Up needed (MOA)</label><input id="fitMoa" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 10.98"></div>
@@ -506,8 +526,18 @@ input[type=range]{height:20px}
           <div class="btnrow"><button type="button" class="btn" id="fitBtn">Match this impact</button></div>
           <p class="hint" id="fitMsg" aria-live="polite"></p>
         </section>
+
+        <section class="card" aria-labelledby="h-bak">
+          <h2 id="h-bak">Back up and restore</h2>
+          <p class="sub">Your rifles are stored only in this browser. Copy a backup code and keep it somewhere safe. Restoring adds the rifles from a code. It never replaces what you already have.</p>
+          <div class="btnrow"><button type="button" class="btn" id="exportBtn">Show backup code</button></div>
+          <div class="field"><label for="exportCode">Backup code</label><textarea id="exportCode" rows="4" readonly spellcheck="false"></textarea></div>
+          <div class="field"><label for="importCode">Restore from a code</label><textarea id="importCode" rows="4" spellcheck="false" placeholder="Paste a backup code here"></textarea></div>
+          <div class="btnrow"><button type="button" class="btn ghost" id="importBtn">Add rifles from code</button></div>
+          <p class="hint" id="backupMsg" aria-live="polite"></p>
+        </section>
       </div>
-      <p class="foot" style="margin-top:14px">Dial directions move your point of impact. Follow the arrows on your turrets. These are estimates from a point-mass model with G1 or G7 drag, plus spin drift, Coriolis effect when you enter a latitude, and wind from any clock position. They leave out aerodynamic jump and powder temperature unless you set a velocity change per degree. Fire a few rounds at known distances and true your velocity or coefficient until the card matches your groups.</p>
+      <p class="foot" style="margin-top:14px">Dial directions move your point of impact. Follow the arrows on your turrets. These are estimates from a point-mass model with G1 or G7 drag, plus spin drift, Coriolis effect when you enter a latitude, and wind from any clock position. They leave out aerodynamic jump and powder temperature unless you set a velocity change per degree. Fire a few rounds at known distances and true your velocity or coefficient until the card matches your groups. The model has not been shown to be physically accurate, manufacturer comparisons are not proof of real-world accuracy, and truing can absorb errors in the coefficient, the drag model and the air inputs. <span id="modelTag">Calculation model: unverified estimates.</span></p>
     </section>
   </main>
 </div>
@@ -531,6 +561,9 @@ input[type=range]{height:20px}
 
 <script>
 /*SOLVER_START*/
+// Calculation-model version. Bump it, regenerate tests/golden/baseline.json and add an entry to
+// docs/MODEL_CHANGELOG.md whenever any calculated number is meant to change.
+const MODEL_VERSION = '1.0.0';
 const G_ACC = 9.80665;
 const G1 = [[0,0.2629],[0.05,0.2558],[0.1,0.2487],[0.15,0.2413],[0.2,0.2344],[0.25,0.2278],[0.3,0.2214],[0.35,0.2155],[0.4,0.2104],[0.45,0.2061],[0.5,0.2032],[0.55,0.2020],[0.6,0.2034],[0.7,0.2165],[0.725,0.2230],[0.75,0.2313],[0.775,0.2417],[0.8,0.2546],[0.825,0.2706],[0.85,0.2901],[0.875,0.3136],[0.9,0.3415],[0.925,0.3734],[0.95,0.4084],[0.975,0.4448],[1.0,0.4805],[1.025,0.5136],[1.05,0.5427],[1.075,0.5677],[1.1,0.5883],[1.125,0.6053],[1.15,0.6191],[1.2,0.6393],[1.25,0.6518],[1.3,0.6589],[1.35,0.6621],[1.4,0.6625],[1.45,0.6607],[1.5,0.6573],[1.55,0.6528],[1.6,0.6474],[1.65,0.6413],[1.7,0.6347],[1.75,0.6280],[1.8,0.6210],[1.85,0.6141],[1.9,0.6072],[1.95,0.6003],[2.0,0.5934],[2.05,0.5867],[2.1,0.5804],[2.15,0.5743],[2.2,0.5685],[2.25,0.5630],[2.3,0.5577],[2.35,0.5527],[2.4,0.5481],[2.45,0.5438],[2.5,0.5397],[2.6,0.5325],[2.7,0.5264],[2.8,0.5211],[2.9,0.5168],[3.0,0.5133],[3.1,0.5105],[3.2,0.5084],[3.3,0.5067],[3.4,0.5054],[3.5,0.5040],[3.6,0.5030],[3.7,0.5022],[3.8,0.5016],[3.9,0.5010],[4.0,0.5006],[4.2,0.4998],[4.4,0.4995],[4.6,0.4992],[4.8,0.4990],[5.0,0.4988]];
 
@@ -715,11 +748,6 @@ function dopeAt(M, inp, rangeYd){
     elevRad -= corV / x;
   }
   const windRad = rightM / x;
-  let leadRad = 0;
-  if (inp.tgtMph > 0){
-    const leadM = inp.tgtMph * 0.44704 * s.t * Math.sin((inp.tgtAngle == null ? 90 : inp.tgtAngle) * Math.PI / 180);
-    leadRad = (inp.tgtDir === 'RL' ? -1 : 1) * leadM / x;
-  }
   const vFps = s.v / 0.3048;
   return {
     dropIn: dropM / 0.0254,
@@ -727,12 +755,63 @@ function dopeAt(M, inp, rangeYd){
     driftIn: driftM / 0.0254, spinIn: spinIn,
     corHIn: corH / 0.0254, corVIn: corV / 0.0254,
     windMoa: windRad * 3437.7468, windMil: windRad * 1000,
-    leadMoa: leadRad * 3437.7468, leadMil: leadRad * 1000,
     vFps, energy: inp.wt * vFps * vFps / 450240,
     t: s.t, mach: s.v / M.p.sos
   };
 }
 /*SOLVER_END*/
+
+/*ASSESS_START*/
+// Safety and transparency (Stage 6). Advisory text only. Nothing here feeds the calculation, and it never calls a result
+// accurate or verified. VALIDATED is the span of conditions the reference comparisons covered (manufacturer
+// tables, not measured flight). A test rebuilds it from the reference data file, so it cannot drift from the evidence.
+const VALIDATED = {
+  basis: 'manufacturer ballistic tables (Federal, Hornady), compared in testing; never compared with measured bullet flight',
+  rangeYd: [50, 500], muzzleFps: [2600, 3000], bcG1: [0.241, 0.608], bcG7: [0.224, 0.287], weightGr: [130, 180],
+  diameters: [0.264, 0.308], tempF: [29, 89], pressInHg: [21, 31], humidityPct: [0, 78]
+};
+function assessResult(inp, ctx){
+  const V = VALIDATED, out = [];
+  const add = (level, id, text) => out.push({ level: level, id: id, text: text });
+  const outside = (x, r) => x < r[0] || x > r[1];
+  const rangeYd = ctx && ctx.rangeYd != null ? ctx.rangeYd : null;
+  const pEff = inp.pressInHg != null ? inp.pressInHg : 29.92 * Math.pow(1 - 2.25577e-5 * inp.altFt * 0.3048, 5.25588);
+  // Warnings: the input is outside the conditions the reference comparisons covered.
+  if (rangeYd != null && rangeYd > V.rangeYd[1]) add('warning', 'range', ((ctx && ctx.rangeLabel) || 'Distance') + ' ' + rangeYd + ' yd, which is beyond the ' + V.rangeYd[1] + ' yd covered by reference comparisons. Treat this result with extra caution.');
+  if (outside(inp.v0nom != null ? inp.v0nom : inp.v0, V.muzzleFps)) add('warning', 'muzzle', 'Muzzle velocity ' + Math.round(inp.v0nom != null ? inp.v0nom : inp.v0) + ' fps is outside the ' + V.muzzleFps[0] + ' to ' + V.muzzleFps[1] + ' fps covered by reference comparisons.');
+  const bcr = inp.model === 'G7' ? V.bcG7 : V.bcG1;
+  const bcOut = outside(inp.bc, bcr);
+  if (bcOut) add('warning', 'bc', inp.model + ' coefficient ' + inp.bc + ' is outside the ' + bcr[0] + ' to ' + bcr[1] + ' range compared for ' + inp.model + '.');
+  const calOut = !V.diameters.some(d => Math.abs(d - inp.diam) <= 0.0015) || outside(inp.wt, V.weightGr);
+  if (calOut) add('warning', 'caliber', 'Caliber ' + inp.diam + ' in at ' + inp.wt + ' gr is outside the reference comparisons (compared: ' + V.diameters.join(' and ') + ' in, ' + V.weightGr[0] + ' to ' + V.weightGr[1] + ' gr).');
+  if (outside(inp.tempF, V.tempF)) add('warning', 'temp', 'Temperature ' + Math.round(inp.tempF) + ' F is outside the ' + V.tempF[0] + ' to ' + V.tempF[1] + ' F covered by reference comparisons.');
+  if (outside(pEff, V.pressInHg)) add('warning', 'pressure', (inp.pressInHg != null ? 'Pressure ' : 'Pressure estimated from altitude, ') + pEff.toFixed(1) + ' inHg, is outside the ' + V.pressInHg[0] + ' to ' + V.pressInHg[1] + ' inHg covered by reference comparisons.');
+  if (outside(inp.humidity || 0, V.humidityPct)) add('warning', 'humidity', 'Humidity ' + Math.round(inp.humidity) + '% is outside the ' + V.humidityPct[0] + ' to ' + V.humidityPct[1] + '% covered by reference comparisons.');
+  if (ctx && ctx.sg != null && inp.twist > 0 && ctx.sg < 1) add('warning', 'stability', 'Estimated stability is ' + Math.min(0.99, Number(ctx.sg.toFixed(2))).toFixed(2) + ', below 1.0. The spin-drift part of the windage comes from that estimate and may be unreliable. The estimate uses an assumed bullet length, so a real bullet can differ.');
+  const refCovered = !bcOut && !calOut;
+  if (!refCovered) add('warning', 'noref', 'No reference comparison covers this load (caliber, weight or coefficient). Nothing in testing checked a load like it.');
+  // Notes: incomplete inputs (what the result assumes or leaves out).
+  if (inp.v0src === 'factory') add('notice', 'v0factory', 'Muzzle velocity is a typical factory starting value, not a velocity you measured. Enter your own measured velocity for a result that fits your rifle.');
+  if (inp.v0src === 'fitted') add('notice', 'v0fitted', 'Muzzle velocity was fitted to match one observed hold. It is not a velocity you measured, and fitting can absorb errors in the ballistic coefficient or the drag model.');
+  if (inp.bcsrc === 'factory') add('notice', 'bcfactory', 'Ballistic coefficient is a typical value for the selected cartridge, not one for your bullet. Enter the published coefficient for your bullet.');
+  if (inp.bcsrc === 'fitted') add('notice', 'bcfitted', 'Ballistic coefficient was fitted to match one observed hold. It is not a published or measured value, and fitting can absorb errors in the drag model or velocity.');
+  if (inp.pressInHg != null && inp.altFt != null && inp.pressInHg > 1.08 * 29.921 * Math.pow(1 - 6.8756e-6 * inp.altFt, 5.2559)) add('notice', 'pressureAltitude', 'Pressure ' + inp.pressInHg + ' inHg is high for ' + Math.round(inp.altFt) + ' ft. This field takes station pressure, not the sea-level pressure that weather reports give. It is used as entered.');
+  if (inp.pressInHg == null) add('notice', 'pressureEst', 'Pressure not entered, so it is estimated from altitude with a standard atmosphere. Enter station pressure for a better estimate.');
+  if (inp.latDeg == null) add('notice', 'noLat', 'Latitude not entered, so Coriolis effect is not included.');
+  if (!(inp.twist > 0)) add('notice', 'noTwist', 'Twist rate is 0, so spin drift is not included.');
+  // Notes: effects that are in use but have no reference comparison.
+  if (Math.abs(inp.windMph || 0) > 0 || Math.abs(inp.headMph || 0) > 0) add('notice', 'wind', 'Wind: no reference table in testing included wind. The wind correction is an estimate that was not checked against reference data.');
+  if (inp.twist > 0) add('notice', 'spin', 'Spin drift is an empirical estimate. Its equation has no verified source and no reference comparison.');
+  if (inp.latDeg != null) add('notice', 'coriolis', 'Coriolis effect follows from first-order theory and was not compared with measurements. A known discrepancy is unresolved: in one check the closed-form Coriolis estimate was larger than a full numerical integration (about 14% at 500 yd, 33% at 1000 yd and 47% at 1500 yd for one .308 sample load), so treat the Coriolis figures as uncertain.');
+  if (inp.angleDeg) add('notice', 'angle', 'Angled shot: no reference comparison covers shooting uphill or downhill.');
+  if (inp.v0nom != null && Math.abs(inp.v0 - inp.v0nom) >= 1) add('notice', 'vtemp', 'Velocity is adjusted for temperature using your own change-per-degree setting. That adjustment was not validated.');
+  add('notice', 'limits', 'Limits of the model: a point-mass trajectory with G1 or G7 drag tables that are not verified against an original source. It has no aerodynamic jump, no powder-temperature model beyond your setting, and a standard atmosphere. It has been compared with manufacturer tables, never with measured bullet flight. Manufacturer comparisons are not proof of real-world accuracy, and the one attempt to compare it with published measured trajectories was inconclusive because the sources left out key inputs. The model has not been shown to be physically accurate.');
+  return {
+    badge: 'Calculated estimate. Not independently verified. The model has not been shown to be physically accurate. ' + (refCovered ? 'Compared with manufacturer tables for similar loads, not with measured bullet flight.' : 'No reference data covers this load.'),
+    refCovered: refCovered, findings: out
+  };
+}
+/*ASSESS_END*/
 
 (function(){
   const $ = (id) => document.getElementById(id);
@@ -750,10 +829,21 @@ function dopeAt(M, inp, rangeYd){
   const RANGES = {
     dist:[10,2000,400], wind:[0,60,10], angle:[-75,75,0], temp:[-40,130,59], alt:[-500,15000,0],
     v0:[500,4500,2650], bc:[0.05,1.2,0.462], wt:[15,800,168], h:[0.5,4,1.5], zero:[25,1000,100],
-    diam:[0.17,0.6,0.308], twist:[5,20,10], humidity:[0,100,50], az:[0,360,0], tgt:[0,60,0], tgtAng:[0,90,90],
+    diam:[0.17,0.6,0.308], twist:[5,20,10], humidity:[0,100,50], az:[0,360,0],
     vsens:[-5,10,0], vref:[-40,130,59]
   };
-  const PKEYS = ['pname','preset','cname','model','bc','wt','diam','v0','vref','vsens','zero','h','twist','tdir','click','temp','press','humidity','alt','lat'];
+  const PRESS_RANGE = [15, 32.5];
+  /* Bullet weight (grains): 15 to 800 gr. 15 gr is the lightest centerfire/small-bore rifle bullet in common use; 800 gr is above the heaviest
+     common rifle bullets (.50 BMG about 650 to 750 gr). It is a plausibility limit chosen with the diameter (0.17 to 0.6 in) and BC (0.05 to 1.2)
+     limits, not a measured or sourced value. The weight is read strictly: the whole text must be a finite decimal or exponent number. */
+  const NUM_RE = /^\s*[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?\s*$/i;
+  function weightOk(raw){
+    const t = String(raw == null ? '' : raw);
+    if (!NUM_RE.test(t)) return false;
+    const v = Number(t);
+    return isFinite(v) && v >= RANGES.wt[0] && v <= RANGES.wt[1];
+  }
+  const PKEYS = ['pname','preset','cname','model','bc','wt','diam','v0','v0src','bcsrc','bcwt','vref','vsens','zero','h','twist','tdir','click','temp','press','humidity','alt','lat'];
   const CHIP_DISTS = [100,200,300,400,500,600,800,1000];
   const CARD = ['N','NE','E','SE','S','SW','W','NW'];
 
@@ -763,23 +853,83 @@ function dopeAt(M, inp, rangeYd){
 
   function profileDefaults(pid){
     const p = PRESETS.find(x => x.id === pid) || PRESETS[4];
-    return { pname:'My rifle', preset:p.id, cname:'', model:'G1', bc:String(p.bc), wt:String(p.wt), diam:String(p.d), v0:String(p.v0),
+    return { pname:'My rifle', preset:p.id, cname:'', model:'G1', bc:String(p.bc), wt:String(p.wt), diam:String(p.d), v0:String(p.v0), v0src:'factory', bcsrc:'factory', bcwt:String(p.wt),
       vref:'59', vsens:'0', zero:'100', h:'1.5', twist:String(p.tw), tdir:'R', click:'MOA:0.25', temp:'59', press:'', humidity:'50', alt:'0', lat:'' };
   }
-  const sessionDefaults = () => ({ dist:'400', wind:'10', windHr:'3', angle:'0', az:'0', tgt:'0', tgtAng:'90', tgtDir:'LR', cStart:'100', cEnd:'1000', cStep:'50' });
+  const sessionDefaults = () => ({ dist:'400', wind:'10', windHr:'3', angle:'0', az:'0', cStart:'100', cEnd:'1000', cStep:'50' });
 
   let store = { active:0, profiles:[profileDefaults('p308')], session:sessionDefaults() };
-  let lastWt = 168;
+  // The weight and coefficient last set by you, a profile or a preset. Weight edits scale the coefficient from here.
+  let anchor = { wt: 168, bc: 0.462, bcText: '0.462' };
+  function setAnchor(){
+    const b = parseFloat($('bc').value);
+    // Only a valid weight with a valid coefficient can be the base for scaling. Otherwise the base is the selected preset's own weight and
+    // coefficient (never another rifle's numbers), or nothing at all for a custom load.
+    if (weightOk($('wt').value) && isFinite(b) && b >= RANGES.bc[0] && b <= RANGES.bc[1]) anchor = { wt: Number($('wt').value), bc: b, bcText: $('bc').value.trim() };
+    else { const p = PRESETS.find(x => x.id === $('preset').value); anchor = p ? { wt: p.wt, bc: p.bc, bcText: String(p.bc) } : { wt: 0, bc: 0, bcText: '' }; }
+  }
+  let lastSelPreset = '';
+  function setLoadMsg(t){ const el = $('loadMsg'); el.textContent = t; el.hidden = !t; }
   let windHr = 3;
   let people = [], pi = 0;
   let last = null;
   let lastRows = [];
 
-  function loadStore(){
+  /* Saved-data protection (Stage 2).
+     SCHEMA numbers the saved format. Anything the app cannot read or would change is first copied,
+     unchanged, to its own key ('scopedope.backup.*' or 'scopedope.damaged.*'). If a copy cannot be made,
+     or storage cannot be read, saving is switched off for the session so stored data is never overwritten. */
+  const SCHEMA = 1;
+  let saveBlocked = false, saveFail = false, loadNote = '';
+  function renderStoreMsg(){
+    const t = saveFail ? 'Your changes are not saved: this device refused to store them. Open Rifle settings and copy a backup code so you do not lose your rifles.' : loadNote;
+    const el = $('storeMsg'); el.textContent = t; el.hidden = !t;
+  }
+  // Keeps an unchanged copy of text under prefix + time. Returns false if it could not be kept.
+  function keepCopy(prefix, text){
     try {
-      const raw = localStorage.getItem('scopedope.v2');
+      for (let i = 0; i < localStorage.length; i++){
+        const k = localStorage.key(i);
+        if (k && k.indexOf(prefix) === 0 && localStorage.getItem(k) === text) return true;
+      }
+      const base = prefix + new Date().toISOString();
+      let k = base, n = 1;
+      while (localStorage.getItem(k) !== null) k = base + '-' + (n++);
+      localStorage.setItem(k, text);
+      return true;
+    } catch (e) { return false; }
+  }
+  function serialize(){ return JSON.stringify({ schema: SCHEMA, pi: pi, people: people, session: store.session }); }
+
+  function loadStore(){
+    let raw;
+    try { raw = localStorage.getItem('scopedope.v2'); }
+    catch (e) {
+      saveBlocked = true;
+      loadNote = 'Your saved rifles could not be read, so nothing will be saved on this device until storage works again. Anything already stored was left untouched.';
+      renderStoreMsg(); return;
+    }
+    const blockSaving = (why) => { saveBlocked = true; loadNote = why + ' Your changes will not be saved this session. What is stored was left exactly as it was.'; };
+    try {
       if (raw){
-        let o = JSON.parse(raw);
+        let o = null, parsed = true;
+        try { o = JSON.parse(raw); } catch (e) { parsed = false; }
+        const known = parsed && o && typeof o === 'object' && (Array.isArray(o.people) || Array.isArray(o.profiles));
+        if (!known){
+          if (keepCopy('scopedope.damaged.', raw)) loadNote = 'Your saved rifles could not be read. A copy of that data was kept on this device, and the app started with defaults.';
+          else blockSaving('Your saved rifles could not be read, and a safety copy could not be made.');
+          if (!parsed){ renderStoreMsg(); return; }
+          o = null;
+        } else {
+          const kept = Array.isArray(o.people) ? o.people.filter(x => x && Array.isArray(x.profiles) && x.profiles.length) : null;
+          const dropped = kept && kept.length !== o.people.length;
+          const newer = typeof o.schema === 'number' && o.schema > SCHEMA;
+          if (o.schema !== SCHEMA || dropped){
+            if (!keepCopy('scopedope.backup.', raw)) blockSaving('A safety copy of your saved rifles could not be made.');
+            else if (newer) loadNote = 'Your saved data was made by a newer version of Scope Dope. A copy was kept and your rifles were loaded.';
+            else if (dropped) loadNote = 'Some saved entries could not be loaded. A copy of everything was kept on this device.';
+          }
+        }
         if (o && Array.isArray(o.people)){
           people = o.people.filter(x => x && Array.isArray(x.profiles) && x.profiles.length);
           if (people.length){
@@ -794,7 +944,7 @@ function dopeAt(M, inp, rangeYd){
           const old = store.session || {};
           store.session = Object.assign(sessionDefaults(), old);
           if (!old.windHr && old.side === 'L') store.session.windHr = '9';
-          store.profiles = store.profiles.map(p => Object.assign(profileDefaults('p308'), p));
+          store.profiles = store.profiles.map(p => { const q = Object.assign(profileDefaults('p308'), { v0src:'', bcsrc:'', bcwt:'' }, p); if (p.v0 == null) q.v0src = 'factory'; if (p.bc == null) q.bcsrc = 'factory'; return q; });   // no saved velocity: the default is a starting value
           return;
         }
       }
@@ -802,6 +952,7 @@ function dopeAt(M, inp, rangeYd){
       if (v1){
         const o = JSON.parse(v1);
         const p = profileDefaults('p308');
+        p.v0src = ''; p.bcsrc = ''; p.bcwt = '';
         PKEYS.forEach(k => { if (o[k] != null && k !== 'pname') p[k] = o[k]; });
         store.profiles = [p];
         store.session = Object.assign(sessionDefaults(), { dist:o.dist || '400', wind:o.wind || '10', angle:o.angle || '0', windHr: o.side === 'L' ? '9' : '3' });
@@ -815,9 +966,19 @@ function dopeAt(M, inp, rangeYd){
       cStart:$('cStart').value, cEnd:$('cEnd').value, cStep:$('cStep').value };
   }
   function applyProfile(p){
-    PKEYS.forEach(k => { if (p[k] != null) $(k).value = p[k]; });
+    // A field the saved rifle does not have takes the default, never the value the previous rifle left in the form.
+    const d = profileDefaults('p308');
+    PKEYS.forEach(k => {
+      let v = p[k];
+      if (v == null || typeof v === 'object') v = (k === 'v0src' || k === 'bcsrc' || k === 'bcwt') ? '' : d[k];
+      $(k).value = v;
+    });
+    if (p.v0 == null || typeof p.v0 === 'object') $('v0src').value = 'factory';   // no velocity saved: the default is a starting value, not yours
+    else if (p.v0src == null) $('v0src').value = '';
+    if (p.bc == null || typeof p.bc === 'object') $('bcsrc').value = 'factory';   // no coefficient saved: the default is a preset value, not yours
+    if (!$('bcwt').value) $('bcwt').value = $('wt').value;   // saved before the weight was recorded: the coefficient is taken to belong to the saved weight   // saved before the source of the velocity was recorded: treated as the user's own
     if (!$('preset').value) $('preset').value = 'custom';
-    lastWt = parseFloat($('wt').value) || 168;
+    lastSelPreset = $('preset').value; setAnchor(); setLoadMsg(''); v0Offer = null; renderV0(); renderBcSrc();
   }
   function applySession(s){
     ['dist','wind','angle','az','cStart','cEnd','cStep'].forEach(k => {
@@ -830,23 +991,93 @@ function dopeAt(M, inp, rangeYd){
     $('windRange').value = s.wind;
     setHr(parseInt(s.windHr, 10) || 3);
   }
+  function syncState(){
+    store.profiles[store.active] = collectProfile();
+    store.session = collectSession();
+    people[pi].profiles = store.profiles; people[pi].active = store.active;
+  }
   function saveAll(){
+    try { syncState(); } catch (e) { return; }
+    if (saveBlocked) return;
     try {
-      store.profiles[store.active] = collectProfile();
-      store.session = collectSession();
-      people[pi].profiles = store.profiles; people[pi].active = store.active;
-      localStorage.setItem('scopedope.v2', JSON.stringify({ pi: pi, people: people, session: store.session }));
-    } catch (e) {}
+      localStorage.setItem('scopedope.v2', serialize());
+      if (saveFail){ saveFail = false; renderStoreMsg(); }
+    } catch (e) {
+      if (!saveFail){ saveFail = true; renderStoreMsg(); }
+    }
+  }
+
+  /* Backup code: export and import of profiles and rifles. Import only ever adds; it never replaces. */
+  function cleanProfile(p){
+    if (!p || typeof p !== 'object' || Array.isArray(p)) return null;
+    const d = profileDefaults('p308'), out = {};
+    PKEYS.forEach(k => {
+      const v = p[k];
+      out[k] = typeof v === 'string' ? v.slice(0, 80) : (typeof v === 'number' && isFinite(v)) ? String(v) : d[k];
+    });
+    if (p.v0src !== 'user' && p.v0src !== 'factory' && p.v0src !== 'fitted') out.v0src = '';
+    if (p.bcsrc !== 'fitted' && p.bcsrc !== 'user' && p.bcsrc !== 'factory') out.bcsrc = '';
+    out.bcwt = typeof p.bcwt === 'string' ? p.bcwt.slice(0, 80) : (typeof p.bcwt === 'number' && isFinite(p.bcwt) ? String(p.bcwt) : '');
+    return out;
+  }
+  function exportCode(){
+    try { syncState(); } catch (e) {}
+    const text = JSON.stringify({ app: 'scopedope', schema: SCHEMA, exported: new Date().toISOString(), people: people }, null, 1);
+    const box = $('exportCode'); box.value = text; box.focus(); box.select();
+    const rifles = people.reduce((n, p) => n + p.profiles.length, 0);
+    const what = people.length + (people.length === 1 ? ' profile' : ' profiles') + ', ' + rifles + (rifles === 1 ? ' rifle' : ' rifles');
+    $('backupMsg').textContent = 'Backup code ready (' + what + '). Select it and copy it, then keep it somewhere safe, such as a note or an email to yourself.';
+    try { navigator.clipboard.writeText(text).then(() => { $('backupMsg').textContent = 'Backup code copied (' + what + '). Keep it somewhere safe, such as a note or an email to yourself.'; }, () => {}); } catch (e) {}
+  }
+  function importCode(){
+    const msg = (t) => { $('backupMsg').textContent = t; };
+    const invalid = 'That is not a valid Scope Dope backup code. Nothing was imported.';
+    const text = $('importCode').value.trim();
+    if (!text) return msg('Paste a backup code first. Nothing was imported.');
+    if (text.length > 2000000) return msg(invalid);
+    let o; try { o = JSON.parse(text); } catch (e) { return msg(invalid); }
+    if (!o || o.app !== 'scopedope' || !Array.isArray(o.people)) return msg(invalid);
+    if (typeof o.schema === 'number' && o.schema > SCHEMA) return msg('This code was made by a newer version of Scope Dope. Nothing was imported.');
+    const incoming = [];
+    o.people.slice(0, 50).forEach(x => {
+      if (!x || typeof x !== 'object' || !Array.isArray(x.profiles)) return;
+      const profs = x.profiles.slice(0, 200).map(cleanProfile).filter(Boolean);
+      if (profs.length) incoming.push({ name: typeof x.name === 'string' ? x.name.slice(0, 40) : '', profiles: profs, active: (x.active >= 0 && x.active < profs.length) ? x.active : 0 });
+    });
+    if (!incoming.length) return msg('No rifles were found in that code. Nothing was imported.');
+    try { syncState(); } catch (e) {}
+    if (!keepCopy('scopedope.backup.', serialize())) return msg('A safety copy of your current rifles could not be made, so nothing was imported.');
+    const taken = new Set(people.map(p => (p.name || '').toLowerCase()));
+    incoming.forEach((p, i) => {
+      let n = p.name || ('Profile ' + (people.length + i + 1)), c = n, k = 1;
+      while (taken.has(c.toLowerCase())) c = (n.slice(0, 28) + ' (imported' + (k > 1 ? ' ' + k : '') + ')'), k++;
+      taken.add(c.toLowerCase()); p.name = c;
+    });
+    incoming.forEach(p => people.push(p));
+    saveAll(); rebuildPeople();
+    $('importCode').value = '';
+    const rifles = incoming.reduce((n, p) => n + p.profiles.length, 0);
+    msg('Imported ' + incoming.length + (incoming.length === 1 ? ' profile' : ' profiles') + ' with ' + rifles + (rifles === 1 ? ' rifle' : ' rifles') + '. Nothing you already had was changed. Pick them under Saved profiles.');
+  }
+  // Two entries with the same rifle name (two loads for one rifle) get the cartridge and weight added so they can be told apart.
+  function rifleLabel(p, i){
+    const all = store.profiles.map((q, j) => j === store.active ? collectProfile() : q);   // the open entry may have unsaved edits
+    if (i === store.active) p = all[i];
+    const base = p.pname || ('Rifle ' + (i + 1));
+    const dup = all.some((q, j) => j !== i && (q.pname || ('Rifle ' + (j + 1))) === base);
+    if (!dup) return base;
+    const pr = PRESETS.find(x => x.id === p.preset);
+    return base + ' · ' + (pr ? pr.name : (p.cname || 'Custom load')) + ' ' + (p.wt || '?') + ' gr';
   }
   function rebuildProfiles(){
     const s = $('profSel'); s.innerHTML = '';
     store.profiles.forEach((p, i) => {
       const o = document.createElement('option'); o.value = String(i);
-      o.textContent = p.pname || ('Rifle ' + (i + 1)); s.appendChild(o);
+      o.textContent = rifleLabel(p, i); s.appendChild(o);
     });
     s.value = String(store.active);
     const q = $('quickProf'); q.innerHTML = '';
-    store.profiles.forEach((p, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = p.pname || ('Rifle ' + (i + 1)); q.appendChild(o); });
+    store.profiles.forEach((p, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = rifleLabel(p, i); q.appendChild(o); });
     people.forEach((p, j) => { if (j === pi) return; const po = document.createElement('option'); po.value = 'p' + j; po.textContent = 'Switch to ' + (p.name || ('Profile ' + (j + 1))); q.appendChild(po); });
     const m = document.createElement('option'); m.value = '__new'; m.textContent = '+ Add new rifle'; q.appendChild(m);
     q.value = String(store.active);
@@ -859,16 +1090,35 @@ function dopeAt(M, inp, rangeYd){
   }
   function fint(n){ return Math.round(n).toLocaleString('en-US'); }
 
+  /* Input validation (Stage 3). A field outside its allowed range, or empty, is never swapped for a default
+     or clamped to produce an answer. It is flagged and named, and no result is shown until it is fixed.
+     (The substituted value below is only a placeholder so the rest of this function can finish; it is never displayed as a result.) */
+  const NAMES = { dist:'Distance', wind:'Wind speed', angle:'Angle', temp:'Temperature', alt:'Altitude', v0:'Muzzle velocity', bc:'Ballistic coefficient',
+    wt:'Bullet weight', h:'Scope height', zero:'Zero distance', diam:'Bullet diameter', twist:'Barrel twist', humidity:'Humidity', az:'Shooting direction',
+    vsens:'Velocity change per degree', vref:'Velocity measured at temperature', press:'Station pressure', lat:'Latitude', cStart:'From', cEnd:'To', cStep:'Every' };
+  const UNITS = { dist:' yd', wind:' mph', angle:'°', temp:'°F', alt:' ft', v0:' fps', wt:' gr', h:' in', zero:' yd', diam:' in', twist:' in',
+    humidity:'%', az:'°', vsens:' fps per °F', vref:'°F', press:' inHg', lat:'°', cStart:' yd', cEnd:' yd', cStep:' yd' };
+  function problemText(id, raw, lo, hi){
+    const r = String(raw).trim(), u = UNITS[id] || '';
+    const what = r === '' ? 'is empty' : ((id === 'wt' ? NUM_RE.test(r) && isFinite(Number(r)) : isFinite(parseFloat(r))) ? 'is ' + r + u : 'is not a number');
+    return (NAMES[id] || id) + ' ' + what + ' (allowed ' + lo + ' to ' + hi + u + ').';
+  }
+  const FIX_LINE = 'Fix the highlighted fields to see this.';
+
+  function bcPending(){
+    const nw = parseFloat($('wt').value), bw = parseFloat($('bcwt').value), bc = $('bc').value.trim();
+    return ($('bcsrc').value !== 'factory' && isFinite(nw) && isFinite(bw) && isFinite(parseFloat(bc)) && nw !== bw) ? { nw: nw, bw: bw, bc: bc } : null;
+  }
   function readInputs(){
-    let bad = 0;
+    const problems = [];
     const num = (id) => {
       const [min, max, def] = RANGES[id];
       const el = $(id);
-      let v = parseFloat(el.value);
+      let v = id === 'wt' ? (NUM_RE.test(el.value) ? Number(el.value) : NaN) : parseFloat(el.value);
       const ok = isFinite(v) && v >= min && v <= max;
       el.classList.toggle('bad', !ok);
       el.setAttribute('aria-invalid', ok ? 'false' : 'true');
-      if (!ok){ bad++; v = isFinite(v) ? Math.min(max, Math.max(min, v)) : def; }
+      if (!ok){ problems.push({ id: id, text: problemText(id, el.value, min, max) }); v = isFinite(v) ? Math.min(max, Math.max(min, v)) : def; }
       return v;
     };
     const opt = (id, lo, hi) => {
@@ -876,13 +1126,13 @@ function dopeAt(M, inp, rangeYd){
       if (raw !== ''){
         const v = parseFloat(raw);
         ok = isFinite(v) && v >= lo && v <= hi;
-        if (ok) val = v; else bad++;
+        if (ok) val = v; else problems.push({ id: id, text: problemText(id, raw, lo, hi) });
       }
       el.classList.toggle('bad', !ok);
       el.setAttribute('aria-invalid', ok ? 'false' : 'true');
       return val;
     };
-    const pressInHg = opt('press', 20, 32.5);
+    const pressInHg = opt('press', PRESS_RANGE[0], PRESS_RANGE[1]);   // station pressure: 15 inHg covers the top of the 15,000 ft altitude limit
     const latDeg = opt('lat', -90, 90);
     const parts = $('click').value.split(':');
     const spd = num('wind');
@@ -891,19 +1141,40 @@ function dopeAt(M, inp, rangeYd){
     const head = Math.round(spd * Math.cos(rad) * 1000) / 1000;
     const tempF = num('temp');
     const v0nom = num('v0');
-    const v0 = Math.min(4500, Math.max(500, v0nom + num('vsens') * (tempF - num('vref'))));
-    return {
+    const v0adj = v0nom + num('vsens') * (tempF - num('vref'));
+    const v0 = Math.min(4500, Math.max(500, v0adj));
+    if (v0 !== v0adj && !problems.some(p => p.id === 'v0' || p.id === 'vsens' || p.id === 'temp' || p.id === 'vref')){
+      problems.push({ id: 'vsens', text: 'Velocity at the current temperature is ' + Math.round(v0adj) + ' fps (allowed 500 to 4500 fps). Check the velocity change per degree.' });
+      $('vsens').classList.add('bad'); $('vsens').setAttribute('aria-invalid', 'true');
+    }
+    const res = {
       distYd: num('dist'), windSpd: spd, windHr: windHr, windMph: Math.abs(cross), windFrom: cross >= 0 ? 'R' : 'L', headMph: head,
       angleDeg: num('angle'), azimuth: num('az'), latDeg: latDeg,
-      tgtMph: 0, tgtAngle: 90, tgtDir: 'LR',
       tempF: tempF, altFt: num('alt'), pressInHg: pressInHg, humidity: num('humidity'),
-      v0nom: v0nom, v0: v0, bc: num('bc'), wt: num('wt'), h: num('h'), zero: num('zero'),
+      v0nom: v0nom, v0src: $('v0src').value, bcsrc: $('bcsrc').value, v0: v0, bc: num('bc'), wt: num('wt'), h: num('h'), zero: num('zero'),
       diam: num('diam'), twist: num('twist'), model: $('model').value === 'G7' ? 'G7' : 'G1',
       twistDir: $('tdir').value === 'L' ? 'L' : 'R',
-      click: { unit: parts[0], size: parseFloat(parts[1]) }, bad: bad
+      click: { unit: parts[0], size: parseFloat(parts[1]) }, problems: problems,
+      bad: 0
     };
+    // A typed, fitted or saved coefficient belongs to the weight it was set for. A different weight needs your confirmation.
+    const pend = bcPending();
+    if (pend && !problems.some(q => q.id === 'bc' || q.id === 'wt')){
+      problems.push({ id: 'bc', text: 'Bullet weight is ' + pend.nw + ' gr, but the ballistic coefficient ' + pend.bc + ' was ' + ($('bcsrc').value === 'fitted' ? 'fitted' : 'entered') + ' for ' + pend.bw + ' gr and may not apply to this bullet. Enter the coefficient for this bullet, or on the Rifle tab keep ' + pend.bc + ' for ' + pend.nw + ' gr.' });
+      $('bc').classList.add('bad'); $('bc').setAttribute('aria-invalid', 'true');
+    }
+    { const wp = problems.find(q => q.id === 'wt'), we = $('wtErr'); we.textContent = wp ? wp.text : ''; we.hidden = !wp; }   // the Rifle tab shows the reason beside the field
+    res.bad = problems.length;  // counted after every check above
+    return res;
   }
 
+  /* A zero distance the bullet cannot reach: the engine's search for the barrel angle stops at its upper limit and returns that
+     angle without saying so. This reads the engine's own output (a no-wind trace at that angle) and reports the miss. */
+  function zeroProblem(M, inp){
+    const x = inp.zero * 0.9144, S0 = trace(Object.assign({}, M.p, { hw: 0 }), M.theta, x), s = sampleAt(S0, x);
+    if (s.ok && Math.abs(s.y - M.p.h) <= 0.002) return null;
+    return { id: 'zero', text: 'Zero not reachable: at ' + Math.round(inp.v0) + ' fps with coefficient ' + inp.bc + ', no barrel angle up to 20 degrees brings the bullet to your line of sight at ' + inp.zero + ' yd. Shorten the zero distance or check the velocity and coefficient.' };
+  }
   let cache = { key:'', M:null };
   function getModel(inp){
     const maxYd = Math.max(1000, inp.distYd * 1.3, parseFloat($('cEnd').value) * 1.05 || 0);
@@ -916,24 +1187,23 @@ function dopeAt(M, inp, rangeYd){
     const mil = clk.unit !== 'MOA';
     return {
       elev: Math.round((mil ? d.elevMil : d.elevMoa) / clk.size),
-      wind: Math.round((mil ? d.windMil : d.windMoa) / clk.size),
-      lead: Math.round((mil ? d.leadMil : d.leadMoa) / clk.size)
+      wind: Math.round((mil ? d.windMil : d.windMoa) / clk.size)
     };
   }
 
   function renderPanel(M, inp){
-    const d = dopeAt(M, inp, inp.distYd);
+    const d = inp.bad ? null : dopeAt(M, inp, inp.distYd);
     const notes = [];
-    const leadOn = inp.tgtMph > 0;
-    $('leadDial').hidden = !leadOn;
-    $('dials').style.setProperty('--cols', leadOn ? '3' : '2');
-    $('dials').classList.toggle('three', leadOn);
-    if (inp.bad) notes.push('Some fields are outside their allowed range. The highlighted fields are held at the nearest allowed value for now.');
-    const ids = ['elevClicks','windClicks','leadClicks','sDrop','sVel','sEn','sTime'];
-    if (!d){
+    const ids = ['elevClicks','windClicks','sDrop','sVel','sEn','sTime'];
+    if (inp.bad){
       ids.forEach(i => $(i).textContent = '—');
-      $('elevSub').textContent = ''; $('windSub').textContent = ''; $('leadSub').textContent = '';
-      ['elevDir','windDir','leadDir'].forEach(i => { $(i).textContent = 'No solution'; $(i).className = 'dir off'; });
+      $('elevSub').textContent = ''; $('windSub').textContent = '';
+      ['elevDir','windDir'].forEach(i => { $(i).textContent = 'Check inputs'; $(i).className = 'dir off'; });
+      notes.push('Fix the highlighted fields to see a result. ' + inp.problems.map(p => p.text).join(' '));
+    } else if (!d){
+      ids.forEach(i => $(i).textContent = '—');
+      $('elevSub').textContent = ''; $('windSub').textContent = '';
+      ['elevDir','windDir'].forEach(i => { $(i).textContent = 'No solution'; $(i).className = 'dir off'; });
       notes.push('The bullet does not reach this distance with these inputs. Check the velocity and coefficient.');
     } else {
       const c = clicksFor(d, inp);
@@ -955,13 +1225,6 @@ function dopeAt(M, inp, rangeYd){
       if (d.spinIn >= 0.05) ws += ', spin ' + fx(d.spinIn, 1) + ' in';
       if (inp.latDeg != null && Math.abs(d.corHIn) >= 0.05) ws += ', Coriolis ' + fx(d.corHIn, 1) + ' in';
       $('windSub').textContent = ws;
-      if (leadOn){
-        $('leadClicks').textContent = Math.abs(c.lead);
-        const ld = $('leadDir');
-        if (c.lead === 0){ ld.textContent = 'None'; ld.className = 'dir off'; }
-        else { ld.textContent = c.lead < 0 ? '← Left' : '→ Right'; ld.className = 'dir'; }
-        $('leadSub').textContent = fx(Math.abs(d.leadMoa), 1) + ' MOA · ' + fx(Math.abs(d.leadMil), 2) + ' mil';
-      }
       $('sDrop').textContent = fx(d.dropIn, 1);
       $('sVel').textContent = fint(d.vFps);
       $('sEn').textContent = fint(d.energy);
@@ -1034,17 +1297,35 @@ function dopeAt(M, inp, rangeYd){
   }
 
   /* Chart screen */
+  // Chart tab From / To / Every. Same rule as every other field: an invalid value is flagged and named, and no table
+  // is built from a substituted one. The limits are the ones the page already declares on these inputs.
+  function readRange(){
+    const problems = [], v = {};
+    [['cStart', 10, 2000], ['cEnd', 10, 2000], ['cStep', 5, 500]].forEach(([id, lo, hi]) => {
+      const el = $(id), x = parseFloat(el.value), ok = isFinite(x) && x >= lo && x <= hi;
+      el.classList.toggle('bad', !ok); el.setAttribute('aria-invalid', ok ? 'false' : 'true');
+      if (!ok) problems.push({ id: id, text: problemText(id, el.value, lo, hi) });
+      v[id] = x;
+    });
+    if (!problems.length && v.cEnd < v.cStart){
+      $('cEnd').classList.add('bad'); $('cEnd').setAttribute('aria-invalid', 'true');
+      problems.push({ id: 'cEnd', text: 'To (' + v.cEnd + ' yd) must be at or above From (' + v.cStart + ' yd).' });
+    }
+    return { a: v.cStart, b: v.cEnd, st: v.cStep, problems: problems };
+  }
   function renderTable(M, inp){
     const mil = inp.click.unit !== 'MOA';
-    const leadOn = inp.tgtMph > 0;
-    let a = parseFloat($('cStart').value), b = parseFloat($('cEnd').value), st = parseFloat($('cStep').value);
+    const rg = readRange();
+    if (rg.problems.length){
+      lastRows = []; $('tbody').innerHTML = '';
+      $('cMsg').textContent = 'Fix the highlighted fields to see the range card. ' + rg.problems.map(p => p.text).join(' ');
+      return;
+    }
+    const a = rg.a, b = rg.b, st = rg.st;
     const msgs = [];
-    if (!(a >= 10)) { a = 100; msgs.push('From must be at least 10 yd.'); }
-    if (!(b >= a)) { b = Math.max(a, 1000); msgs.push('To must be at or above From.'); }
-    if (!(st >= 5)) { st = 50; msgs.push('Every must be at least 5 yd.'); }
     let n = Math.floor((b - a) / st) + 1;
     if (n > 120){ n = 120; msgs.push('Showing the first 120 rows. Raise Every to see further.'); }
-    const cols = ['Yd','Drop in','Up MOA','Up mil','Up clicks','Wind MOA','Wind clicks'].concat(leadOn ? ['Lead MOA','Lead clicks'] : [], ['fps','ft·lb','Time s','Mach']);
+    const cols = ['Yd','Drop in','Up MOA','Up mil','Up clicks','Wind MOA','Wind clicks'].concat(['fps','ft·lb','Time s','Mach']);
     $('thead').innerHTML = '<tr>' + cols.map(c => '<th>' + c + '</th>').join('') + '</tr>';
     const dists = [inp.distYd];
     for (let i = 0; i < n; i++){ const y = a + i * st; if (y !== inp.distYd) dists.push(y); }
@@ -1056,9 +1337,7 @@ function dopeAt(M, inp, rangeYd){
       if (!d) return '<tr' + (now ? ' class="now"' : '') + '><td>' + fx(yd, 0) + tag + '</td><td colspan="' + (cols.length - 1) + '">out of range</td></tr>';
       const c = clicksFor(d, inp);
       const wl = c.wind === 0 ? '0' : Math.abs(c.wind) + ' ' + (c.wind < 0 ? 'L' : 'R');
-      const ll = c.lead === 0 ? '0' : Math.abs(c.lead) + ' ' + (c.lead < 0 ? 'L' : 'R');
       const row = [fx(yd, 0), fx(d.dropIn, 1), fx(d.elevMoa, 1), fx(d.elevMil, 2), fx(c.elev, 0), fx(d.windMoa, 1), wl];
-      if (leadOn) row.push(fx(d.leadMoa, 1), ll);
       row.push(fint(d.vFps), fint(d.energy), d.t.toFixed(2), d.mach.toFixed(2));
       lastRows.push({ now: now, cells: row });
       return '<tr' + (now ? ' class="now"' : '') + '>' + row.map((v, i) => '<td>' + (i === 0 ? v + tag : v) + '</td>').join('') + '</tr>';
@@ -1079,6 +1358,7 @@ function dopeAt(M, inp, rangeYd){
     const lines = [];
     lines.push('Scope Dope range card');
     lines.push(q($('cSummary').textContent));
+    lines.push(q('Calculated estimate. Not independently verified against measured bullet flight. The model has not been shown to be physically accurate. Reference comparisons cover limited conditions.'));
     if (last){
       const i = last.inp;
       lines.push(q(Math.round(i.tempF) + 'F, ' + (i.pressInHg != null ? i.pressInHg + ' inHg' : 'pressure from altitude') + ', ' + i.humidity + '% humidity, ' + i.altFt + ' ft'));
@@ -1119,40 +1399,145 @@ function dopeAt(M, inp, rangeYd){
     $('windArrow').setAttribute('transform', 'rotate(' + (h * 30) + ')');
   }
 
+  /* Muzzle velocity: yours versus the typical factory value (Step 7). The factory value is shown for reference and only
+     ever enters the field when the field was empty, still a starting value, or the user confirms. */
+  let v0Offer = null;
+  function renderV0(){
+    const src = $('v0src').value, pr = PRESETS.find(x => x.id === $('preset').value);
+    $('v0Src').textContent = src === 'factory'
+      ? 'Starting value: a typical factory velocity, not yet your own. Replace it with your chronograph reading.'
+      : src === 'fitted' ? 'Fitted velocity: set by the match tool to reproduce one observed hold. It is not a measured velocity, and matching can absorb errors in the ballistic coefficient, the drag model or the air into this number. The calculation uses it. Enter your chronograph reading if you have one.'
+      : (src === 'user' ? 'Your entered velocity. This is the velocity the calculation uses.' : 'Your saved velocity. This is the velocity the calculation uses.');
+    $('v0Factory').textContent = pr ? 'Typical factory velocity for ' + pr.name + ': ' + pr.v0 + ' fps. Reference only; the calculation uses the velocity above.' : '';
+    const p = v0Offer && PRESETS.find(x => x.id === v0Offer.preset);
+    $('v0Offer').hidden = !p;
+    if (p){
+      $('v0Use').textContent = 'Use the factory velocity (' + p.v0 + ' fps) instead'; $('v0Use').hidden = v0Offer.armed;
+      $('v0Confirm').textContent = 'Replace my ' + $('v0').value.trim() + ' fps with ' + p.v0 + ' fps'; $('v0Confirm').hidden = !v0Offer.armed;
+      $('v0Cancel').textContent = 'Keep my ' + $('v0').value.trim() + ' fps'; $('v0Cancel').hidden = !v0Offer.armed;
+    }
+  }
+  function renderBcSrc(){
+    const src = $('bcsrc').value, pend = bcPending();
+    $('bcSrc').textContent = src === 'fitted'
+      ? 'Fitted coefficient: set by the match tool, not a published or measured value. Matching one observation can absorb errors in the drag model, velocity or air into this number, so it may not hold at other distances or loads.'
+      : src === 'factory' ? 'Preset value: a typical coefficient for the selected cartridge, not one for your bullet. Enter the published coefficient for your bullet. It follows the weight until you do.'
+      : src === 'user' ? 'Your entered coefficient. A weight change will not rewrite it; you will be asked to confirm it.'
+      : 'Your saved coefficient. A weight change will not rewrite it; you will be asked to confirm it.';
+    $('bcOffer').hidden = !pend;
+    if (pend) $('bcKeep').textContent = 'Keep ' + pend.bc + ' for ' + pend.nw + ' gr';
+  }
+  $('bcKeep').addEventListener('click', () => {
+    const pend = bcPending(); if (!pend) return;
+    $('bcwt').value = String(pend.nw); if (!$('bcsrc').value) $('bcsrc').value = 'user';
+    setLoadMsg('Kept the ballistic coefficient ' + pend.bc + ' for ' + pend.nw + ' gr, as you confirmed. It was set for ' + pend.bw + ' gr, so check it against your bullet.');
+    update();
+  });
+  $('v0Use').addEventListener('click', () => { if (v0Offer){ v0Offer.armed = true; renderV0(); $('v0Confirm').focus(); } });
+  $('v0Cancel').addEventListener('click', () => { if (v0Offer){ v0Offer.armed = false; renderV0(); } });
+  $('v0Confirm').addEventListener('click', () => {
+    const p = v0Offer && PRESETS.find(x => x.id === v0Offer.preset); if (!p) return;
+    const mine = $('v0').value.trim();
+    $('v0').value = p.v0; $('v0src').value = 'factory'; v0Offer = null; renderV0();
+    setLoadMsg('Replaced your ' + mine + ' fps with the typical factory velocity ' + p.v0 + ' fps, as you confirmed. Enter your own measured velocity when you have it.');
+    update();
+  });
+
+  function renderChartAssess(inp){
+    const box = $('cAssess'), list = $('cAssessList'), sum = $('cAssessSum'), note = $('cAssessNote');
+    const head = 'Calculated estimate. Not independently verified against measured bullet flight. The model has not been shown to be physically accurate.';
+    note.textContent = 'Reference comparisons cover limited conditions: manufacturer tables, up to ' + VALIDATED.rangeYd[1] + ' yd. Being inside those conditions does not establish accuracy, and manufacturer comparisons are not proof of real-world accuracy. Wind, spin drift and Coriolis notes are on the main screen.';
+    list.textContent = '';
+    if (inp.bad){ sum.textContent = head + ' No range card until the highlighted fields are fixed.'; return; }
+    const rg = readRange();
+    const top = rg.problems.length ? inp.distYd : Math.max(rg.b, inp.distYd);
+    const warns = assessResult(inp, { rangeYd: top, rangeLabel: 'The range card reaches', sg: inp.twist > 0 ? stability(inp) : null }).findings.filter(f => f.level === 'warning');
+    sum.textContent = head + (warns.length ? ' ' + warns.length + (warns.length === 1 ? ' warning.' : ' warnings.') : '');
+    for (const f of warns){
+      const li = document.createElement('li'); li.dataset.level = f.level; li.dataset.id = f.id;
+      const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = 'Warning: ';
+      li.appendChild(tag); li.appendChild(document.createTextNode(f.text)); list.appendChild(li);
+    }
+    if (warns.length && !box.dataset.touched) box.open = true;
+  }
+  $('cAssess').addEventListener('toggle', () => { $('cAssess').dataset.touched = '1'; });
+
+  function renderAssess(inp){
+    const box = $('assess'), list = $('assessList'), sum = $('assessSum');
+    list.textContent = '';
+    if (inp.bad){ sum.textContent = 'Calculated estimate. Not independently verified. No result until the highlighted fields are fixed.'; box.open = false; return; }
+    const r = assessResult(inp, { rangeYd: inp.distYd, sg: inp.twist > 0 ? stability(inp) : null });
+    const warns = r.findings.filter(f => f.level === 'warning').length, notes = r.findings.length - warns;
+    sum.textContent = r.badge + ' ' + (warns ? warns + (warns === 1 ? ' warning' : ' warnings') + ', ' : '') + notes + (notes === 1 ? ' note' : ' notes') + '.';
+    for (const f of r.findings){
+      const li = document.createElement('li'); li.dataset.level = f.level; li.dataset.id = f.id;
+      const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = f.level === 'warning' ? 'Warning: ' : 'Note: ';
+      li.appendChild(tag); li.appendChild(document.createTextNode(f.text)); list.appendChild(li);
+    }
+    if (warns && !box.dataset.touched) box.open = true;
+  }
+
   function renderMeta(inp){
+    renderAssess(inp); renderChartAssess(inp); renderV0(); renderBcSrc();
     const pr = PRESETS.find(x => x.id === $('preset').value);
     const cal = pr ? pr.name : ($('cname').value.trim() || 'Custom load');
     const name = $('pname').value.trim() || 'My rifle';
-    $('chipName').textContent = cal + ' · ' + inp.wt + ' gr';
+    const badIds = inp.problems.map(p => p.id);
+    $('chipName').textContent = cal + ' · ' + (badIds.indexOf('wt') >= 0 ? ($('wt').value.trim() || '—') : inp.wt) + ' gr';
     $('chipLoad').textContent = people.length > 1 ? (people[pi].name || 'Profile') + ' · ' + name : name;
     $('cnameField').hidden = $('preset').value !== 'custom';
-    const opt = $('profSel').options[store.active];
-    if (opt) opt.textContent = name;
-    const qo = $('quickProf').options[store.active]; if (qo) qo.textContent = name;
+    store.profiles.forEach((q, i) => {   // every entry, so two loads of one rifle stay distinguishable as either is edited
+      const lab = rifleLabel(q, i), o1 = $('profSel').options[i], o2 = $('quickProf').options[i];
+      if (o1) o1.textContent = lab; if (o2) o2.textContent = lab;
+    });
+    if (inp.bad){
+      // Derived lines would be built from placeholder values, so they say what is wrong instead.
+      $('mvLine').textContent = FIX_LINE; $('sgHint').textContent = FIX_LINE; $('crossLine').textContent = FIX_LINE;
+    } else {
     $('mvLine').textContent = Math.abs(inp.v0 - inp.v0nom) >= 1
       ? 'At ' + Math.round(inp.tempF) + '°F the app uses ' + Math.round(inp.v0) + ' fps. Many loads gain 1 to 2 fps per degree.'
       : 'Leave the change at 0 to use the same velocity in every temperature. Many loads gain 1 to 2 fps per degree.';
     const sg = stability(inp);
-    $('sgHint').textContent = 'Estimated stability ' + sg.toFixed(2) + '. ' +
-      (sg < 1 ? 'Under 1.0, so this twist is likely too slow and the bullet may tumble.' : sg < 1.3 ? 'Marginal. A faster twist is safer, especially in cold air.' : 'The twist is fast enough.') +
+    $('sgHint').textContent = 'Estimated stability ' + sg.toFixed(2) + ', worked out from an assumed bullet length (estimated from weight and diameter, not measured), so a real bullet can differ. ' +
+      (sg < 1 ? 'Below 1.0 in this estimate, which suggests the twist may be too slow for this bullet.' : sg < 1.3 ? 'Marginal in this estimate; colder air lowers it.' : 'At or above 1.3 in this estimate.') +
       ' Twist also adds a small spin drift to the windage.';
     const side = inp.windFrom === 'R' ? 'right' : 'left';
     const hw = inp.headMph;
     $('crossLine').innerHTML = '<strong>' + fx(inp.windMph, 1) + ' mph</strong> crosswind from the ' + side +
       (Math.abs(hw) >= 0.05 ? ', <strong>' + fx(Math.abs(hw), 1) + ' mph</strong> ' + (hw > 0 ? 'headwind' : 'tailwind') : '') + '.';
-    $('togWind').firstChild.textContent = 'Wind · ' + inp.windSpd + ' mph at ' + inp.windHr;
+    }
+    $('togWind').firstChild.textContent = 'Wind · ' + (badIds.indexOf('wind') >= 0 ? ($('wind').value.trim() || '—') : inp.windSpd) + ' mph at ' + inp.windHr;
     const azo = $('az').selectedOptions[0];
     $('togShot').firstChild.textContent = 'Shot · ' + (inp.angleDeg === 0 ? 'level' : (inp.angleDeg > 0 ? '+' : MINUS) + Math.abs(inp.angleDeg) + '°') + ' · ' + (azo ? azo.textContent.split(' ')[0] : '');
     const az = ((inp.azimuth % 360) + 360) % 360;
-    $('coriLine').textContent = inp.latDeg == null
+    $('coriLine').textContent = badIds.indexOf('lat') >= 0 ? FIX_LINE : inp.latDeg == null
       ? 'Coriolis is off. Enter your latitude in Rifle settings to turn it on. Shooting direction ' + CARD[Math.round(az / 45) % 8] + '.'
       : 'Coriolis is on for latitude ' + inp.latDeg + '° and a shot toward ' + CARD[Math.round(az / 45) % 8] + '. 0° is north, 90° east.';
     document.querySelectorAll('#distChips .chipbtn').forEach(b => b.setAttribute('aria-pressed', String(parseFloat(b.dataset.v) === inp.distYd)));
   }
 
+  $('assess').addEventListener('toggle', () => { $('assess').dataset.touched = '1'; });
+
   function update(){
+    readRange();  // keeps the From / To / Every flags current even when the table is not on screen
     const inp = readInputs();
+    if (inp.bad){
+      // Invalid input: show no result and no range card built from placeholder values. Typed values are still saved as typed.
+      clearTimeout(tableTimer); last = null; lastRows = [];
+      $('tbody').innerHTML = ''; $('cMsg').textContent = 'Fix the highlighted fields to see the range card.';
+      renderPanel(null, inp); renderMeta(inp); saveAll();
+      return;
+    }
     const M = getModel(inp);
+    const zp = zeroProblem(M, inp);
+    if (zp){
+      inp.problems.push(zp); inp.bad = inp.problems.length;
+      $('zero').classList.add('bad'); $('zero').setAttribute('aria-invalid', 'true');
+      clearTimeout(tableTimer); last = null; lastRows = [];
+      $('tbody').innerHTML = ''; $('cMsg').textContent = 'Fix the highlighted fields to see the range card.';
+      renderPanel(null, inp); renderMeta(inp); saveAll();
+      return;
+    }
     last = { M: M, inp: inp };
     renderPanel(M, inp);
     renderMeta(inp);
@@ -1175,16 +1560,48 @@ function dopeAt(M, inp, rangeYd){
     if (id === 'profSel' || id === 'quickProf' || id === 'person' || id === 'personName') return;
     if (id === 'windRange') $('wind').value = e.target.value;
     if (id === 'wind') $('windRange').value = e.target.value;
+    if (id === 'bc'){ $('bcsrc').value = 'user'; $('bcwt').value = $('wt').value; setAnchor(); renderBcSrc(); }   // typed: yours, for this weight
+    if (id === 'v0'){ $('v0src').value = 'user'; v0Offer = null; renderV0(); }
     if (id === 'wt'){
-      const nw = parseFloat(e.target.value), b = parseFloat($('bc').value);
-      if (isFinite(nw) && nw > 0){
-        if (isFinite(b) && lastWt > 0) $('bc').value = (b * nw / lastWt).toFixed(3);
-        lastWt = nw;
+      // The coefficient is scaled from the last weight and coefficient you set yourself (the anchor), never from the
+      // previous keystroke, so typing 1, 9, 0 gives the same result as entering 190 at once.
+      const nw = parseFloat(e.target.value);
+      // Only a coefficient that came from a preset follows the weight. A coefficient you typed or fitted (or saved earlier) is never
+      // rewritten: update() asks you to confirm it or enter one for the new bullet.
+      if ($('bcsrc').value !== 'factory'){ /* left as it is */ }
+      else if (!weightOk(e.target.value)){
+        // Zero, negative, empty, non-numeric, infinite or out of range: the coefficient is left alone and nothing is scaled.
+        setLoadMsg(String(e.target.value).trim() === '' ? 'Bullet weight is empty (allowed ' + RANGES.wt[0] + ' to ' + RANGES.wt[1] + ' gr), so the ballistic coefficient was not rescaled.' : 'Bullet weight ' + String(e.target.value).trim() + ' is outside the allowed ' + RANGES.wt[0] + ' to ' + RANGES.wt[1] + ' gr (or is not a number), so the ballistic coefficient was not rescaled.');
       }
+      else if (anchor.wt > 0 && isFinite(parseFloat($('bc').value))){  // a blank or non-numeric coefficient is left for you to fill in
+        if (nw === anchor.wt){ $('bc').value = anchor.bcText; setLoadMsg(''); }
+        else {
+          const nb = (anchor.bc * nw / anchor.wt).toFixed(3);
+          $('bc').value = nb;
+          setLoadMsg('Bullet weight is ' + nw + ' gr, so the ballistic coefficient was scaled to ' + nb + ' (from ' + anchor.bcText + ' at ' + anchor.wt + ' gr). If your bullet has a published coefficient, enter that instead.');
+        }
+      }
+      if ($('bcsrc').value === 'factory' && weightOk(e.target.value)) $('bcwt').value = e.target.value;
     }
-    if (id === 'preset'){
+    if (id === 'preset' && sel.value !== lastSelPreset){  // a select fires both input and change; act once per real change
+      lastSelPreset = sel.value;
       const p = PRESETS.find(x => x.id === sel.value);
-      if (p){ $('v0').value = p.v0; $('bc').value = p.bc; $('wt').value = p.wt; $('diam').value = p.d; $('twist').value = p.tw; lastWt = p.wt; $('model').value = 'G1'; }
+      if (p){
+        // A preset may fill what is empty, and a velocity that was only a starting value may follow it. It never silently
+        // replaces a muzzle velocity the user entered (or one saved before the source was recorded).
+        const keep = $('v0').value.trim() !== '' && $('v0src').value !== 'factory';
+        const kept = $('v0').value.trim();
+        const was = (keep ? '' : $('v0').value + ' fps, ') + $('wt').value + ' gr, ' + $('model').value + ' ' + $('bc').value + ', ' + $('diam').value + ' in, 1:' + $('twist').value + ' twist';
+        $('bcsrc').value = 'factory'; $('bcwt').value = String(p.wt); renderBcSrc();
+        $('bc').value = p.bc; $('wt').value = p.wt; $('diam').value = p.d; $('twist').value = p.tw; $('model').value = 'G1';
+        if (keep){ v0Offer = { preset: p.id, armed: false }; }
+        else { $('v0').value = p.v0; $('v0src').value = 'factory'; v0Offer = null; }
+        setAnchor();
+        setLoadMsg(keep
+          ? 'Loaded ' + p.name + ' starting values: ' + p.wt + ' gr, G1 ' + p.bc + ', ' + p.d + ' in, 1:' + p.tw + ' twist. Your muzzle velocity of ' + kept + ' fps was kept. The typical factory velocity for ' + p.name + ' is ' + p.v0 + ' fps (reference only, not used). The other values replaced your entries (' + was + '). Check them against your ammunition.'
+          : 'Loaded ' + p.name + ' starting values: ' + p.v0 + ' fps, ' + p.wt + ' gr, G1 ' + p.bc + ', ' + p.d + ' in, 1:' + p.tw + ' twist. These replaced your entries (' + was + '). The velocity is a typical factory value, not yours: enter your own measured velocity.');
+        renderV0();
+      }
     }
     update();
   }
@@ -1198,12 +1615,17 @@ function dopeAt(M, inp, rangeYd){
       return;
     }
     const inp = readInputs();
+    if (inp.bad){ out.textContent = 'Fix the highlighted fields first. The match uses your other settings, so they must be valid.'; return; }
     inp.angleDeg = 0; inp.latDeg = null; inp.headMph = 0;
     const what = $('fitWhat').value;
+    const zp0 = zeroProblem(buildModel(inp, 1000), inp);
+    if (zp0){ out.textContent = 'Fix the zero distance first. ' + zp0.text; return; }
     const f = (x) => {
       const i = Object.assign({}, inp);
       if (what === 'bc') i.bc = x; else i.v0 = x;
-      const d = dopeAt(buildModel(i, Math.max(1000, dist * 1.3)), i, dist);
+      const Mi = buildModel(i, Math.max(1000, dist * 1.3));
+      if (zeroProblem(Mi, i)) return null;   // this candidate cannot reach the zero: not a usable answer
+      const d = dopeAt(Mi, i, dist);
       return d ? d.elevMoa : null;
     };
     let lo = what === 'bc' ? 0.05 : 800, hi = what === 'bc' ? 1.2 : 4500;
@@ -1220,16 +1642,16 @@ function dopeAt(M, inp, rangeYd){
     const val = (lo + hi) / 2;
     let msg;
     if (what === 'bc'){
-      $('bc').value = val.toFixed(3);
+      $('bc').value = val.toFixed(3); $('bcsrc').value = 'fitted'; $('bcwt').value = $('wt').value; setAnchor(); renderBcSrc();
       msg = 'Coefficient set to ' + val.toFixed(3) + ' (' + inp.model + '). ';
       if (Math.abs(val - inp.bc) / inp.bc > 0.2) msg += 'That is far from the ' + inp.bc.toFixed(3) + ' you had. ';
     } else {
       const nominal = val - (inp.v0 - inp.v0nom);
-      $('v0').value = String(Math.round(nominal));
+      $('v0').value = String(Math.round(nominal)); $('v0src').value = 'fitted'; v0Offer = null; renderV0();
       msg = 'Muzzle velocity set to ' + Math.round(nominal) + ' fps. ';
       if (Math.abs(nominal - inp.v0nom) / inp.v0nom > 0.08) msg += 'That is far from the ' + Math.round(inp.v0nom) + ' fps you had. ';
     }
-    msg += 'The card now shows ' + moa + ' MOA up at ' + dist + ' yd.';
+    msg += 'The card now shows ' + moa + ' MOA up at ' + dist + ' yd. This is a fitted value, not a measured one, and matching one observation can absorb errors in the ballistic coefficient, the drag model or the air into it.';
     out.textContent = msg;
     update();
   }
@@ -1250,7 +1672,7 @@ function dopeAt(M, inp, rangeYd){
     store.profiles.push(copy);
     store.active = store.profiles.length - 1;
     applyProfile(copy); rebuildProfiles();
-    $('profMsg').textContent = 'Created a copy of your current setup. Rename it and change what is different.';
+    $('profMsg').textContent = 'Created a copy of your current setup.' + ($('v0').value ? ' Its muzzle velocity (' + $('v0').value + ' fps) was copied from the original, so change it if this load is different.' : '') + ' Rename it and change what is different.';
     update();
     $('pname').focus();
   }
@@ -1368,6 +1790,7 @@ function dopeAt(M, inp, rangeYd){
   });
   $('az').value = '0';
   loadStore();
+  renderStoreMsg();
   if (!people.length) people = [{ name:'Me', profiles: store.profiles, active: store.active }];
   pi = Math.min(pi, people.length - 1);
   people.forEach((p, i) => { if (!p.name) p.name = i ? 'Profile ' + (i + 1) : 'Me'; });
@@ -1387,6 +1810,8 @@ function dopeAt(M, inp, rangeYd){
   $('windDn').addEventListener('click', () => bump('wind', -1, 0, 60));
   $('windUp').addEventListener('click', () => bump('wind', 1, 0, 60));
   $('fitBtn').addEventListener('click', fitTrue);
+  $('exportBtn').addEventListener('click', exportCode);
+  $('importBtn').addEventListener('click', importCode);
   $('newProf').addEventListener('click', newProfile);
   $('delProf').addEventListener('click', deleteProfile);
   $('copyCsv').addEventListener('click', doCopy);
@@ -1417,6 +1842,7 @@ function dopeAt(M, inp, rangeYd){
   window.addEventListener('hashchange', route);
   route();
   update();
+  $('modelTag').textContent = 'Calculation model ' + MODEL_VERSION + ': tested, not independently verified.';
   initDownloads();
 })();
 </script>

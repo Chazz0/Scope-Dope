@@ -1,0 +1,43 @@
+diff --git a/index.html b/index.html
+index be4b9cc..ec3920e 100644
+--- a/index.html
++++ b/index.html
+@@ -456,0 +457 @@ input[type=range]{height:20px}
++          <p class="hint" id="wtErr" role="alert" hidden style="color:var(--warn)"></p>
+@@ -834,0 +836,10 @@ function assessResult(inp, ctx){
++  /* Bullet weight (grains): 15 to 800 gr. 15 gr is the lightest centerfire/small-bore rifle bullet in common use; 800 gr is above the heaviest
++     common rifle bullets (.50 BMG about 650 to 750 gr). It is a plausibility limit chosen with the diameter (0.17 to 0.6 in) and BC (0.05 to 1.2)
++     limits, not a measured or sourced value. The weight is read strictly: the whole text must be a finite decimal or exponent number. */
++  const NUM_RE = /^\s*[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?\s*$/i;
++  function weightOk(raw){
++    const t = String(raw == null ? '' : raw);
++    if (!NUM_RE.test(t)) return false;
++    const v = Number(t);
++    return isFinite(v) && v >= RANGES.wt[0] && v <= RANGES.wt[1];
++  }
+@@ -854,2 +865,5 @@ function assessResult(inp, ctx){
+-    const w = parseFloat($('wt').value), b = parseFloat($('bc').value);
+-    if (isFinite(w) && w > 0 && isFinite(b) && b > 0) anchor = { wt: w, bc: b, bcText: $('bc').value.trim() };
++    const b = parseFloat($('bc').value);
++    // Only a valid weight with a valid coefficient can be the base for scaling. Otherwise the base is the selected preset's own weight and
++    // coefficient (never another rifle's numbers), or nothing at all for a custom load.
++    if (weightOk($('wt').value) && isFinite(b) && b >= RANGES.bc[0] && b <= RANGES.bc[1]) anchor = { wt: Number($('wt').value), bc: b, bcText: $('bc').value.trim() };
++    else { const p = PRESETS.find(x => x.id === $('preset').value); anchor = p ? { wt: p.wt, bc: p.bc, bcText: String(p.bc) } : { wt: 0, bc: 0, bcText: '' }; }
+@@ -1089 +1103 @@ function assessResult(inp, ctx){
+-    const what = r === '' ? 'is empty' : (isFinite(parseFloat(r)) ? 'is ' + r + u : 'is not a number');
++    const what = r === '' ? 'is empty' : ((id === 'wt' ? NUM_RE.test(r) && isFinite(Number(r)) : isFinite(parseFloat(r))) ? 'is ' + r + u : 'is not a number');
+@@ -1103 +1117 @@ function assessResult(inp, ctx){
+-      let v = parseFloat(el.value);
++      let v = id === 'wt' ? (NUM_RE.test(el.value) ? Number(el.value) : NaN) : parseFloat(el.value);
+@@ -1151,0 +1166 @@ function assessResult(inp, ctx){
++    { const wp = problems.find(q => q.id === 'wt'), we = $('wtErr'); we.textContent = wp ? wp.text : ''; we.hidden = !wp; }   // the Rifle tab shows the reason beside the field
+@@ -1557 +1572,5 @@ function assessResult(inp, ctx){
+-      else if (isFinite(nw) && nw > 0 && anchor.wt > 0 && isFinite(parseFloat($('bc').value))){  // a blank or non-numeric coefficient is left for you to fill in
++      else if (!weightOk(e.target.value)){
++        // Zero, negative, empty, non-numeric, infinite or out of range: the coefficient is left alone and nothing is scaled.
++        setLoadMsg(String(e.target.value).trim() === '' ? 'Bullet weight is empty (allowed ' + RANGES.wt[0] + ' to ' + RANGES.wt[1] + ' gr), so the ballistic coefficient was not rescaled.' : 'Bullet weight ' + String(e.target.value).trim() + ' is outside the allowed ' + RANGES.wt[0] + ' to ' + RANGES.wt[1] + ' gr (or is not a number), so the ballistic coefficient was not rescaled.');
++      }
++      else if (anchor.wt > 0 && isFinite(parseFloat($('bc').value))){  // a blank or non-numeric coefficient is left for you to fill in
+@@ -1565 +1584 @@ function assessResult(inp, ctx){
+-      if ($('bcsrc').value === 'factory') $('bcwt').value = e.target.value;
++      if ($('bcsrc').value === 'factory' && weightOk(e.target.value)) $('bcwt').value = e.target.value;

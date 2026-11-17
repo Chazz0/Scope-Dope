@@ -1,0 +1,165 @@
+{
+ "classification": "MEASURED. Doppler-radar drag coefficients from fired rounds, as published in a paper. This is not a manufacturer table. It is measured drag at about 100 m, not a trajectory.",
+ "source": "Courtney & Courtney, amateur Doppler radar free-flight drag measurements, arXiv 1608.06500, Table 1 (Cd, Track data) and Table A1 (G1 and G7 BC from the same shots). Read 2026-11-16 through a page-reading tool, not a raw copy.",
+ "url": "https://arxiv.org/pdf/1608.06500",
+ "registeredBeforeRun": "2026-11-16, after 21:44. Tolerance and Mach assumption fixed below before the comparison was run.",
+ "tolerance": {
+  "cdRelPct": 3.0,
+  "why": "Reported SEMs are mostly 0.3 to 3.4%, and Mach number is assumed (the paper gives no air temperature), which moves Cd through the transonic region. 3% is the author's choice, set before the run, and is not an industry standard."
+ },
+ "machAssumption": {
+  "speedOfSoundFps": 1116.4,
+  "sensitivityFps": [
+   1100,
+   1135
+  ],
+  "why": "ICAO 59 F speed of sound. The paper reports no temperature, so a 1100 to 1135 fps range is also run and reported."
+ },
+ "construction": "Predicted Cd = Cd_Gx(Mach) x SD / BC_Gx, where SD = weight_gr / 7000 / diameter_in^2 and Cd_Gx comes from the app's own G1 or G7 table (cdOf). The paper's BC came from the same measured shot, so this checks the app's drag table and BC conversion against the table the paper's calculator used. It is not an independent prediction of a different shot, except the two-velocity check below.",
+ "diameterIn": 0.308,
+ "rows": [
+  {
+   "bullet": "Sp FP",
+   "wt": 150,
+   "v": 1385,
+   "cdMeasured": 0.494,
+   "g1": 0.3,
+   "g7": null
+  },
+  {
+   "bullet": "DGHP",
+   "wt": 130,
+   "v": 1506,
+   "cdMeasured": 0.784,
+   "g1": 0.164,
+   "g7": null
+  },
+  {
+   "bullet": "FBBT",
+   "wt": 155.5,
+   "v": 1387,
+   "cdMeasured": 0.362,
+   "g1": 0.415,
+   "g7": 0.251
+  },
+  {
+   "bullet": "Sp FB",
+   "wt": 200,
+   "v": 1172,
+   "cdMeasured": 0.368,
+   "g1": 0.41,
+   "g7": null
+  },
+  {
+   "bullet": "NP",
+   "wt": 220,
+   "v": 1306,
+   "cdMeasured": 0.429,
+   "g1": 0.469,
+   "g7": null
+  },
+  {
+   "bullet": "NP",
+   "wt": 220,
+   "v": 1206,
+   "cdMeasured": 0.397,
+   "g1": 0.445,
+   "g7": null
+  },
+  {
+   "bullet": "NET",
+   "wt": 150,
+   "v": 1257,
+   "cdMeasured": 0.496,
+   "g1": 0.259,
+   "g7": 0.184
+  },
+  {
+   "bullet": "AMAX",
+   "wt": 155,
+   "v": 2878,
+   "cdMeasured": 0.283,
+   "g1": 0.446,
+   "g7": 0.221
+  },
+  {
+   "bullet": "AMAX",
+   "wt": 155,
+   "v": 2544,
+   "cdMeasured": 0.316,
+   "g1": 0.419,
+   "g7": 0.211
+  },
+  {
+   "bullet": "TMK",
+   "wt": 175,
+   "v": 2712,
+   "cdMeasured": 0.263,
+   "g1": 0.559,
+   "g7": 0.281
+  },
+  {
+   "bullet": "ELD",
+   "wt": 208,
+   "v": 2888,
+   "cdMeasured": 0.242,
+   "g1": 0.697,
+   "g7": 0.348
+  },
+  {
+   "bullet": "ELD",
+   "wt": 208,
+   "v": 1353,
+   "cdMeasured": 0.356,
+   "g1": 0.55,
+   "g7": 0.337
+  },
+  {
+   "bullet": "HSP",
+   "wt": 110,
+   "v": 1758,
+   "cdMeasured": 0.456,
+   "g1": 0.234,
+   "g7": null
+  },
+  {
+   "bullet": "VMAX",
+   "wt": 110,
+   "v": 1745,
+   "cdMeasured": 0.433,
+   "g1": 0.247,
+   "g7": 0.13
+  },
+  {
+   "bullet": "NBT",
+   "wt": 125,
+   "v": 1677,
+   "cdMeasured": 0.435,
+   "g1": 0.286,
+   "g7": 0.154
+  },
+  {
+   "bullet": "TTSXBT",
+   "wt": 168,
+   "v": 2709,
+   "cdMeasured": 0.313,
+   "g1": 0.448,
+   "g7": 0.225
+  }
+ ],
+ "excludedRows": "None. Every row that has both a Cd (Table 1) and a G1 BC (Table A1) is included. The SST 125 gr row has a Cd but no BC in the text read and is left out; Table A2 and A3 rows have no Cd in the text read.",
+ "twoVelocityCheck": [
+  [
+   "AMAX",
+   155,
+   2878,
+   2544
+  ],
+  [
+   "ELD",
+   208,
+   2888,
+   1353
+  ]
+ ]
+}

@@ -1,0 +1,33 @@
+diff --git a/index.html b/index.html
+index 66f0ea9..be4b9cc 100644
+--- a/index.html
++++ b/index.html
+@@ -336 +336 @@ input[type=range]{height:20px}
+-            <details class="assess" id="assess"><summary id="assessSum">Calculated estimate. Not independently verified.</summary><ul id="assessList"></ul></details>
++            <details class="assess" id="assess"><summary id="assessSum">Calculated estimate. Not independently verified. The model has not been shown to be physically accurate.</summary><ul id="assessList"></ul></details>
+@@ -391 +391 @@ input[type=range]{height:20px}
+-          <details class="assess" id="cAssess"><summary id="cAssessSum">Calculated estimate. Not independently verified against measured bullet flight.</summary><p class="hint" id="cAssessNote"></p><ul id="cAssessList"></ul></details>
++          <details class="assess" id="cAssess"><summary id="cAssessSum">Calculated estimate. Not independently verified against measured bullet flight. The model has not been shown to be physically accurate.</summary><p class="hint" id="cAssessNote"></p><ul id="cAssessList"></ul></details>
+@@ -511 +511 @@ input[type=range]{height:20px}
+-          <p class="hint">Coriolis effect needs your latitude and the shooting direction from the HUD. It is small, about 1 inch at 500 yards, and grows quickly at long range.</p>
++          <p class="hint">Coriolis effect needs your latitude and the shooting direction from the HUD. It is small, about 1 inch at 500 yards, and grows quickly at long range. The Coriolis calculation has a known, unresolved discrepancy against a full numerical integration (the closed-form estimate ran larger), so treat it as uncertain.</p>
+@@ -539 +539 @@ input[type=range]{height:20px}
+-      <p class="foot" style="margin-top:14px">Dial directions move your point of impact. Follow the arrows on your turrets. These are estimates from a point-mass model with G1 or G7 drag, plus spin drift, Coriolis effect when you enter a latitude, and wind from any clock position. They leave out aerodynamic jump and powder temperature unless you set a velocity change per degree. Fire a few rounds at known distances and true your velocity or coefficient until the card matches your groups. <span id="modelTag">Calculation model: unverified estimates.</span></p>
++      <p class="foot" style="margin-top:14px">Dial directions move your point of impact. Follow the arrows on your turrets. These are estimates from a point-mass model with G1 or G7 drag, plus spin drift, Coriolis effect when you enter a latitude, and wind from any clock position. They leave out aerodynamic jump and powder temperature unless you set a velocity change per degree. Fire a few rounds at known distances and true your velocity or coefficient until the card matches your groups. The model has not been shown to be physically accurate, manufacturer comparisons are not proof of real-world accuracy, and truing can absorb errors in the coefficient, the drag model and the air inputs. <span id="modelTag">Calculation model: unverified estimates.</span></p>
+@@ -804 +804 @@ function assessResult(inp, ctx){
+-  if (inp.latDeg != null) add('notice', 'coriolis', 'Coriolis effect follows from first-order theory and was not compared with measurements.');
++  if (inp.latDeg != null) add('notice', 'coriolis', 'Coriolis effect follows from first-order theory and was not compared with measurements. A known discrepancy is unresolved: in one check the closed-form Coriolis estimate was larger than a full numerical integration (about 14% at 500 yd, 33% at 1000 yd and 47% at 1500 yd for one .308 sample load), so treat the Coriolis figures as uncertain.');
+@@ -807 +807 @@ function assessResult(inp, ctx){
+-  add('notice', 'limits', 'Limits of the model: a point-mass trajectory with G1 or G7 drag tables that are not verified against an original source. It has no aerodynamic jump, no powder-temperature model beyond your setting, and a standard atmosphere. It has been compared with manufacturer tables, never with measured bullet flight.');
++  add('notice', 'limits', 'Limits of the model: a point-mass trajectory with G1 or G7 drag tables that are not verified against an original source. It has no aerodynamic jump, no powder-temperature model beyond your setting, and a standard atmosphere. It has been compared with manufacturer tables, never with measured bullet flight. Manufacturer comparisons are not proof of real-world accuracy, and the one attempt to compare it with published measured trajectories was inconclusive because the sources left out key inputs. The model has not been shown to be physically accurate.');
+@@ -809 +809 @@ function assessResult(inp, ctx){
+-    badge: 'Calculated estimate. Not independently verified. ' + (refCovered ? 'Compared with manufacturer tables for similar loads, not with measured bullet flight.' : 'No reference data covers this load.'),
++    badge: 'Calculated estimate. Not independently verified. The model has not been shown to be physically accurate. ' + (refCovered ? 'Compared with manufacturer tables for similar loads, not with measured bullet flight.' : 'No reference data covers this load.'),
+@@ -1346 +1346 @@ function assessResult(inp, ctx){
+-    lines.push(q('Calculated estimate. Not independently verified against measured bullet flight. Reference comparisons cover limited conditions.'));
++    lines.push(q('Calculated estimate. Not independently verified against measured bullet flight. The model has not been shown to be physically accurate. Reference comparisons cover limited conditions.'));
+@@ -1433,2 +1433,2 @@ function assessResult(inp, ctx){
+-    const head = 'Calculated estimate. Not independently verified against measured bullet flight.';
+-    note.textContent = 'Reference comparisons cover limited conditions: manufacturer tables, up to ' + VALIDATED.rangeYd[1] + ' yd. Being inside those conditions does not establish accuracy. Wind, spin drift and Coriolis notes are on the main screen.';
++    const head = 'Calculated estimate. Not independently verified against measured bullet flight. The model has not been shown to be physically accurate.';
++    note.textContent = 'Reference comparisons cover limited conditions: manufacturer tables, up to ' + VALIDATED.rangeYd[1] + ' yd. Being inside those conditions does not establish accuracy, and manufacturer comparisons are not proof of real-world accuracy. Wind, spin drift and Coriolis notes are on the main screen.';

@@ -1,0 +1,110 @@
+1a. Altitude -> pressure: app expression vs ISA 1976 troposphere (geometric altitude converted to geopotential)
+        0 ft  ISA 101325.0 Pa  app 101325.0 Pa  diff +0.0000%
+     2500 ft  ISA 92500.6 Pa  app 92499.6 Pa  diff -0.0011%
+     5000 ft  ISA 84311.1 Pa  app 84307.3 Pa  diff -0.0045%
+     7500 ft  ISA 76720.5 Pa  app 76712.6 Pa  diff -0.0103%
+    10000 ft  ISA 69694.6 Pa  app 69681.6 Pa  diff -0.0186%
+    12500 ft  ISA 63200.6 Pa  app 63181.8 Pa  diff -0.0296%
+    15000 ft  ISA 57206.8 Pa  app 57181.9 Pa  diff -0.0435%
+   exponent g0*M0/(R*L) = 5.25588 (app uses 5.25588); L/T0 = 2.255770e-05 per m (app uses 2.25577e-5)
+1b. Sea level, 59 F, dry: app rho 1.22498 vs ISA 1.2250 (-0.0018%); app speed of sound 340.297 vs ISA 340.294 (+0.0009%)
+1c. Dry density at 101.325 kPa vs Wikipedia "Density of air" table (secondary source)
+     35 C  table 1.1455  app 1.1455  diff -0.002%
+     20 C  table 1.2041  app 1.2041  diff -0.001%
+      0 C  table 1.2923  app 1.2922  diff -0.004%
+    -10 C  table 1.3414  app 1.3414  diff -0.003%
+    -25 C  table 1.4224  app 1.4224  diff +0.003%
+1d. Saturation vapour pressure, app Magnus vs Cramer-printed formula (with enhancement factor)
+    -10 C  Magnus    286.8  Cramer    287.7  diff -0.31%
+      0 C  Magnus    610.9  Cramer    613.5  diff -0.42%
+     10 C  Magnus   1226.0  Cramer   1232.7  diff -0.54%
+     15 C  Magnus   1702.0  Cramer   1712.0  diff -0.59%
+     20 C  Magnus   2333.4  Cramer   2348.0  diff -0.62%
+     25 C  Magnus   3161.7  Cramer   3181.9  diff -0.63%
+     30 C  Magnus   4236.7  Cramer   4263.5  diff -0.63%
+     35 C  Magnus   5617.6  Cramer   5651.6  diff -0.60%
+     40 C  Magnus   7374.7  Cramer   7415.9  diff -0.55%
+     50 C  Magnus  12360.6  Cramer  12408.8  diff -0.39%
+1e. Speed of sound, app vs Cramer (31 points inside its stated range) and vs Ostashev-Wilson (140 points)
+   vs Cramer: min -0.039%  max +0.090%.   vs Ostashev-Wilson: min -0.149%  max +0.214%
+   worst vs Ostashev-Wilson: 130 F, 15000 ft, RH 50 -> app 372.43 vs 371.63 m/s (+0.214%)
+1f. Moist-air density, app vs independently written mixture formula over 140 points: -0.0000% to +0.0011%
+2a. Miller formula: app vs independent coding over 72 preset/temperature/altitude points: max difference 3.75e-14 %
+
+2b. Estimated length (1875 gr/in^3 cylinder) and sensitivity of SG and of 1000 yd-class spin drift to a length error
+    preset   wt gr  L cal    L in | SG at length x0.85 / x0.90 / x1.00 / x1.10 / x1.20 | dlnSG/dlnL
+    p223        55   3.32   0.744 |  4.76  4.06  3.02  2.30  1.79 | -2.83
+    p243        95   4.50   1.092 |  2.00  1.70  1.25  0.95  0.73 | -2.91
+    p65cm      140   5.17   1.364 |  2.76  2.34  1.72  1.30  1.01 | -2.93
+    p270       130   4.15   1.151 |  3.05  2.59  1.91  1.45  1.13 | -2.89
+    p308       168   3.90   1.203 |  4.03  3.43  2.53  1.92  1.49 | -2.88
+    p3006      150   3.49   1.074 |  5.11  4.35  3.23  2.46  1.91 | -2.85
+    p300       190   4.42   1.360 |  3.31  2.81  2.07  1.57  1.22 | -2.90
+    p65prc     143   5.28   1.393 |  2.73  2.31  1.70  1.28  0.99 | -2.93
+
+3. Trajectory comparison (app vs independent 3D point-mass integrator, same drag law and tables)
+   zero launch angle                n=18  max |app - independent| = 3.392e-06 mrad  (case hot-high @ 100 yd)
+   drop                             n=42  max |app - independent| = 0.0001805 in  (case cori-lat45-east @ 1500 yd)
+   time of flight                   n=58  max |app - independent| = 3.261e-08 s  (case cold-low @ 1000 yd)
+   velocity                         n=42  max |app - independent| = 4.736e-05 fps  (case cold-low @ 1000 yd)
+   elevation hold (re-solved)       n=42  max |app - independent| = 0.03554 MOA  (case cori-lat45-east @ 1500 yd)
+   wind deflection (|z|)            n= 6  max |app - independent| = 0.0133 in  (case wind20-G1-168 @ 1000 yd)
+   Coriolis horizontal (+ right)    n=16  max |app - independent| = 4.241 in  (case cori-lat60-az135 @ 1500 yd)
+   Coriolis vertical (+ up)         n=16  max |app - independent| = 3.4 in  (case cori-lat45-east @ 1500 yd)
+   elevation hold                   n=16  max |app - independent| = 1.09e-05 MOA  (case angle+0.0001 @ 1500 yd)
+   drop at zero angle               n=16  max |app - independent| = 0.0001759 in  (case angle+0.0001 @ 1500 yd)
+
+4a. Level shots: app elevation (-drop/x) minus re-solved hold, MOA
+   level-G7-175     100 yd  app -0.0000  re-solved 0.0000  diff -0.0000 MOA
+   level-G7-175     300 yd  app 4.5919  re-solved 4.5920  diff -0.0000 MOA
+   level-G7-175     500 yd  app 11.2487  re-solved 11.2489  diff -0.0002 MOA
+   level-G7-175     800 yd  app 24.9190  re-solved 24.9206  diff -0.0016 MOA
+   level-G7-175    1000 yd  app 37.5885  re-solved 37.5937  diff -0.0052 MOA
+   level-G7-175    1200 yd  app 54.4596  re-solved 54.4733  diff -0.0137 MOA
+   level-G1-168     100 yd  app 0.0000  re-solved -0.0000  diff +0.0000 MOA
+   level-G1-168     300 yd  app 4.8682  re-solved 4.8682  diff -0.0000 MOA
+   level-G1-168     500 yd  app 11.9605  re-solved 11.9607  diff -0.0002 MOA
+   level-G1-168     800 yd  app 26.7310  re-solved 26.7329  diff -0.0019 MOA
+   level-G1-168    1000 yd  app 40.3267  re-solved 40.3323  diff -0.0056 MOA
+   level-G1-168    1200 yd  app 57.7245  re-solved 57.7380  diff -0.0135 MOA
+   level-G7-65cm    100 yd  app -0.0000  re-solved -0.0000  diff -0.0000 MOA
+   level-G7-65cm    500 yd  app 10.3515  re-solved 10.3517  diff -0.0002 MOA
+   level-G7-65cm   1000 yd  app 31.6903  re-solved 31.6933  diff -0.0030 MOA
+   level-G7-65cm   1500 yd  app 68.0859  re-solved 68.1119  diff -0.0260 MOA
+
+4b. Spin-drift formula 1.25(SG+1.2)t^1.83 at SG 1.4, t 1.9 s = 10.52 in (forum-quoted example: about 10.52 in)
+   level-G7-175   1000 yd  SG 2.36  t 1.708 s  app spin drift 11.86 in  independent formula 11.86 in
+   level-G1-168   1000 yd  SG 2.53  t 1.761 s  app spin drift 13.15 in  independent formula 13.15 in
+   level-G7-65cm  1000 yd  SG 1.72  t 1.533 s  app spin drift 7.97 in  independent formula 7.97 in
+
+4c. Interpolation sensitivity (independent integrator): drop at range, linear vs PCHIP-resampled table, inches
+   level-G7-175   1000 yd  linear -393.626  pchip -393.607  diff -0.0189 in
+   level-G1-168   1000 yd  linear -422.301  pchip -422.316  diff +0.0157 in
+   level-G7-65cm  1500 yd  linear -1069.491  pchip -1069.455  diff -0.0367 in
+   Adding the secondary-copy G7 point at Mach 1.125 changes the 1500 yd drop by +0.00912 in
+
+4d. Coriolis closed form (app) vs full-vector integration, lat 45 N firing east, 1000 yd
+    case                              app H in   indep H  app V in   indep V ind/app
+    no drag (BC 1e6)                     2.063     2.063     2.063     2.063   1.000
+    BC 5 G7 (very little drag)           2.111     2.086     2.111     2.087   0.989
+    BC 0.5 G7                            2.640     2.332     2.640     2.332   0.883
+    BC 0.243 G7 (.308 175 gr)            3.622     2.720     3.622     2.720   0.751
+    BC 0.15 G7 (high drag)               4.947     3.338     4.947     3.341   0.675
+    slow: BC .243 G7 at 1500 fps         5.859     4.936     5.859     4.949   0.843
+    (ratio -> 1 as drag -> 0: the difference is drag damping of the Coriolis-induced velocity, not the integrator.)
+
+4e. Effect sizes on the 1000 yd drop (.308 175 gr, G7 0.243, 2700 fps, zeroed at 100 yd, standard air unless stated), inches
+   speed of sound +0.2% (largest app-minus-Ostashev/Wilson gap)    change -0.311 in (-0.030 MOA)
+   speed of sound -0.15% (smallest)                                change +0.233 in (+0.022 MOA)
+   air density +0.5%                                               change -1.664 in (-0.159 MOA)
+   air density -1.8% (Aberdeen vs ICAO)                            change +5.894 in (+0.563 MOA)
+   Magnus vs Cramer vapour pressure (0.63% higher e at 30 C, 100% RH) changes air density by -0.01012%
+   5000 ft, ISA temperature: typing sea-level pressure (29.92 inHg) where station pressure belongs gives air density +20.2% (1.2685 vs 1.0555 kg/m3)
+
+4f. Interpolation sensitivity where the bullet crosses Mach 1 (.223 55 gr class, G1 0.243, 3240 fps, to 1000 yd) and G7 0.243 at 2200 fps
+   G1 .243 3240 fps   1000 yd  Mach at target 0.78  linear -547.720 in  pchip -547.757 in  diff +0.0374 in  (t 2.0802 vs 2.0802 s)
+   G7 .243 2200 fps   1000 yd  Mach at target 0.88  linear -645.951 in  pchip -645.910 in  diff -0.0415 in  (t 2.1642 vs 2.1640 s)
+   G1: 79 points, Mach 0.000..5.000, min spacing 0.025, max spacing 0.200, Cd range 0.2020..0.6625; worst-case 4-decimal rounding = 0.025% of the smallest Cd
+   G7: 83 points, Mach 0.000..5.000, min spacing 0.025, max spacing 0.200, Cd range 0.1193..0.4043; worst-case 4-decimal rounding = 0.042% of the smallest Cd
+
+wrote tests/validation/stage10/independent-results.json
