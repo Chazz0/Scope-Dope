@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const DEFAULT_FILE = process.env.SCOPE_DOPE_FILE || path.join(__dirname, '..', '..', 'index.html');
-const NAMES = 'G_ACC,G1,G7,cdOf,cdG1,atmosphere,accel,trace,sampleAt,buildModel,traceRot,solveRot,stability,intXdt,maxOrdinate,dopeAt';
+const NAMES = 'MODEL_VERSION,G_ACC,G1,G7,cdOf,cdG1,atmosphere,accel,trace,sampleAt,buildModel,traceRot,solveRot,stability,intXdt,maxOrdinate,dopeAt';
 
 function extract(file) {
   const html = fs.readFileSync(file, 'utf8');

@@ -48,7 +48,8 @@ test('the screen label shows the model version and does not claim verification',
   assert.ok(/MODEL_VERSION/.test(html.slice(html.indexOf('modelTag') - 0)), 'modelTag is not filled from MODEL_VERSION');
   const m = html.match(/<[^>]*id="modelTag"[^>]*>([^<]*)</);
   const initial = m ? m[1] : '';
-  assert.doesNotMatch(initial, /verified|accurate|validated|proven/i, 'the label must not claim verification');
+  const claims = initial.replace(/not independently verified|unverified|not verified/gi, '');
+  assert.doesNotMatch(claims, /verified|accurate|validated|proven/i, 'the label must not claim verification');
 });
 
 test('adding the version changed no calculated number', () => {
