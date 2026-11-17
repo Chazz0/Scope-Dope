@@ -333,7 +333,7 @@ input[type=range]{height:20px}
               <div><dt>Energy</dt><dd><span id="sEn">0</span><small>ft&middot;lb</small></dd></div>
               <div><dt>Flight time</dt><dd><span id="sTime">0</span><small>s</small></dd></div>
             </dl>
-            <details class="assess" id="assess"><summary id="assessSum">Calculated estimate. Not independently verified. The model has not been shown to be physically accurate.</summary><ul id="assessList"></ul></details>
+            <details class="assess" id="assess"><summary id="assessSum">Results may not be accurate. Calculated estimate. Not independently verified. The model has not been shown to be physically accurate. Tap for details.</summary><p class="hint" id="assessFull">Calculated estimate. Not independently verified. The model has not been shown to be physically accurate.</p><ul id="assessList"></ul></details>
             <p class="notice" id="notice" hidden></p>
           </section>
 
@@ -388,7 +388,7 @@ input[type=range]{height:20px}
         <section class="card" aria-labelledby="h-range">
           <h2 id="h-range">Range card</h2>
           <p class="sub" id="cSummary"></p>
-          <details class="assess" id="cAssess"><summary id="cAssessSum">Calculated estimate. Not independently verified against measured bullet flight. The model has not been shown to be physically accurate.</summary><p class="hint" id="cAssessNote"></p><ul id="cAssessList"></ul></details>
+          <details class="assess" id="cAssess"><summary id="cAssessSum">Results may not be accurate. Calculated estimate. Not independently verified. The model has not been shown to be physically accurate. Tap for details.</summary><p class="hint" id="cAssessNote"></p><ul id="cAssessList"></ul></details>
           <div class="grid3">
             <div class="field"><label for="cStart">From (yards)</label><input id="cStart" type="number" inputmode="numeric" min="10" max="2000" step="5" value="100"></div>
             <div class="field"><label for="cEnd">To (yards)</label><input id="cEnd" type="number" inputmode="numeric" min="10" max="2000" step="5" value="1000"></div>
@@ -1448,33 +1448,34 @@ function assessResult(inp, ctx){
     const head = 'Calculated estimate. Not independently verified against measured bullet flight. The model has not been shown to be physically accurate.';
     note.textContent = 'Reference comparisons cover limited conditions: manufacturer tables, up to ' + VALIDATED.rangeYd[1] + ' yd. Being inside those conditions does not establish accuracy, and manufacturer comparisons are not proof of real-world accuracy. Wind, spin drift and Coriolis notes are on the main screen.';
     list.textContent = '';
-    if (inp.bad){ sum.textContent = head + ' No range card until the highlighted fields are fixed.'; return; }
+    note.textContent = head + ' ' + note.textContent;
+    if (inp.bad){ sum.textContent = head + ' No range card until the highlighted fields are fixed. Results may not be accurate.'; return; }
     const rg = readRange();
     const top = rg.problems.length ? inp.distYd : Math.max(rg.b, inp.distYd);
     const warns = assessResult(inp, { rangeYd: top, rangeLabel: 'The range card reaches', sg: inp.twist > 0 ? stability(inp) : null }).findings.filter(f => f.level === 'warning');
-    sum.textContent = head + (warns.length ? ' ' + warns.length + (warns.length === 1 ? ' warning.' : ' warnings.') : '');
+    sum.textContent = 'Results may not be accurate. Calculated estimate. Not independently verified. The model has not been shown to be physically accurate.' + (warns.length ? ' ' + warns.length + (warns.length === 1 ? ' warning' : ' warnings') + '.' : '') + ' Tap for details.';
     for (const f of warns){
       const li = document.createElement('li'); li.dataset.level = f.level; li.dataset.id = f.id;
       const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = 'Warning: ';
       li.appendChild(tag); li.appendChild(document.createTextNode(f.text)); list.appendChild(li);
     }
-    if (warns.length && !box.dataset.touched) box.open = true;
   }
   $('cAssess').addEventListener('toggle', () => { $('cAssess').dataset.touched = '1'; });
 
   function renderAssess(inp){
-    const box = $('assess'), list = $('assessList'), sum = $('assessSum');
+    const box = $('assess'), list = $('assessList'), sum = $('assessSum'), full = $('assessFull');
     list.textContent = '';
-    if (inp.bad){ sum.textContent = 'Calculated estimate. Not independently verified. No result until the highlighted fields are fixed.'; box.open = false; return; }
+    if (inp.bad){ sum.textContent = 'Calculated estimate. Not independently verified. No result until the highlighted fields are fixed. Results may not be accurate.'; full.textContent = 'Calculated estimate. Not independently verified. No result until the highlighted fields are fixed.'; box.open = false; return; }
     const r = assessResult(inp, { rangeYd: inp.distYd, sg: inp.twist > 0 ? stability(inp) : null });
     const warns = r.findings.filter(f => f.level === 'warning').length, notes = r.findings.length - warns;
-    sum.textContent = r.badge + ' ' + (warns ? warns + (warns === 1 ? ' warning' : ' warnings') + ', ' : '') + notes + (notes === 1 ? ' note' : ' notes') + '.';
+    // One short line on screen; the complete statement and every warning and note stay in the details below, unchanged.
+    sum.textContent = 'Results may not be accurate. Calculated estimate. Not independently verified. The model has not been shown to be physically accurate. ' + (warns ? warns + (warns === 1 ? ' warning' : ' warnings') + ', ' : '') + notes + (notes === 1 ? ' note' : ' notes') + '. Tap for details.';
+    full.textContent = r.badge;
     for (const f of r.findings){
       const li = document.createElement('li'); li.dataset.level = f.level; li.dataset.id = f.id;
       const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = f.level === 'warning' ? 'Warning: ' : 'Note: ';
       li.appendChild(tag); li.appendChild(document.createTextNode(f.text)); list.appendChild(li);
     }
-    if (warns && !box.dataset.touched) box.open = true;
   }
 
   function renderMeta(inp){
