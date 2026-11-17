@@ -164,7 +164,7 @@ for (const [alt, press] of [[0, '29.92'], [5000, '24.9'], [10000, '20.6'], [1200
 }
 test('C4 out-of-range pressure is still rejected with the allowed range and is not replaced', async () => {
   const { ctx, page } = await open(seedOf([{ name: 'One', active: 0, profiles: [FULL({ alt: '0', press: '12' })] }]));
-  const n = await txt(page, '#notice'); ok(/Pressure is 12 inHg/.test(n) && /allowed 15 to 32\.5 inHg/.test(n), n); eq(await txt(page, '#elevClicks'), '—');
+  const n = await txt(page, '#notice'); ok(/Station pressure is 12 inHg/.test(n) && /allowed 15 to 32\.5 inHg/.test(n), n); eq(await txt(page, '#elevClicks'), '—');
   await go(page, 'Rifle'); eq(await val(page, 'press'), '12'); await ctx.close();
 });
 test('C6b a pressure that looks like a sea-level value at altitude gets a note, but is still used as typed', async () => {

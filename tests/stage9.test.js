@@ -19,7 +19,7 @@ test('the panel notes a fitted velocity and a fitted coefficient, as notices and
   assert.match(a.findings.find(f => f.id === 'v0fitted').text, /not (a velocity you )?measured/i);
   assert.match(a.findings.find(f => f.id === 'v0fitted').text, /absorb/i);
   assert.match(b.findings.find(f => f.id === 'bcfitted').text, /absorb/i);
-  assert.ok(!ids(base()).length || !ids(assessResult(base({ v0src: 'user' }), { rangeYd: 400 })).some(i => /fitted/.test(i)));
+  assert.ok(!ids(assessResult(base({ v0src: 'user' }), { rangeYd: 400 })).some(i => /fitted/.test(i)));
   assert.ok(!ids(a).some(i => i.startsWith('warning:v0') || i.startsWith('warning:bcfit')));
 });
 
@@ -35,7 +35,7 @@ test('a pressure that looks like sea level at altitude gets a note; consistent s
 
 test('page source: station pressure label and limits, stability wording, fitted flags, no leftover certainty', () => {
   assert.match(html, /Station pressure \(not sea-level pressure\)/);
-  assert.match(html, /opt\('press', 15, 32\.5\)/); assert.match(html, /id="press"[^>]*min="15"/);
+  assert.match(html, /const PRESS_RANGE = \[15, 32\.5\]/); assert.match(html, /opt\('press', PRESS_RANGE\[0\], PRESS_RANGE\[1\]\)/); assert.match(html, /id="press"[^>]*min="15"/);
   assert.doesNotMatch(html, /The twist is fast enough/); assert.doesNotMatch(html, /Air pressure \(inHg\)/);
   assert.match(html, /assumed bullet length/);
   assert.match(html, /const PKEYS = \[[^\]]*'bcsrc'/); assert.match(html, /id="bcsrc"/); assert.match(html, /id="bcSrc"/);

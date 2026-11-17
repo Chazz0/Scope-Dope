@@ -25,3 +25,6 @@ Model version stays 1.0.0. Stage 6 added an advisory transparency panel and no c
 
 ## Step 7 (UX and data integrity): no model change
 Interface and storage only (`v0src` flag, chart panel, labels). Solver block unchanged, model version stays 1.0.0. Physical accuracy: NOT DEMONSTRATED.
+
+## Stage 9 (correctness and data integrity): no model change
+Profile loading, zero reachability message, fitted velocity and BC labels, station pressure limits and label, stability wording. Solver block unchanged, model version stays 1.0.0. Physical accuracy: NOT DEMONSTRATED.

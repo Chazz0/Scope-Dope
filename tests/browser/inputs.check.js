@@ -67,9 +67,10 @@ test('every bad field is named, and fixing them all brings the original result b
   await set(page, 'bc', '0.462'); ok(/temperature/i.test(await notice(page)) && !/ballistic/i.test(await notice(page)), 'only the remaining one');
   await set(page, 'temp', '59'); eq(await dials(page), normal); eq(await notice(page), ''); await ctx.close();
 });
+// Stage 9: the pressure lower limit is now 15 inHg so station pressure at 15,000 ft is accepted.
 test('an invalid pressure or latitude is flagged and hides the result instead of being treated as blank', async () => {
   const { ctx, page } = await open();
-  await set(page, 'press', '99'); eq(await dials(page), ['—', '—']); ok(/pressure/i.test(await notice(page)) && /20 to 32\.5/.test(await notice(page)));
+  await set(page, 'press', '99'); eq(await dials(page), ['—', '—']); ok(/pressure/i.test(await notice(page)) && /15 to 32\.5/.test(await notice(page)));
   await set(page, 'press', ''); await set(page, 'lat', '95'); eq(await dials(page), ['—', '—']); ok(/latitude/i.test(await notice(page)));
   ok(!/Coriolis is off/.test(await text(page, 'coriLine')), 'does not claim Coriolis is off for an invalid latitude');
   await set(page, 'lat', ''); ok(/\d/.test(await text(page, 'elevClicks'))); await ctx.close();
