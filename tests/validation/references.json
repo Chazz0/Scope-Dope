@@ -214,7 +214,8 @@
     "Long Range trajectory": "Excluded. Its zero range is not stated (the caption says zeroed at 100 yd but the 100 yd value is +1.6 in, so the caption does not describe this table), and its 200 yd cell is a placeholder.",
     "Wind drift at 10 mph": "Not compared. The heading has no values on the page as read, and the crosswind model is a separate question."
    },
-   "pairingNote": "Read by a page-reading tool, not seen by the author. Tables are labeled Muzzle/100/200/300/400/500 Y (velocity, energy) and 50/100/200/300 Y (Average Range). The 130 gr and 2875 fps figures reproduce the printed energies (energy check in tests). A second person has not reproduced this copy."
+   "pairingNote": "Read by a page-reading tool, not seen by the author. Tables are labeled Muzzle/100/200/300/400/500 Y (velocity, energy) and 50/100/200/300 Y (Average Range). The 130 gr and 2875 fps figures reproduce the printed energies (energy check in tests). A second person has not reproduced this copy.",
+   "registeredRound": 1
   },
   {
    "id": "HORNADY-SPIRE-180-G1-0.425",
@@ -271,7 +272,8 @@
    "notPublished": [
     "atmosphere for this table (the page states standard conditions for the book generally, not for this table)"
    ],
-   "note": "Printed BC 0.425, sectional density 0.271."
+   "note": "Printed BC 0.425, sectional density 0.271.",
+   "registeredRound": 1
   },
   {
    "id": "HORNADY-ROUNDNOSE-180-G1-0.241",
@@ -331,7 +333,8 @@
    "note": "Printed BC 0.241. A round-nose bullet fits the G1 shape poorly, so a larger difference here would say something about G1 BC use, not necessarily about the engine.",
    "energyCheckExceptions": {
     "50": "Printed energy 3139 ft-lb; 2803 fps at 180 gr gives 3141.1, a 2.05 ft-lb gap, just over the 2 ft-lb check. Not corrected. It may be a typo in the source or in the page read. Only the velocity and drop are compared, never the energy, so this does not enter any comparison."
-   }
+   },
+   "registeredRound": 1
   },
   {
    "id": "HORNADY-CORR-TEST1",
@@ -393,7 +396,8 @@
     "bullet weight and diameter (do not affect this engine's drag, only spin drift and stability)",
     "energy column"
    ],
-   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here."
+   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here.",
+   "registeredRound": 1
   },
   {
    "id": "HORNADY-CORR-TEST2",
@@ -455,7 +459,8 @@
     "bullet weight and diameter (do not affect this engine's drag, only spin drift and stability)",
     "energy column"
    ],
-   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here."
+   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here.",
+   "registeredRound": 1
   },
   {
    "id": "HORNADY-CORR-TEST3",
@@ -517,7 +522,8 @@
     "bullet weight and diameter (do not affect this engine's drag, only spin drift and stability)",
     "energy column"
    ],
-   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here."
+   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here.",
+   "registeredRound": 1
   },
   {
    "id": "HORNADY-CORR-TEST4",
@@ -579,7 +585,580 @@
     "bullet weight and diameter (do not affect this engine's drag, only spin drift and stability)",
     "energy column"
    ],
-   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here. The page labels this 'Higher Altitude' but lists altitude as sea level; the 21.00 inHg pressure is used as printed."
+   "note": "Printed correction BCs are the page's stated results. The page's correction equations are images that did not load, so the BC corrections were not recomputed here. The page labels this 'Higher Altitude' but lists altitude as sea level; the 21.00 inHg pressure is used as printed.",
+   "registeredRound": 1
+  },
+  {
+   "id": "FEDERAL-GM-6.5CM-130-G7-LONGRANGE",
+   "manufacturer": "Federal Premium",
+   "source": "Gold Medal Berger 6.5 CM 130 gr, Long Range trajectory table",
+   "url": "https://www.federalpremium.com/rifle/gold-medal/gold-medal-berger/11-GM65CRDBH130.html",
+   "model": "G7",
+   "bc": 0.287,
+   "weightGr": 130,
+   "diamIn": 0.264,
+   "sightHeightIn": 1.5,
+   "zeroYd": 200,
+   "muzzle": {
+    "v": 2875,
+    "e": null,
+    "drop": null
+   },
+   "rows": {
+    "50": {
+     "v": null,
+     "e": null,
+     "drop": 0.6
+    },
+    "100": {
+     "v": null,
+     "e": null,
+     "drop": 1.6
+    },
+    "200": {
+     "v": null,
+     "e": null,
+     "drop": null
+    },
+    "300": {
+     "v": null,
+     "e": null,
+     "drop": -6.9
+    },
+    "400": {
+     "v": null,
+     "e": null,
+     "drop": -20.0
+    },
+    "500": {
+     "v": null,
+     "e": null,
+     "drop": -40.0
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere",
+    "drag-model velocity banding"
+   ],
+   "cellNotes": {
+    "200": "Image placeholder on the Federal page, left null. A retailer copy prints 0, consistent with a 200 yd zero, but that is a secondary copy and is not used as a value."
+   },
+   "note": "Federal Long Range table: zero 200 yd. Evidence: Federal's law-enforcement page for GM308M captions the Long Range trajectory 'for a 200 yards zero with a sight height of 1.5 inches' (le.vistaoutdoor.com id=150 and id=151), and a retailer copy of the 6.5 CM 130 gr data prints 0 at 200 yd. The federalpremium.com page's own caption says 100 yd for both tables, which cannot describe the Long Range table (its 100 yd value is +1.6 in).",
+   "registeredRound": 2
+  },
+  {
+   "id": "FEDERAL-GM308M-168-G7-AVG",
+   "manufacturer": "Federal Premium",
+   "source": "Gold Medal Sierra MatchKing 308 Win 168 gr, Average Range (100 yd zero)",
+   "url": "https://www.federalpremium.com/rifle/gold-medal/gold-medal-sierra-matchking/11-GM308M.html",
+   "model": "G7",
+   "bc": 0.224,
+   "weightGr": 168,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 100,
+   "muzzle": {
+    "v": 2650,
+    "e": 2619,
+    "drop": null
+   },
+   "rows": {
+    "50": {
+     "v": null,
+     "e": null,
+     "drop": -0.1
+    },
+    "100": {
+     "v": 2460,
+     "e": 2257,
+     "drop": null
+    },
+    "200": {
+     "v": 2277,
+     "e": 1935,
+     "drop": -4.3
+    },
+    "300": {
+     "v": 2103,
+     "e": 1650,
+     "drop": -15.3
+    },
+    "400": {
+     "v": 1936,
+     "e": 1398,
+     "drop": null
+    },
+    "500": {
+     "v": 1778,
+     "e": 1179,
+     "drop": null
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere",
+    "drag-model velocity banding"
+   ],
+   "cellNotes": {
+    "100": "Average Range 100 yd cell is an image placeholder, left null."
+   },
+   "note": "The page labels .224 as G7 explicitly.",
+   "registeredRound": 2
+  },
+  {
+   "id": "FEDERAL-GM308M-168-G7-LONG",
+   "manufacturer": "Federal Premium",
+   "source": "Gold Medal Sierra MatchKing 308 Win 168 gr, Long Range (200 yd zero)",
+   "url": "https://www.federalpremium.com/rifle/gold-medal/gold-medal-sierra-matchking/11-GM308M.html",
+   "model": "G7",
+   "bc": 0.224,
+   "weightGr": 168,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 200,
+   "muzzle": {
+    "v": 2650,
+    "e": 2619,
+    "drop": null
+   },
+   "rows": {
+    "50": {
+     "v": null,
+     "e": null,
+     "drop": 1.0
+    },
+    "100": {
+     "v": null,
+     "e": null,
+     "drop": 2.1
+    },
+    "200": {
+     "v": null,
+     "e": null,
+     "drop": null
+    },
+    "300": {
+     "v": null,
+     "e": null,
+     "drop": -8.9
+    },
+    "400": {
+     "v": null,
+     "e": null,
+     "drop": -25.5
+    },
+    "500": {
+     "v": null,
+     "e": null,
+     "drop": -51.5
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere",
+    "drag-model velocity banding"
+   ],
+   "cellNotes": {
+    "200": "Image placeholder, left null."
+   },
+   "note": "Federal Long Range table: zero 200 yd. Evidence: Federal's law-enforcement page for GM308M captions the Long Range trajectory 'for a 200 yards zero with a sight height of 1.5 inches' (le.vistaoutdoor.com id=150 and id=151), and a retailer copy of the 6.5 CM 130 gr data prints 0 at 200 yd. The federalpremium.com page's own caption says 100 yd for both tables, which cannot describe the Long Range table (its 100 yd value is +1.6 in). Variant note as for the Average Range dataset.",
+   "registeredRound": 2
+  },
+  {
+   "id": "FEDERAL-GM308M-168-G1-AVG",
+   "manufacturer": "Federal Premium",
+   "source": "Gold Medal Sierra MatchKing 308 Win 168 gr, Average Range (100 yd zero)",
+   "url": "https://www.federalpremium.com/rifle/gold-medal/gold-medal-sierra-matchking/11-GM308M.html",
+   "model": "G1",
+   "bc": 0.462,
+   "weightGr": 168,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 100,
+   "muzzle": {
+    "v": 2650,
+    "e": 2619,
+    "drop": null
+   },
+   "rows": {
+    "50": {
+     "v": null,
+     "e": null,
+     "drop": -0.1
+    },
+    "100": {
+     "v": 2460,
+     "e": 2257,
+     "drop": null
+    },
+    "200": {
+     "v": 2277,
+     "e": 1935,
+     "drop": -4.3
+    },
+    "300": {
+     "v": 2103,
+     "e": 1650,
+     "drop": -15.3
+    },
+    "400": {
+     "v": 1936,
+     "e": 1398,
+     "drop": null
+    },
+    "500": {
+     "v": 1778,
+     "e": 1179,
+     "drop": null
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere",
+    "drag-model velocity banding"
+   ],
+   "cellNotes": {
+    "100": "Average Range 100 yd cell is an image placeholder, left null."
+   },
+   "note": "The page labels .462 only 'Ballistic Coefficient' without naming the drag function. Registered as G1 by convention (a variant); a mismatch could reflect that assumption.",
+   "registeredRound": 2
+  },
+  {
+   "id": "FEDERAL-GM308M-168-G1-LONG",
+   "manufacturer": "Federal Premium",
+   "source": "Gold Medal Sierra MatchKing 308 Win 168 gr, Long Range (200 yd zero)",
+   "url": "https://www.federalpremium.com/rifle/gold-medal/gold-medal-sierra-matchking/11-GM308M.html",
+   "model": "G1",
+   "bc": 0.462,
+   "weightGr": 168,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 200,
+   "muzzle": {
+    "v": 2650,
+    "e": 2619,
+    "drop": null
+   },
+   "rows": {
+    "50": {
+     "v": null,
+     "e": null,
+     "drop": 1.0
+    },
+    "100": {
+     "v": null,
+     "e": null,
+     "drop": 2.1
+    },
+    "200": {
+     "v": null,
+     "e": null,
+     "drop": null
+    },
+    "300": {
+     "v": null,
+     "e": null,
+     "drop": -8.9
+    },
+    "400": {
+     "v": null,
+     "e": null,
+     "drop": -25.5
+    },
+    "500": {
+     "v": null,
+     "e": null,
+     "drop": -51.5
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere",
+    "drag-model velocity banding"
+   ],
+   "cellNotes": {
+    "200": "Image placeholder, left null."
+   },
+   "note": "Federal Long Range table: zero 200 yd. Evidence: Federal's law-enforcement page for GM308M captions the Long Range trajectory 'for a 200 yards zero with a sight height of 1.5 inches' (le.vistaoutdoor.com id=150 and id=151), and a retailer copy of the 6.5 CM 130 gr data prints 0 at 200 yd. The federalpremium.com page's own caption says 100 yd for both tables, which cannot describe the Long Range table (its 100 yd value is +1.6 in). Variant note as for the Average Range dataset.",
+   "registeredRound": 2
+  },
+  {
+   "id": "FEDERAL-GM308M2-175-G1-AVG",
+   "manufacturer": "Federal Premium",
+   "source": "Gold Medal Sierra MatchKing 308 Win 175 gr (GM308M2), Average Range (100 yd zero), law-enforcement page",
+   "url": "https://le.vistaoutdoor.com/ammunition/federal/rifle/details.aspx?id=151",
+   "model": "G1",
+   "bc": 0.505,
+   "weightGr": 175,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 100,
+   "muzzle": {
+    "v": 2600,
+    "e": 2627,
+    "drop": null
+   },
+   "rows": {
+    "50": {
+     "v": null,
+     "e": null,
+     "drop": -0.1
+    },
+    "100": {
+     "v": 2427,
+     "e": 2290,
+     "drop": null
+    },
+    "200": {
+     "v": 2262,
+     "e": 1987,
+     "drop": -4.4
+    },
+    "300": {
+     "v": 2102,
+     "e": 1717,
+     "drop": -15.7
+    },
+    "400": {
+     "v": 1949,
+     "e": 1476,
+     "drop": null
+    },
+    "500": {
+     "v": 1803,
+     "e": 1264,
+     "drop": null
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere",
+    "drag-model velocity banding"
+   ],
+   "cellNotes": {
+    "100": "Zero-point symbol image, left null."
+   },
+   "note": "BC 0.505 is not labeled G1 or G7 on the page; registered as G1 by convention (a variant). 24 in test barrel printed.",
+   "registeredRound": 2
+  },
+  {
+   "id": "FEDERAL-GM308M2-175-G1-LONG",
+   "manufacturer": "Federal Premium",
+   "source": "Gold Medal Sierra MatchKing 308 Win 175 gr (GM308M2), Long Range (200 yd zero), law-enforcement page",
+   "url": "https://le.vistaoutdoor.com/ammunition/federal/rifle/details.aspx?id=151",
+   "model": "G1",
+   "bc": 0.505,
+   "weightGr": 175,
+   "diamIn": 0.308,
+   "sightHeightIn": 1.5,
+   "zeroYd": 200,
+   "muzzle": {
+    "v": 2600,
+    "e": 2627,
+    "drop": null
+   },
+   "rows": {
+    "50": {
+     "v": null,
+     "e": null,
+     "drop": 1.0
+    },
+    "100": {
+     "v": null,
+     "e": null,
+     "drop": 2.2
+    },
+    "200": {
+     "v": null,
+     "e": null,
+     "drop": null
+    },
+    "300": {
+     "v": null,
+     "e": null,
+     "drop": -9.1
+    },
+    "400": {
+     "v": null,
+     "e": null,
+     "drop": -25.8
+    },
+    "500": {
+     "v": null,
+     "e": null,
+     "drop": -51.8
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere",
+    "drag-model velocity banding"
+   ],
+   "cellNotes": {
+    "200": "Zero-point symbol image, left null."
+   },
+   "note": "Caption on this page states a 200 yd zero. BC label as above.",
+   "registeredRound": 2
+  },
+  {
+   "id": "FEDERAL-GM-6.5CM-130-G1-0.560",
+   "manufacturer": "Federal Premium",
+   "source": "Gold Medal Berger 6.5 Creedmoor 130 gr Berger AR Hybrid OTM, part GM65CRDBH130",
+   "url": "https://www.federalpremium.com/rifle/gold-medal/gold-medal-berger/11-GM65CRDBH130.html",
+   "model": "G1",
+   "bc": 0.56,
+   "weightGr": 130,
+   "diamIn": 0.264,
+   "sightHeightIn": 1.5,
+   "zeroYd": 100,
+   "muzzle": {
+    "v": 2875,
+    "e": 2386,
+    "drop": null
+   },
+   "rows": {
+    "50": {
+     "v": null,
+     "e": null,
+     "drop": -0.2
+    },
+    "100": {
+     "v": 2709,
+     "e": 2119,
+     "drop": null
+    },
+    "200": {
+     "v": 2550,
+     "e": 1877,
+     "drop": -3.2
+    },
+    "300": {
+     "v": 2396,
+     "e": 1657,
+     "drop": -11.8
+    },
+    "400": {
+     "v": 2247,
+     "e": 1457,
+     "drop": null
+    },
+    "500": {
+     "v": 2104,
+     "e": 1277,
+     "drop": null
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere",
+    "barrel length",
+    "drag-model velocity banding"
+   ],
+   "cellNotes": {
+    "100": "The Average Range 100 yd trajectory cell is an image placeholder (symbol.gif) with no value. It is left null and not inferred as 0.",
+    "400": "Average Range table stops at 300 yd.",
+    "500": "Average Range table stops at 300 yd."
+   },
+   "excludedTables": {
+    "Long Range trajectory": "Excluded. Its zero range is not stated (the caption says zeroed at 100 yd but the 100 yd value is +1.6 in, so the caption does not describe this table), and its 200 yd cell is a placeholder.",
+    "Wind drift at 10 mph": "Not compared. The heading has no values on the page as read, and the crosswind model is a separate question."
+   },
+   "pairingNote": "Read by a page-reading tool, not seen by the author. Tables are labeled Muzzle/100/200/300/400/500 Y (velocity, energy) and 50/100/200/300 Y (Average Range). The 130 gr and 2875 fps figures reproduce the printed energies (energy check in tests). A second person has not reproduced this copy.",
+   "note": "Variant registered before running: the same Federal table with the page's other BC, 0.560, which the page labels only 'Ballistic Coefficient'. Registered as G1 by convention. The G7 .287 dataset is unchanged and both are reported.",
+   "registeredRound": 2
+  },
+  {
+   "id": "FEDERAL-GM-6.5CM-130-G1-0.560-LONGRANGE",
+   "manufacturer": "Federal Premium",
+   "source": "Gold Medal Berger 6.5 CM 130 gr, Long Range trajectory table",
+   "url": "https://www.federalpremium.com/rifle/gold-medal/gold-medal-berger/11-GM65CRDBH130.html",
+   "model": "G1",
+   "bc": 0.56,
+   "weightGr": 130,
+   "diamIn": 0.264,
+   "sightHeightIn": 1.5,
+   "zeroYd": 200,
+   "muzzle": {
+    "v": 2875,
+    "e": null,
+    "drop": null
+   },
+   "rows": {
+    "50": {
+     "v": null,
+     "e": null,
+     "drop": 0.6
+    },
+    "100": {
+     "v": null,
+     "e": null,
+     "drop": 1.6
+    },
+    "200": {
+     "v": null,
+     "e": null,
+     "drop": null
+    },
+    "300": {
+     "v": null,
+     "e": null,
+     "drop": -6.9
+    },
+    "400": {
+     "v": null,
+     "e": null,
+     "drop": -20.0
+    },
+    "500": {
+     "v": null,
+     "e": null,
+     "drop": -40.0
+    }
+   },
+   "atmospheresRun": [
+    "ICAO",
+    "HORNADY_ABERDEEN"
+   ],
+   "notPublished": [
+    "atmosphere",
+    "drag-model velocity banding"
+   ],
+   "cellNotes": {
+    "200": "Image placeholder on the Federal page, left null. A retailer copy prints 0, consistent with a 200 yd zero, but that is a secondary copy and is not used as a value."
+   },
+   "note": "Variant registered before running: the same Federal table with the page's other BC, 0.560, which the page labels only 'Ballistic Coefficient'. Registered as G1 by convention. The G7 .287 dataset is unchanged and both are reported. Federal Long Range table: zero 200 yd. Evidence: Federal's law-enforcement page for GM308M captions the Long Range trajectory 'for a 200 yards zero with a sight height of 1.5 inches' (le.vistaoutdoor.com id=150 and id=151), and a retailer copy of the 6.5 CM 130 gr data prints 0 at 200 yd. The federalpremium.com page's own caption says 100 yd for both tables, which cannot describe the Long Range table (its 100 yd value is +1.6 in).",
+   "registeredRound": 2
   }
- ]
+ ],
+ "excludedSources": {
+  "HORNADY-LE-CX-GMX-140-G1-0.350": "Hornady LE pages hornadyle.com/rifle-ammunition/140-gr-cx-6.5-creedmoor and /140-gr-gmx-6.5-creedmoor (BC .350 G1). Not registered. Two reads of the same data disagreed on column placement (one dropped the 50 yd placeholder and shifted every column; the two reads also printed different SAAMI-row drops), and four of the five barrel rows have energies that imply 147 gr (for example 2685 fps and 2353 ft-lb), not 140 gr, so the rows cannot be trusted as read. Needs the raw page.",
+  "HORNADY-308-168-BTHP-MATCH": "hornady.com/ammunition/rifle/308-win-168-gr-bthp-match. Not registered: the page text as read has no BC, so the drag model cannot be set. Its velocities and energies are consistent with 168 gr and a 200 yd zero.",
+  "FEDERAL-GM223M": "Federal 223 Rem 69 gr page was not on the fetch allowlist."
+ },
+ "roundNote": "Round 1 datasets were registered 2026-11-16 before the 21:15 round was run. Round 2 datasets were registered 2026-11-16 after 21:44, before being run, from pages re-read that evening. Rounds are reported separately so the earlier counts do not move."
 }

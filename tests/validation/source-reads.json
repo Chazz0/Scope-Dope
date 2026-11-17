@@ -1,0 +1,681 @@
+{
+ "note": "Values below were extracted by a page-reading tool from the named URLs on the access date. They are reads, not raw page copies. A manufacturer page that could not be opened directly is a limitation recorded in docs/SOURCE_RESEARCH.md. tests/tools/audit-reference-data.js compares every cell here with tests/validation/references.json.",
+ "reads": [
+  {
+   "readId": "R1",
+   "url": "https://www.federalpremium.com/rifle/gold-medal/gold-medal-berger/11-GM65CRDBH130.html",
+   "note": "Prompted for verbatim cell-by-cell output. Printed: BC .560 (unlabeled), G7 .287; 100 yd zero caption under both trajectory tables; Average Range 100 yd and Long Range 200 yd cells are images.",
+   "targets": [
+    {
+     "datasetId": "FEDERAL-GM-6.5CM-130-G7",
+     "muzzle": {
+      "v": 2875,
+      "e": 2386
+     },
+     "rows": {
+      "50": {
+       "drop": -0.2
+      },
+      "100": {
+       "v": 2709,
+       "e": 2119
+      },
+      "200": {
+       "v": 2550,
+       "e": 1877,
+       "drop": -3.2
+      },
+      "300": {
+       "v": 2396,
+       "e": 1657,
+       "drop": -11.8
+      },
+      "400": {
+       "v": 2247,
+       "e": 1457
+      },
+      "500": {
+       "v": 2104,
+       "e": 1277
+      }
+     },
+     "bc": 0.287
+    },
+    {
+     "datasetId": "FEDERAL-GM-6.5CM-130-G7-LONGRANGE",
+     "rows": {
+      "50": {
+       "drop": 0.6
+      },
+      "100": {
+       "drop": 1.6
+      },
+      "300": {
+       "drop": -6.9
+      },
+      "400": {
+       "drop": -20.0
+      },
+      "500": {
+       "drop": -40.0
+      }
+     }
+    }
+   ],
+   "accessed": "2026-11-16",
+   "reader": "WebFetch page reader (returns a model-written extraction of the page, not raw HTML)"
+  },
+  {
+   "readId": "R2",
+   "url": "https://www.ammunitiontogo.com/20rds-6-5mm-creedmoor-federal-gold-medal-berger-130gr-hybrid-otm-ammo",
+   "note": "Retailer copy of Federal data. Prints G1 0.569 and G7 0.286, which differ from Federal's own page (.560 and .287). Prints 0 for 200 yd in the Long Range series, where Federal's page has an image.",
+   "targets": [
+    {
+     "datasetId": "FEDERAL-GM-6.5CM-130-G7",
+     "muzzle": {
+      "v": 2875,
+      "e": 2386
+     },
+     "rows": {
+      "100": {
+       "v": 2709,
+       "e": 2119
+      },
+      "200": {
+       "v": 2550,
+       "e": 1877
+      },
+      "300": {
+       "v": 2396,
+       "e": 1657
+      },
+      "400": {
+       "v": 2247,
+       "e": 1457
+      },
+      "500": {
+       "v": 2104,
+       "e": 1277
+      }
+     },
+     "bc": 0.286
+    },
+    {
+     "datasetId": "FEDERAL-GM-6.5CM-130-G7-LONGRANGE",
+     "rows": {
+      "100": {
+       "drop": 1.6
+      },
+      "200": {
+       "drop": 0.0
+      },
+      "300": {
+       "drop": -6.9
+      },
+      "400": {
+       "drop": -20.0
+      },
+      "500": {
+       "drop": -40.0
+      }
+     }
+    }
+   ],
+   "accessed": "2026-11-16",
+   "reader": "WebFetch page reader (returns a model-written extraction of the page, not raw HTML)"
+  },
+  {
+   "readId": "R3",
+   "url": "https://www.hornadyle.com/rifle-ammunition/140-gr-otm-a",
+   "note": "Second read, different prompt. Same numbers as the project reference. 50 yd column prints 0 / N/A / 0. Reader again flagged the column mapping as inferred. Sectional density 0.287; no atmosphere text.",
+   "targets": [
+    {
+     "datasetId": "HORNADY-LE-140-OTMA",
+     "muzzle": {
+      "v": 2700,
+      "e": 2266,
+      "drop": -1.5
+     },
+     "rows": {
+      "100": {
+       "v": 2553,
+       "e": 2027,
+       "drop": 0
+      },
+      "200": {
+       "v": 2412,
+       "e": 1808,
+       "drop": -3.8
+      },
+      "300": {
+       "v": 2274,
+       "e": 1608,
+       "drop": -13.7
+      },
+      "400": {
+       "v": 2141,
+       "e": 1425,
+       "drop": -30.2
+      },
+      "500": {
+       "v": 2013,
+       "e": 1259,
+       "drop": -54.4
+      }
+     },
+     "bc": 0.608
+    }
+   ],
+   "accessed": "2026-11-16",
+   "reader": "WebFetch page reader (returns a model-written extraction of the page, not raw HTML)"
+  },
+  {
+   "readId": "R4",
+   "url": "https://www.hornady.com/team-hornady/ballistic-information/ballistic-resources/external-ballistics",
+   "note": "Second read, different prompt. All tables identical to the project reference. Page names no book edition. Prints the 29.53 inHg / 78% standard conditions.",
+   "targets": [
+    {
+     "datasetId": "HORNADY-SPIRE-180-G1-0.425",
+     "muzzle": {
+      "v": 3000,
+      "e": 3597,
+      "drop": -1.5
+     },
+     "rows": {
+      "50": {
+       "v": 2887,
+       "e": 3331,
+       "drop": -0.2
+      },
+      "100": {
+       "v": 2777,
+       "e": 3082,
+       "drop": 0.0
+      },
+      "200": {
+       "v": 2565,
+       "e": 2629,
+       "drop": -3.0
+      },
+      "300": {
+       "v": 2362,
+       "e": 2230,
+       "drop": -11.3
+      },
+      "400": {
+       "v": 2169,
+       "e": 1880,
+       "drop": -25.9
+      },
+      "500": {
+       "v": 1985,
+       "e": 1574,
+       "drop": -47.8
+      }
+     },
+     "bc": 0.425
+    },
+    {
+     "datasetId": "HORNADY-ROUNDNOSE-180-G1-0.241",
+     "muzzle": {
+      "v": 3000,
+      "e": 3597,
+      "drop": -1.5
+     },
+     "rows": {
+      "50": {
+       "v": 2803,
+       "e": 3139,
+       "drop": -0.2
+      },
+      "100": {
+       "v": 2614,
+       "e": 2731,
+       "drop": 0.0
+      },
+      "200": {
+       "v": 2259,
+       "e": 2040,
+       "drop": -3.6
+      },
+      "300": {
+       "v": 1933,
+       "e": 1493,
+       "drop": -14.1
+      },
+      "400": {
+       "v": 1639,
+       "e": 1073,
+       "drop": -34.0
+      },
+      "500": {
+       "v": 1385,
+       "e": 767,
+       "drop": -67.0
+      }
+     },
+     "bc": 0.241
+    },
+    {
+     "datasetId": "HORNADY-CORR-TEST1",
+     "muzzle": {
+      "v": 2900,
+      "drop": -1.5
+     },
+     "rows": {
+      "100": {
+       "v": 2627,
+       "drop": 0.0
+      },
+      "200": {
+       "v": 2371,
+       "drop": -3.6
+      },
+      "300": {
+       "v": 2129,
+       "drop": -13.3
+      },
+      "400": {
+       "v": 1901,
+       "drop": -30.8
+      },
+      "500": {
+       "v": 1690,
+       "drop": -57.9
+      }
+     },
+     "bc": 0.338
+    },
+    {
+     "datasetId": "HORNADY-CORR-TEST2",
+     "muzzle": {
+      "v": 2900,
+      "drop": -1.5
+     },
+     "rows": {
+      "100": {
+       "v": 2640,
+       "drop": 0.0
+      },
+      "200": {
+       "v": 2395,
+       "drop": -3.5
+      },
+      "300": {
+       "v": 2162,
+       "drop": -13.1
+      },
+      "400": {
+       "v": 1943,
+       "drop": -30.1
+      },
+      "500": {
+       "v": 1739,
+       "drop": -56.4
+      }
+     },
+     "bc": 0.355
+    },
+    {
+     "datasetId": "HORNADY-CORR-TEST3",
+     "muzzle": {
+      "v": 2900,
+      "drop": -1.5
+     },
+     "rows": {
+      "100": {
+       "v": 2614,
+       "drop": 0.0
+      },
+      "200": {
+       "v": 2346,
+       "drop": -3.6
+      },
+      "300": {
+       "v": 2094,
+       "drop": -13.6
+      },
+      "400": {
+       "v": 1858,
+       "drop": -31.5
+      },
+      "500": {
+       "v": 1641,
+       "drop": -59.5
+      }
+     },
+     "bc": 0.322
+    },
+    {
+     "datasetId": "HORNADY-CORR-TEST4",
+     "muzzle": {
+      "v": 2900,
+      "drop": -1.5
+     },
+     "rows": {
+      "100": {
+       "v": 2693,
+       "drop": 0.0
+      },
+      "200": {
+       "v": 2495,
+       "drop": -3.3
+      },
+      "300": {
+       "v": 2306,
+       "drop": -12.2
+      },
+      "400": {
+       "v": 2124,
+       "drop": -27.6
+      },
+      "500": {
+       "v": 1952,
+       "drop": -50.8
+      }
+     },
+     "bc": 0.448
+    }
+   ],
+   "accessed": "2026-11-16",
+   "reader": "WebFetch page reader (returns a model-written extraction of the page, not raw HTML)"
+  },
+  {
+   "readId": "R5",
+   "url": "https://www.federalpremium.com/rifle/gold-medal/gold-medal-sierra-matchking/11-GM308M.html",
+   "note": "GM308M 168 gr. Both pages give the same values. The federalpremium page labels G7 .224 and an unlabeled .462; its captions say 100 yd for both tables. The law-enforcement page states a 200 yd zero for the Long Range table.",
+   "targets": [
+    {
+     "datasetId": "FEDERAL-GM308M-168-G7-AVG",
+     "muzzle": {
+      "v": 2650,
+      "e": 2619
+     },
+     "rows": {
+      "50": {
+       "drop": -0.1
+      },
+      "100": {
+       "v": 2460,
+       "e": 2257
+      },
+      "200": {
+       "v": 2277,
+       "e": 1935,
+       "drop": -4.3
+      },
+      "300": {
+       "v": 2103,
+       "e": 1650,
+       "drop": -15.3
+      },
+      "400": {
+       "v": 1936,
+       "e": 1398
+      },
+      "500": {
+       "v": 1778,
+       "e": 1179
+      }
+     }
+    },
+    {
+     "datasetId": "FEDERAL-GM308M-168-G7-LONG",
+     "rows": {
+      "50": {
+       "drop": 1.0
+      },
+      "100": {
+       "drop": 2.1
+      },
+      "300": {
+       "drop": -8.9
+      },
+      "400": {
+       "drop": -25.5
+      },
+      "500": {
+       "drop": -51.5
+      }
+     }
+    },
+    {
+     "datasetId": "FEDERAL-GM308M-168-G1-AVG",
+     "muzzle": {
+      "v": 2650,
+      "e": 2619
+     },
+     "rows": {
+      "50": {
+       "drop": -0.1
+      },
+      "100": {
+       "v": 2460,
+       "e": 2257
+      },
+      "200": {
+       "v": 2277,
+       "e": 1935,
+       "drop": -4.3
+      },
+      "300": {
+       "v": 2103,
+       "e": 1650,
+       "drop": -15.3
+      },
+      "400": {
+       "v": 1936,
+       "e": 1398
+      },
+      "500": {
+       "v": 1778,
+       "e": 1179
+      }
+     }
+    },
+    {
+     "datasetId": "FEDERAL-GM308M-168-G1-LONG",
+     "rows": {
+      "50": {
+       "drop": 1.0
+      },
+      "100": {
+       "drop": 2.1
+      },
+      "300": {
+       "drop": -8.9
+      },
+      "400": {
+       "drop": -25.5
+      },
+      "500": {
+       "drop": -51.5
+      }
+     }
+    }
+   ],
+   "accessed": "2026-11-16",
+   "reader": "WebFetch page reader (returns a model-written extraction of the page, not raw HTML)"
+  },
+  {
+   "readId": "R6",
+   "url": "https://le.vistaoutdoor.com/ammunition/federal/rifle/details.aspx?id=150",
+   "note": "GM308M 168 gr. Both pages give the same values. The federalpremium page labels G7 .224 and an unlabeled .462; its captions say 100 yd for both tables. The law-enforcement page states a 200 yd zero for the Long Range table.",
+   "targets": [
+    {
+     "datasetId": "FEDERAL-GM308M-168-G7-AVG",
+     "muzzle": {
+      "v": 2650,
+      "e": 2619
+     },
+     "rows": {
+      "50": {
+       "drop": -0.1
+      },
+      "100": {
+       "v": 2460,
+       "e": 2257
+      },
+      "200": {
+       "v": 2277,
+       "e": 1935,
+       "drop": -4.3
+      },
+      "300": {
+       "v": 2103,
+       "e": 1650,
+       "drop": -15.3
+      },
+      "400": {
+       "v": 1936,
+       "e": 1398
+      },
+      "500": {
+       "v": 1778,
+       "e": 1179
+      }
+     }
+    },
+    {
+     "datasetId": "FEDERAL-GM308M-168-G7-LONG",
+     "rows": {
+      "50": {
+       "drop": 1.0
+      },
+      "100": {
+       "drop": 2.1
+      },
+      "300": {
+       "drop": -8.9
+      },
+      "400": {
+       "drop": -25.5
+      },
+      "500": {
+       "drop": -51.5
+      }
+     }
+    },
+    {
+     "datasetId": "FEDERAL-GM308M-168-G1-AVG",
+     "muzzle": {
+      "v": 2650,
+      "e": 2619
+     },
+     "rows": {
+      "50": {
+       "drop": -0.1
+      },
+      "100": {
+       "v": 2460,
+       "e": 2257
+      },
+      "200": {
+       "v": 2277,
+       "e": 1935,
+       "drop": -4.3
+      },
+      "300": {
+       "v": 2103,
+       "e": 1650,
+       "drop": -15.3
+      },
+      "400": {
+       "v": 1936,
+       "e": 1398
+      },
+      "500": {
+       "v": 1778,
+       "e": 1179
+      }
+     }
+    },
+    {
+     "datasetId": "FEDERAL-GM308M-168-G1-LONG",
+     "rows": {
+      "50": {
+       "drop": 1.0
+      },
+      "100": {
+       "drop": 2.1
+      },
+      "300": {
+       "drop": -8.9
+      },
+      "400": {
+       "drop": -25.5
+      },
+      "500": {
+       "drop": -51.5
+      }
+     }
+    }
+   ],
+   "accessed": "2026-11-16",
+   "reader": "WebFetch page reader (returns a model-written extraction of the page, not raw HTML)"
+  },
+  {
+   "readId": "R7",
+   "url": "https://le.vistaoutdoor.com/ammunition/federal/rifle/details.aspx?id=151",
+   "note": "GM308M2 175 gr, 24 in test barrel, BC .505 unlabeled. Captions give 100 yd and 200 yd zeros.",
+   "targets": [
+    {
+     "datasetId": "FEDERAL-GM308M2-175-G1-AVG",
+     "muzzle": {
+      "v": 2600,
+      "e": 2627
+     },
+     "rows": {
+      "50": {
+       "drop": -0.1
+      },
+      "100": {
+       "v": 2427,
+       "e": 2290
+      },
+      "200": {
+       "v": 2262,
+       "e": 1987,
+       "drop": -4.4
+      },
+      "300": {
+       "v": 2102,
+       "e": 1717,
+       "drop": -15.7
+      },
+      "400": {
+       "v": 1949,
+       "e": 1476
+      },
+      "500": {
+       "v": 1803,
+       "e": 1264
+      }
+     }
+    },
+    {
+     "datasetId": "FEDERAL-GM308M2-175-G1-LONG",
+     "rows": {
+      "50": {
+       "drop": 1.0
+      },
+      "100": {
+       "drop": 2.2
+      },
+      "300": {
+       "drop": -9.1
+      },
+      "400": {
+       "drop": -25.8
+      },
+      "500": {
+       "drop": -51.8
+      }
+     }
+    }
+   ],
+   "accessed": "2026-11-16",
+   "reader": "WebFetch page reader (returns a model-written extraction of the page, not raw HTML)"
+  }
+ ]
+}

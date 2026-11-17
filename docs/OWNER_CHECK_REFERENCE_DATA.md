@@ -1,6 +1,6 @@
 # Owner check sheet: reference data against the original manufacturer pages
 
-Status: **NOT DONE.** No entry below has been checked against its page by anyone but the tool that read it.
+Status: **NOT DONE.** Optional. The owner has said they will not check data by hand, and this is no longer asked of them: `docs/REFERENCE_DATA_AUDIT.md` is the automated, multi-read corroboration. No entry below has been checked against a raw page by anyone but a page-reading tool.
 
 Where this sits: the owner check and the second-manufacturer reproduction are separate OPEN criteria in `docs/STAGE5_COMPLETION.md` (0 complete, 1 waived, 7 open; status NOT COMPLETE). Completing this sheet would settle only the owner check. It would not make the data independently verified, and physical accuracy stays NOT DEMONSTRATED. The reviewer item is WAIVED and counts as nothing here.
 
@@ -181,6 +181,215 @@ Printed correction BCs are the page's stated results. The page's correction equa
 | 400 yd velocity / energy / trajectory | 2124 fps / none / -27.6 in | | | |
 | 500 yd velocity / energy / trajectory | 1952 fps / none / -50.8 in | | | |
 | Zero range (yd) | 100 (column header) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## FEDERAL-GM-6.5CM-130-G7-LONGRANGE: Gold Medal Berger 6.5 CM 130 gr, Long Range trajectory table
+
+URL: https://www.federalpremium.com/rifle/gold-medal/gold-medal-berger/11-GM65CRDBH130.html
+
+Federal Long Range table: zero 200 yd. Evidence: Federal's law-enforcement page for GM308M captions the Long Range trajectory 'for a 200 yards zero with a sight height of 1.5 inches' (le.vistaoutdoor.com id=150 and id=151), and a retailer copy of the 6.5 CM 130 gr data prints 0 at 200 yd. The federalpremium.com page's own caption says 100 yd for both tables, which cannot describe the Long Range table (its 100 yd value is +1.6 in).
+
+Cell notes: {"200":"Image placeholder on the Federal page, left null. A retailer copy prints 0, consistent with a 200 yd zero, but that is a secondary copy and is not used as a value."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G7) | 0.287 | | | |
+| Muzzle velocity (fps) | 2875 | | | |
+| Bullet weight (gr) | 130 | | | |
+| 50 yd velocity / energy / trajectory | none / none / 0.6 in | | | |
+| 100 yd velocity / energy / trajectory | none / none / 1.6 in | | | |
+| 200 yd velocity / energy / trajectory | none / none / none | | | |
+| 300 yd velocity / energy / trajectory | none / none / -6.9 in | | | |
+| 400 yd velocity / energy / trajectory | none / none / -20 in | | | |
+| 500 yd velocity / energy / trajectory | none / none / -40 in | | | |
+| Zero range (yd) | 200 (page caption) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## FEDERAL-GM308M-168-G7-AVG: Gold Medal Sierra MatchKing 308 Win 168 gr, Average Range (100 yd zero)
+
+URL: https://www.federalpremium.com/rifle/gold-medal/gold-medal-sierra-matchking/11-GM308M.html
+
+The page labels .224 as G7 explicitly.
+
+Cell notes: {"100":"Average Range 100 yd cell is an image placeholder, left null."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G7) | 0.224 | | | |
+| Muzzle velocity (fps) | 2650 | | | |
+| Bullet weight (gr) | 168 | | | |
+| Muzzle energy (ft-lb) | 2619 | | | |
+| 50 yd velocity / energy / trajectory | none / none / -0.1 in | | | |
+| 100 yd velocity / energy / trajectory | 2460 fps / 2257 ft-lb / none | | | |
+| 200 yd velocity / energy / trajectory | 2277 fps / 1935 ft-lb / -4.3 in | | | |
+| 300 yd velocity / energy / trajectory | 2103 fps / 1650 ft-lb / -15.3 in | | | |
+| 400 yd velocity / energy / trajectory | 1936 fps / 1398 ft-lb / none | | | |
+| 500 yd velocity / energy / trajectory | 1778 fps / 1179 ft-lb / none | | | |
+| Zero range (yd) | 100 (page caption) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## FEDERAL-GM308M-168-G7-LONG: Gold Medal Sierra MatchKing 308 Win 168 gr, Long Range (200 yd zero)
+
+URL: https://www.federalpremium.com/rifle/gold-medal/gold-medal-sierra-matchking/11-GM308M.html
+
+Federal Long Range table: zero 200 yd. Evidence: Federal's law-enforcement page for GM308M captions the Long Range trajectory 'for a 200 yards zero with a sight height of 1.5 inches' (le.vistaoutdoor.com id=150 and id=151), and a retailer copy of the 6.5 CM 130 gr data prints 0 at 200 yd. The federalpremium.com page's own caption says 100 yd for both tables, which cannot describe the Long Range table (its 100 yd value is +1.6 in). Variant note as for the Average Range dataset.
+
+Cell notes: {"200":"Image placeholder, left null."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G7) | 0.224 | | | |
+| Muzzle velocity (fps) | 2650 | | | |
+| Bullet weight (gr) | 168 | | | |
+| Muzzle energy (ft-lb) | 2619 | | | |
+| 50 yd velocity / energy / trajectory | none / none / 1 in | | | |
+| 100 yd velocity / energy / trajectory | none / none / 2.1 in | | | |
+| 200 yd velocity / energy / trajectory | none / none / none | | | |
+| 300 yd velocity / energy / trajectory | none / none / -8.9 in | | | |
+| 400 yd velocity / energy / trajectory | none / none / -25.5 in | | | |
+| 500 yd velocity / energy / trajectory | none / none / -51.5 in | | | |
+| Zero range (yd) | 200 (page caption) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## FEDERAL-GM308M-168-G1-AVG: Gold Medal Sierra MatchKing 308 Win 168 gr, Average Range (100 yd zero)
+
+URL: https://www.federalpremium.com/rifle/gold-medal/gold-medal-sierra-matchking/11-GM308M.html
+
+The page labels .462 only 'Ballistic Coefficient' without naming the drag function. Registered as G1 by convention (a variant); a mismatch could reflect that assumption.
+
+Cell notes: {"100":"Average Range 100 yd cell is an image placeholder, left null."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G1) | 0.462 | | | |
+| Muzzle velocity (fps) | 2650 | | | |
+| Bullet weight (gr) | 168 | | | |
+| Muzzle energy (ft-lb) | 2619 | | | |
+| 50 yd velocity / energy / trajectory | none / none / -0.1 in | | | |
+| 100 yd velocity / energy / trajectory | 2460 fps / 2257 ft-lb / none | | | |
+| 200 yd velocity / energy / trajectory | 2277 fps / 1935 ft-lb / -4.3 in | | | |
+| 300 yd velocity / energy / trajectory | 2103 fps / 1650 ft-lb / -15.3 in | | | |
+| 400 yd velocity / energy / trajectory | 1936 fps / 1398 ft-lb / none | | | |
+| 500 yd velocity / energy / trajectory | 1778 fps / 1179 ft-lb / none | | | |
+| Zero range (yd) | 100 (page caption) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## FEDERAL-GM308M-168-G1-LONG: Gold Medal Sierra MatchKing 308 Win 168 gr, Long Range (200 yd zero)
+
+URL: https://www.federalpremium.com/rifle/gold-medal/gold-medal-sierra-matchking/11-GM308M.html
+
+Federal Long Range table: zero 200 yd. Evidence: Federal's law-enforcement page for GM308M captions the Long Range trajectory 'for a 200 yards zero with a sight height of 1.5 inches' (le.vistaoutdoor.com id=150 and id=151), and a retailer copy of the 6.5 CM 130 gr data prints 0 at 200 yd. The federalpremium.com page's own caption says 100 yd for both tables, which cannot describe the Long Range table (its 100 yd value is +1.6 in). Variant note as for the Average Range dataset.
+
+Cell notes: {"200":"Image placeholder, left null."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G1) | 0.462 | | | |
+| Muzzle velocity (fps) | 2650 | | | |
+| Bullet weight (gr) | 168 | | | |
+| Muzzle energy (ft-lb) | 2619 | | | |
+| 50 yd velocity / energy / trajectory | none / none / 1 in | | | |
+| 100 yd velocity / energy / trajectory | none / none / 2.1 in | | | |
+| 200 yd velocity / energy / trajectory | none / none / none | | | |
+| 300 yd velocity / energy / trajectory | none / none / -8.9 in | | | |
+| 400 yd velocity / energy / trajectory | none / none / -25.5 in | | | |
+| 500 yd velocity / energy / trajectory | none / none / -51.5 in | | | |
+| Zero range (yd) | 200 (page caption) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## FEDERAL-GM308M2-175-G1-AVG: Gold Medal Sierra MatchKing 308 Win 175 gr (GM308M2), Average Range (100 yd zero), law-enforcement page
+
+URL: https://le.vistaoutdoor.com/ammunition/federal/rifle/details.aspx?id=151
+
+BC 0.505 is not labeled G1 or G7 on the page; registered as G1 by convention (a variant). 24 in test barrel printed.
+
+Cell notes: {"100":"Zero-point symbol image, left null."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G1) | 0.505 | | | |
+| Muzzle velocity (fps) | 2600 | | | |
+| Bullet weight (gr) | 175 | | | |
+| Muzzle energy (ft-lb) | 2627 | | | |
+| 50 yd velocity / energy / trajectory | none / none / -0.1 in | | | |
+| 100 yd velocity / energy / trajectory | 2427 fps / 2290 ft-lb / none | | | |
+| 200 yd velocity / energy / trajectory | 2262 fps / 1987 ft-lb / -4.4 in | | | |
+| 300 yd velocity / energy / trajectory | 2102 fps / 1717 ft-lb / -15.7 in | | | |
+| 400 yd velocity / energy / trajectory | 1949 fps / 1476 ft-lb / none | | | |
+| 500 yd velocity / energy / trajectory | 1803 fps / 1264 ft-lb / none | | | |
+| Zero range (yd) | 100 (page caption) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## FEDERAL-GM308M2-175-G1-LONG: Gold Medal Sierra MatchKing 308 Win 175 gr (GM308M2), Long Range (200 yd zero), law-enforcement page
+
+URL: https://le.vistaoutdoor.com/ammunition/federal/rifle/details.aspx?id=151
+
+Caption on this page states a 200 yd zero. BC label as above.
+
+Cell notes: {"200":"Zero-point symbol image, left null."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G1) | 0.505 | | | |
+| Muzzle velocity (fps) | 2600 | | | |
+| Bullet weight (gr) | 175 | | | |
+| Muzzle energy (ft-lb) | 2627 | | | |
+| 50 yd velocity / energy / trajectory | none / none / 1 in | | | |
+| 100 yd velocity / energy / trajectory | none / none / 2.2 in | | | |
+| 200 yd velocity / energy / trajectory | none / none / none | | | |
+| 300 yd velocity / energy / trajectory | none / none / -9.1 in | | | |
+| 400 yd velocity / energy / trajectory | none / none / -25.8 in | | | |
+| 500 yd velocity / energy / trajectory | none / none / -51.8 in | | | |
+| Zero range (yd) | 200 (page caption) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## FEDERAL-GM-6.5CM-130-G1-0.560: Gold Medal Berger 6.5 Creedmoor 130 gr Berger AR Hybrid OTM, part GM65CRDBH130
+
+URL: https://www.federalpremium.com/rifle/gold-medal/gold-medal-berger/11-GM65CRDBH130.html
+
+Variant registered before running: the same Federal table with the page's other BC, 0.560, which the page labels only 'Ballistic Coefficient'. Registered as G1 by convention. The G7 .287 dataset is unchanged and both are reported.
+
+Read by a page-reading tool, not seen by the author. Tables are labeled Muzzle/100/200/300/400/500 Y (velocity, energy) and 50/100/200/300 Y (Average Range). The 130 gr and 2875 fps figures reproduce the printed energies (energy check in tests). A second person has not reproduced this copy.
+
+Cell notes: {"100":"The Average Range 100 yd trajectory cell is an image placeholder (symbol.gif) with no value. It is left null and not inferred as 0.","400":"Average Range table stops at 300 yd.","500":"Average Range table stops at 300 yd."}
+
+Tables excluded and why: {"Long Range trajectory":"Excluded. Its zero range is not stated (the caption says zeroed at 100 yd but the 100 yd value is +1.6 in, so the caption does not describe this table), and its 200 yd cell is a placeholder.","Wind drift at 10 mph":"Not compared. The heading has no values on the page as read, and the crosswind model is a separate question."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G1) | 0.56 | | | |
+| Muzzle velocity (fps) | 2875 | | | |
+| Bullet weight (gr) | 130 | | | |
+| Muzzle energy (ft-lb) | 2386 | | | |
+| 50 yd velocity / energy / trajectory | none / none / -0.2 in | | | |
+| 100 yd velocity / energy / trajectory | 2709 fps / 2119 ft-lb / none | | | |
+| 200 yd velocity / energy / trajectory | 2550 fps / 1877 ft-lb / -3.2 in | | | |
+| 300 yd velocity / energy / trajectory | 2396 fps / 1657 ft-lb / -11.8 in | | | |
+| 400 yd velocity / energy / trajectory | 2247 fps / 1457 ft-lb / none | | | |
+| 500 yd velocity / energy / trajectory | 2104 fps / 1277 ft-lb / none | | | |
+| Zero range (yd) | 100 (page caption) | | | |
+| Sight height (in) | 1.5 | | | |
+
+## FEDERAL-GM-6.5CM-130-G1-0.560-LONGRANGE: Gold Medal Berger 6.5 CM 130 gr, Long Range trajectory table
+
+URL: https://www.federalpremium.com/rifle/gold-medal/gold-medal-berger/11-GM65CRDBH130.html
+
+Variant registered before running: the same Federal table with the page's other BC, 0.560, which the page labels only 'Ballistic Coefficient'. Registered as G1 by convention. The G7 .287 dataset is unchanged and both are reported. Federal Long Range table: zero 200 yd. Evidence: Federal's law-enforcement page for GM308M captions the Long Range trajectory 'for a 200 yards zero with a sight height of 1.5 inches' (le.vistaoutdoor.com id=150 and id=151), and a retailer copy of the 6.5 CM 130 gr data prints 0 at 200 yd. The federalpremium.com page's own caption says 100 yd for both tables, which cannot describe the Long Range table (its 100 yd value is +1.6 in).
+
+Cell notes: {"200":"Image placeholder on the Federal page, left null. A retailer copy prints 0, consistent with a 200 yd zero, but that is a secondary copy and is not used as a value."}
+
+| Entry | Recorded | Page shows | Match (Y/N) | Note |
+| --- | --- | --- | --- | --- |
+| BC (G1) | 0.56 | | | |
+| Muzzle velocity (fps) | 2875 | | | |
+| Bullet weight (gr) | 130 | | | |
+| 50 yd velocity / energy / trajectory | none / none / 0.6 in | | | |
+| 100 yd velocity / energy / trajectory | none / none / 1.6 in | | | |
+| 200 yd velocity / energy / trajectory | none / none / none | | | |
+| 300 yd velocity / energy / trajectory | none / none / -6.9 in | | | |
+| 400 yd velocity / energy / trajectory | none / none / -20 in | | | |
+| 500 yd velocity / energy / trajectory | none / none / -40 in | | | |
+| Zero range (yd) | 200 (page caption) | | | |
 | Sight height (in) | 1.5 | | | |
 
 ## Hornady atmosphere statements

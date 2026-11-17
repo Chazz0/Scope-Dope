@@ -69,7 +69,7 @@ for (const d of R.datasets || []) {
     for (const r of ranges) {
       const w = d.rows[r];
       const x = S.dopeAt(M, inp, r);
-      const row = { kind: 'dataset', id: d.id, atmosphere: an, bcUsed: bc, range: r };
+      const row = { kind: 'dataset', id: d.id, round: d.registeredRound, atmosphere: an, bcUsed: bc, range: r };
       let pass = true;
       if (w.v !== null) { const vd = pct(x.vFps, w.v); Object.assign(row, { vPub: w.v, vOurs: Number(x.vFps.toFixed(1)), vPct: Number(vd.toFixed(2)), vPass: Math.abs(vd) <= T.velocityPct.value }); pass = pass && row.vPass; }
       if (w.drop !== null) { const dd = x.dropIn - w.drop, tol = Math.max(T.dropIn.minAbs, Math.abs(w.drop) * T.dropIn.pct / 100); Object.assign(row, { dropPub: w.drop, dropOurs: Number(x.dropIn.toFixed(2)), dropDiff: Number(dd.toFixed(2)), dropTol: Number(tol.toFixed(2)), dropPass: Math.abs(dd) <= tol }); pass = pass && row.dropPass; }

@@ -336,6 +336,7 @@ test('the owner check sheet lists every dataset and every entry, and says it has
   assert.match(sheet, /leave the recorded value alone/);
   const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_COMPLETION.md'), 'utf8');
   assert.match(c, /- \[ \] The project owner checked every Federal and Hornady reference entry/);
+  assert.match(c, /252 of 253/);
 });
 
 test('the Aberdeen question is documented with temperature, pressure, humidity, and what is not confirmed', () => {
@@ -395,16 +396,29 @@ test('the documented 100 of 103 breakdown equals what the runner produces, and e
   const ok = (x) => x.kind === 'trajectory' ? x.vPass && x.dropPass : x.pass;
   const counted = out.filter(x => ['table', 'trajectory', 'dataset'].includes(x.kind));
   const by = (f) => { const g = counted.filter(f); return [g.length, g.filter(ok).length]; };
-  assert.deepStrictEqual(by(() => true), [103, 100]);
-  assert.deepStrictEqual(by(x => x.kind === 'table'), [2, 2]);
-  assert.deepStrictEqual(by(x => x.kind === 'trajectory'), [5, 5]);
-  assert.deepStrictEqual(by(x => x.kind === 'dataset' && x.atmosphere === 'ICAO'), [38, 35]);
-  assert.deepStrictEqual(by(x => x.kind === 'dataset' && x.atmosphere === 'HORNADY_ABERDEEN'), [38, 38]);
-  assert.deepStrictEqual(by(x => x.kind === 'dataset' && x.atmosphere === 'STATED_CONDITIONS'), [20, 20]);
+  // Round 1 is pinned separately so the original 103 / 100 stays reproducible after round 2 was registered.
+  const r1 = (x) => x.kind !== 'dataset' || x.round === 1;
+  const by1 = (f) => by(x => r1(x) && f(x));
+  assert.deepStrictEqual(by1(() => true), [103, 100]);
+  assert.deepStrictEqual(by1(x => x.kind === 'table'), [2, 2]);
+  assert.deepStrictEqual(by1(x => x.kind === 'trajectory'), [5, 5]);
+  assert.deepStrictEqual(by1(x => x.kind === 'dataset' && x.atmosphere === 'ICAO'), [38, 35]);
+  assert.deepStrictEqual(by1(x => x.kind === 'dataset' && x.atmosphere === 'HORNADY_ABERDEEN'), [38, 38]);
+  assert.deepStrictEqual(by1(x => x.kind === 'dataset' && x.atmosphere === 'STATED_CONDITIONS'), [20, 20]);
+  // Round 2 (registered 2026-11-16 after round 1) and the overall total.
+  const by2 = (f) => by(x => x.kind === 'dataset' && x.round === 2 && f(x));
+  assert.deepStrictEqual(by2(() => true), [108, 101]);
+  assert.deepStrictEqual(by2(x => x.atmosphere === 'ICAO'), [54, 49]);
+  assert.deepStrictEqual(by2(x => x.atmosphere === 'HORNADY_ABERDEEN'), [54, 52]);
+  assert.deepStrictEqual(by(() => true), [211, 201]);
   const sens = out.filter(x => x.kind === 'sensitivity');
   assert.strictEqual(sens.length, 5); assert.ok(sens.every(x => x.pass));
   const failed = counted.filter(x => !ok(x)).map(x => x.id + ' ' + x.atmosphere + ' ' + x.range);
-  assert.deepStrictEqual(failed, ['HORNADY-ROUNDNOSE-180-G1-0.241 ICAO 400', 'HORNADY-ROUNDNOSE-180-G1-0.241 ICAO 500', 'HORNADY-CORR-TEST3 ICAO 500']);
+  assert.deepStrictEqual(failed.filter(f => !f.startsWith('FEDERAL-GM308M-168-G7')), ['HORNADY-ROUNDNOSE-180-G1-0.241 ICAO 400', 'HORNADY-ROUNDNOSE-180-G1-0.241 ICAO 500', 'HORNADY-CORR-TEST3 ICAO 500']);
+  assert.deepStrictEqual(failed.filter(f => f.startsWith('FEDERAL-GM308M-168-G7')), [
+    'FEDERAL-GM308M-168-G7-AVG ICAO 300', 'FEDERAL-GM308M-168-G7-AVG ICAO 400', 'FEDERAL-GM308M-168-G7-AVG ICAO 500',
+    'FEDERAL-GM308M-168-G7-AVG HORNADY_ABERDEEN 400', 'FEDERAL-GM308M-168-G7-AVG HORNADY_ABERDEEN 500',
+    'FEDERAL-GM308M-168-G7-LONG ICAO 400', 'FEDERAL-GM308M-168-G7-LONG ICAO 500']);
   const rep = fs.readFileSync(path.join(root, 'docs', 'VALIDATION_REPORT.md'), 'utf8');
   assert.match(rep, /\| Datasets, ICAO \| 38 \| 35 \| 3 \|/);
   assert.match(rep, /\| Datasets, Aberdeen \| 38 \| 38 \| 0 \|/);
@@ -420,4 +434,28 @@ test('Federal is not called verified, and its criterion parts are stated', () =>
   for (const f of ['docs/MODEL_SOURCES.md', 'docs/VALIDATION_REPORT.md', 'docs/STAGE5_COMPLETION.md', 'docs/OWNER_CHECK_REFERENCE_DATA.md']) {
     assert.doesNotMatch(fs.readFileSync(path.join(root, f), 'utf8'), /Federal[^.\n]{0,60}(is|are|was) (independently )?verified/i, f);
   }
+});
+
+// ---- Round 2, source audit, measured-data, and no-engine-change guards (2026-11-16) ----
+const runTool = (f, ...a) => execFileSync('node', [path.join(root, 'tests', 'tools', f), ...a], { encoding: 'utf8', maxBuffer: 1 << 26 });
+
+test('reference-data audit: 252 of 253 cells agree and the retailer BC mismatch is recorded', () => {
+  const out = runTool('audit-reference-data.js');
+  assert.match(out, /252 of 253/);
+  assert.match(out, /\.286/);
+});
+
+test('measured Doppler comparison is labelled MEASURED, drag-only, and not a physical-accuracy claim', () => {
+  const m = JSON.parse(fs.readFileSync(path.join(root, 'tests', 'validation', 'measured-doppler.json'), 'utf8'));
+  assert.ok(m.classification.startsWith('MEASURED'));
+  const out = runTool('compare-measured.js');
+  assert.match(out, /21 of 26 within/);
+  assert.match(out, /does not establish physical accuracy/);
+});
+
+test('engine inputs are unchanged relative to the Stage 5 base commit', () => {
+  const diff = execFileSync('git', ['diff', '--stat', '9f37df7', '--', 'index.html', 'tests/golden', 'tests/helpers', 'tests/solver.test.js'], { cwd: root, encoding: 'utf8' });
+  assert.strictEqual(diff.trim(), '');
+  const refs = JSON.parse(fs.readFileSync(path.join(root, 'tests', 'validation', 'references.json'), 'utf8'));
+  assert.deepStrictEqual(refs.tolerances, JSON.parse(execFileSync('git', ['show', '9f37df7:tests/validation/references.json'], { cwd: root, encoding: 'utf8' })).tolerances);
 });

@@ -7,7 +7,7 @@ const root = path.join(__dirname, '..', '..');
 const R = JSON.parse(fs.readFileSync(path.join(root, 'tests', 'validation', 'references.json'), 'utf8'));
 const L = [];
 L.push('# Owner check sheet: reference data against the original manufacturer pages', '');
-L.push('Status: **NOT DONE.** No entry below has been checked against its page by anyone but the tool that read it.', '');
+L.push('Status: **NOT DONE.** Optional. The owner has said they will not check data by hand, and this is no longer asked of them: `docs/REFERENCE_DATA_AUDIT.md` is the automated, multi-read corroboration. No entry below has been checked against a raw page by anyone but a page-reading tool.', '');
 L.push('Where this sits: the owner check and the second-manufacturer reproduction are separate OPEN criteria in `docs/STAGE5_COMPLETION.md` (0 complete, 1 waived, 7 open; status NOT COMPLETE). Completing this sheet would settle only the owner check. It would not make the data independently verified, and physical accuracy stays NOT DEMONSTRATED. The reviewer item is WAIVED and counts as nothing here.', '');
 L.push('How to use: open each URL yourself. For every row, write what the page shows in the "Page shows" column and mark Match Y or N. If a value differs, **write down the page value and leave the recorded value alone**. Corrections are made later in a separate commit that cites this sheet, so nothing is silently changed. Cells the source leaves blank or as an image placeholder are meant to stay empty ("none").', '');
 L.push('Generated from `tests/validation/references.json` by `node tests/tools/make-owner-check-sheet.js --write`. Do not edit the recorded columns by hand.', '');
