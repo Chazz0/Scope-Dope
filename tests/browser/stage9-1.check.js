@@ -3,6 +3,7 @@
 // fitted ballistic coefficient when the bullet weight changes. Written before the app changes.   Run: node tests/browser/stage9-1.check.js
 const http = require('http'), fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
+const { completeScope } = require('./helpers/scope-setup');
 const ROOT = path.join(__dirname, '..', '..');
 const { execFileSync } = require('child_process');
 const STAGE9 = '9fca2372faaf4a9cba3e048190d659e738821cab';   // the approved Stage 9 page, for before/after comparison
@@ -19,7 +20,7 @@ async function open(seed, w, h, file) {
   const ctx = await browser.newContext({ viewport: { width: w || 400, height: h || 860 }, serviceWorkers: 'block' });
   const page = await ctx.newPage(); page.errors = []; page.on('pageerror', e => page.errors.push(e.message));
   if (seed) await page.addInitScript((sd) => { if (!sessionStorage.getItem('__seeded')) { for (const k of Object.keys(sd)) localStorage.setItem(k, sd[k]); sessionStorage.setItem('__seeded', '1'); } }, seed);
-  await page.goto(base + '/' + (file || 'index.html')); await page.waitForTimeout(150); return { ctx, page };
+  await page.goto(base + '/' + (file || 'index.html')); await page.waitForTimeout(150); if (!seed && !file) await completeScope(page); return { ctx, page };
 }
 const go = async (page, tab) => { await page.click('#tab' + tab); await page.waitForTimeout(80); };
 const type = async (page, id, v) => { await page.fill('#' + id, String(v)); await page.waitForTimeout(60); };
@@ -35,7 +36,7 @@ const chartIds = (page) => page.$$eval('#cAssessList li', els => els.map(e => e.
 
 
 const FULL = (o) => Object.assign({ pname: 'X', preset: 'p308', cname: '', model: 'G1', bc: '0.462', wt: '168', diam: '0.308', v0: '2650', v0src: 'user', vref: '59',
-  vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', temp: '59', press: '', humidity: '50', alt: '0', lat: '', bcsrc: 'user', bcwt: '168' }, o);
+  vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', eUnit: 'TRUE_MOA', eClick: '0.25', eCf: '1', wUnit: 'TRUE_MOA', wClick: '0.25', wCf: '1', temp: '59', press: '', humidity: '50', alt: '0', lat: '', bcsrc: 'user', bcwt: '168' }, o);
 const seedOf = (people, session) => ({ 'scopedope.v2': JSON.stringify({ schema: 1, pi: 0, people, session: session || {} }) });
 const one = (o, s) => seedOf([{ name: 'One', active: 0, profiles: [FULL(o)] }], s);
 const NUMS = ['#elevClicks', '#windClicks', '#sDrop', '#sVel', '#sEn', '#sTime'];

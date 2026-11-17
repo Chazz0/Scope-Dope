@@ -81,7 +81,7 @@ test('elevation and windage are independent: different units, click values and f
   assert.strictEqual(r.elevation.clicks, 82); assert.strictEqual(r.elevation.corrected.unit, 'MIL'); near(r.elevation.corrected.value, 8.16, 1e-12);
   assert.strictEqual(r.windage.clicks, 6); assert.strictEqual(r.windage.corrected.unit, 'TRUE_MOA'); assert.strictEqual(r.windage.trackingCorrectionFactor, 1);
   const s2 = S.scopeAdjustment(corr(8, 'MIL'), corr(1.5, 'TRUE_MOA'),
-    { elevation: ax({ unit: 'MIL', clickValue: 0.1, trackingCorrectionFactor: 1.02 }), windage: ax({ unit: 'TRUE_MOA', clickValue: 0.5, trackingCorrectionFactor: 1.1 }) });
+    { elevation: ax({ unit: 'MIL', clickValue: 0.1, trackingCorrectionFactor: 1.02 }), windage: ax({ unit: 'TRUE_MOA', clickValue: 0.5, trackingCorrectionFactor: 1 }) });
   assert.strictEqual(s2.elevation.clicks, 82); assert.strictEqual(s2.windage.clicks, 3);   // the windage settings did not touch elevation
 });
 
@@ -154,12 +154,19 @@ test('very large and very small corrections stay finite and exact enough', () =>
 // ---- nothing else changed ----
 const show = (f) => execFileSync('git', ['show', 'main:' + f], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 });
 const read = (f) => fs.readFileSync(path.join(root, f), 'utf8');
-test('no existing app behaviour changed: index.html and every calculation, data and test-data file are byte-identical to main', () => {
-  for (const f of ['index.html', 'tests/validation/references.json', 'tests/golden/baseline.json', 'tests/golden/cases.js', 'tests/helpers/load-solver.js', 'tests/helpers/load-assess.js']) assert.strictEqual(read(f), show(f), f);
+const solverBlock = (t) => t.slice(t.indexOf('/*SOLVER_START*/'), t.indexOf('/*SOLVER_END*/') + '/*SOLVER_END*/'.length);
+test('the ballistic solver and every calculation, data and test-data file are byte-identical to main (Stage 16 connects the module to the screens, so index.html outside the solver now differs)', () => {
+  assert.strictEqual(solverBlock(read('index.html')), solverBlock(show('index.html')));
+  for (const f of ['tests/validation/references.json', 'tests/golden/baseline.json', 'tests/golden/cases.js', 'tests/helpers/load-solver.js', 'tests/helpers/load-assess.js']) assert.strictEqual(read(f), show(f), f);
 });
-test('the module is not loaded by the app and the app does not mention it', () => {
-  const h = read('index.html'); assert.ok(!/scope-adjust|ScopeAdjust|trackingCorrectionFactor/.test(h));
-  const m = read('lib/scope-adjust.js'); assert.ok(!/index\.html|document\.|window\.|localStorage|require\(/.test(m.replace(/\/\*[^]*?\*\//g, '').replace(/\/\/.*$/gm, '')), 'module is self-contained');
+test('the module is self-contained (no page, storage or require use)', () => {
+  const m = read('lib/scope-adjust.js'); assert.ok(!/index\.html|document\.|window\.|localStorage|require\(/.test(m.replace(/\/\*[^]*?\*\//g, '').replace(/\/\/.*$/gm, '')));
+});
+test('windage factor must be exactly 1: the elevation factor is never applied to windage, and any other windage factor is refused', () => {
+  for (const v of [0.99, 1.0001, 1.075, 0.5, 2, -1, 0]) { assert.match(problems(() => S.scopeAdjustment(corr(1), corr(1), scope({ trackingCorrectionFactor: 1.075 }, { trackingCorrectionFactor: v }))), /windage trackingCorrectionFactor/); assert.ok(problems(() => S.adjustAxis(corr(1), ax({ trackingCorrectionFactor: v }), 'windage'))); }
+  const r = S.scopeAdjustment(corr(30), corr(10), scope({ trackingCorrectionFactor: 1.075 }, { trackingCorrectionFactor: 1 }));
+  near(r.elevation.corrected.value, 32.25, 1e-12); assert.strictEqual(r.windage.corrected.value, 10); assert.strictEqual(r.windage.trackingCorrectionFactor, 1);
+  S.adjustAxis(corr(1), ax({ trackingCorrectionFactor: 1.075 }), 'elevation');   // other axes keep their factor
 });
 test('the report states the sources, the gaps and that physical accuracy is not demonstrated', () => {
   const d = read('docs/STAGE15_SCOPE_ADJUSTMENT_MODULE.md');

@@ -13,7 +13,7 @@ test('every rule has an allowed status, a rule text, and documented rules cite a
   }
 });
 test('rounding, the factor bounds, the click bounds, the no-default rule and the windage factor use are labelled as application decisions', () => {
-  for (const k of ['rounding', 'cfBounds', 'clickBounds', 'noDefaults', 'windageCfMultiply', 'windageCfProcedure', 'strictUnits', 'shooterMoaTest', 'outputLabelling']) assert.strictEqual(P[k].status, 'APP_DECISION', k);
+  for (const k of ['rounding', 'cfBounds', 'clickBounds', 'noDefaults', 'windageCfExactlyOne', 'windageCfProcedure', 'strictUnits', 'shooterMoaTest', 'outputLabelling']) assert.strictEqual(P[k].status, 'APP_DECISION', k);
 });
 test('the documented rules are the ones the code implements', () => {
   assert.strictEqual(P.cfDefinition.status, 'DOCUMENTED'); assert.strictEqual(P.cfApplication.status, 'DOCUMENTED'); assert.strictEqual(P.testConstants.status, 'DOCUMENTED');

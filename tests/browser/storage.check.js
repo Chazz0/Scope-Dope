@@ -47,7 +47,7 @@ const nudge = async (page) => { await page.evaluate(() => { const e = document.g
 function test(name, fn) { results.push({ name, fn }); }
 
 const oldShape = (profiles, active, session) => JSON.stringify({ active: active || 0, profiles, session: session || { dist: '300' } });
-const rifle = (name, extra) => Object.assign({ pname: name, preset: 'p308', cname: '', model: 'G1', bc: '0.462', wt: '168', diam: '0.308', v0: '2650', vref: '59', vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', temp: '59', press: '', humidity: '50', alt: '0', lat: '' }, extra || {});
+const rifle = (name, extra) => Object.assign({ pname: name, preset: 'p308', cname: '', model: 'G1', bc: '0.462', wt: '168', diam: '0.308', v0: '2650', vref: '59', vsens: '0', zero: '100', h: '1.5', twist: '10', tdir: 'R', click: 'MOA:0.25', eUnit: 'TRUE_MOA', eClick: '0.25', eCf: '1', wUnit: 'TRUE_MOA', wClick: '0.25', wCf: '1', temp: '59', press: '', humidity: '50', alt: '0', lat: '' }, extra || {});
 
 test('fresh start creates one profile and the app writes it to storage at startup', async () => {
   const { ctx, page } = await open();

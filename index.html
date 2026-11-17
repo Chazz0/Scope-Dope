@@ -118,7 +118,8 @@ input[type=text],select{font-family:var(--body)}
 textarea{font:500 16px/1.35 var(--mono); padding:10px 11px; width:100%; min-width:0; resize:vertical; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--ink)}
 textarea:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
 #storeMsg{margin:0 0 10px; padding:10px 12px; border:1px solid var(--warn); border-radius:8px; background:var(--surface); color:var(--warn); font:500 13px/1.4 var(--body)}
-input.bad{border-color:var(--warn)}
+input.bad,input.needs,select.needs{border-color:var(--warn)}
+.subh{font:600 13px/1.3 var(--body); margin:10px 0 2px}
 input:focus-visible,select:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
 .grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
 .grid3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px}
@@ -483,14 +484,22 @@ input[type=range]{height:20px}
             <div class="field"><label for="twist">Twist rate: 1 turn in (inches)</label><input id="twist" type="number" inputmode="decimal" min="5" max="20" step="any" value="10"></div>
             <div class="field"><label for="tdir">Twist direction</label><select id="tdir"><option value="R" selected>Right</option><option value="L">Left</option></select></div>
           </div>
-          <div class="field">
-            <label for="click">Scope click value</label>
-            <select id="click">
-              <option value="MOA:0.125">1/8 MOA</option>
-              <option value="MOA:0.25" selected>1/4 MOA</option>
-              <option value="MOA:0.5">1/2 MOA</option>
-              <option value="MRAD:0.1">0.1 MRAD</option>
-            </select>
+          <div class="scopeset" role="group" aria-labelledby="scopeH">
+            <h3 id="scopeH" class="subh">Scope adjustment</h3>
+            <p class="hint">Nothing here is assumed. Until every setting is entered, clicks are not shown; the calculated corrections still are.</p>
+            <div class="grid2">
+              <div class="field"><label for="eUnit">Elevation unit</label><select id="eUnit"><option value="">Choose&hellip;</option><option value="MIL">MIL (mrad)</option><option value="TRUE_MOA">True MOA (1.047 in at 100 yd)</option><option value="SHOOTER_MOA">Shooter MOA (1 in at 100 yd)</option></select></div>
+              <div class="field"><label for="eClick">Elevation click value (units per click)</label><input id="eClick" type="number" inputmode="decimal" min="0.001" max="10" step="any" placeholder="e.g. 0.1 or 0.25"></div>
+              <div class="field"><label for="wUnit">Windage unit</label><select id="wUnit"><option value="">Choose&hellip;</option><option value="MIL">MIL (mrad)</option><option value="TRUE_MOA">True MOA (1.047 in at 100 yd)</option><option value="SHOOTER_MOA">Shooter MOA (1 in at 100 yd)</option></select></div>
+              <div class="field"><label for="wClick">Windage click value (units per click)</label><input id="wClick" type="number" inputmode="decimal" min="0.001" max="10" step="any" placeholder="e.g. 0.1 or 0.25"></div>
+            </div>
+            <div class="field"><label for="eCf">Applied Ballistics Tracking Correction Factor (elevation)</label><input id="eCf" type="number" inputmode="decimal" min="0.5" max="2" step="any" placeholder="e.g. 1.000"></div>
+            <p class="hint">From a tall-target test: expected shift divided by actual shift. The calculated elevation is multiplied by it. Enter 1.000 only if you want no correction. Allowed 0.5 to 2.</p>
+            <div class="field"><label for="wCf">Windage correction factor (must be 1.000 for now)</label><input id="wCf" type="number" inputmode="decimal" min="1" max="1" step="any" placeholder="1.000"></div>
+            <p class="hint">Applied Ballistics documents a tracking test for elevation only, so only 1.000 is accepted for windage. The elevation factor is never applied to windage. Click values up to 10 are accepted; that is this app's own limit, not an Applied Ballistics or manufacturer value.</p>
+            <p class="hint" id="scopeStatus" role="status"></p>
+            <button type="button" class="btn" id="scopeLegacy" hidden>Fill the units and click values from the old setting</button>
+            <input type="hidden" id="click" value="">
           </div>
           <p class="hint">Scope height is the distance from the center of the bore to the center of the scope tube.</p>
           <p class="hint" id="sgHint"></p>
@@ -517,7 +526,7 @@ input[type=range]{height:20px}
           <p class="sub">Enter how many MOA up you needed to hit at one distance, from a real shot or from another app. Scope Dope adjusts the coefficient or the muzzle velocity to match, then fills in the rest of the card. The value it sets is labelled fitted, not measured: matching one observation can absorb errors in the coefficient, the drag model or the air into it.</p>
           <div class="grid2">
             <div class="field"><label for="fitDist">Distance (yd)</label><input id="fitDist" type="number" inputmode="numeric" min="50" max="1500" step="5" value="500"></div>
-            <div class="field"><label for="fitMoa">Up needed (MOA)</label><input id="fitMoa" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 10.98"></div>
+            <div class="field"><label for="fitMoa">Up needed (true MOA)</label><input id="fitMoa" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 10.98"></div>
           </div>
           <div class="field">
             <label for="fitWhat">Adjust</label>
@@ -761,6 +770,228 @@ function dopeAt(M, inp, rangeYd){
 }
 /*SOLVER_END*/
 
+/*SCOPE_START*/
+// Scope-adjustment module (lib/scope-adjust.js, embedded unchanged; a test checks the copy). It only converts a calculated correction into a scope adjustment.
+const ScopeAdjust = (function(module){
+'use strict';
+/*
+ * Scope-adjustment module (Stage 15). STANDALONE: not connected to the app screens, the saved rifle data or the ballistic solver.
+ *
+ * It takes a ballistic correction that something else calculated (value + unit) and turns it into a scope adjustment: the corrected
+ * angle, the whole clicks to dial, and what those clicks actually dial. It never calculates a trajectory, never reads the solver,
+ * and never changes the ballistic correction it was given.
+ *
+ * Conventions followed (see docs/STAGE15_SCOPE_ADJUSTMENT_MODULE.md for the source of every rule and every gap):
+ *  - [DOCUMENTED] Applied Ballistics Tracking Correction Factor, CF = expected shift / actual shift. The calculated correction is MULTIPLIED by CF
+ *    (Applied Ballistics Quantum and Analytics manuals). Garmin's "Sight Scale Factor" (actual / expected) is NOT used, and its value
+ *    must not be entered here.
+ *  - 1.000 is a valid CF only when the caller states it. There is no default for any scope setting.
+ *  - Units are exact: MIL, TRUE_MOA, SHOOTER_MOA. The bare word "MOA" is rejected because it is ambiguous. No function converts units
+ *    implicitly; a correction whose unit differs from the turret's unit is an error unless the caller converts it first, on purpose.
+ *
+ * PROVENANCE (exported) labels every rule DOCUMENTED, DOCUMENTED_PARTLY, STANDARD or APP_DECISION. Rounding, the factor and click bounds,
+ * the no-default rule and the windage factor's use are application decisions, not Applied Ballistics behaviour.
+ *
+ * Physical accuracy of any ballistic correction is NOT DEMONSTRATED. This module only does unit and turret arithmetic.
+ */
+
+// Angle of one unit, in radians per unit.
+//  MIL         1 milliradian
+//  TRUE_MOA    1/60 degree (about 1.04720 in at 100 yd)
+//  SHOOTER_MOA 1 inch at 100 yd (Applied Ballistics "IPHY", described in its Analytics manual as "Shooters MOA"), exactly 1/3600 rad
+const RAD_PER_UNIT = Object.freeze({
+  MIL: 1e-3,
+  TRUE_MOA: Math.PI / 10800,
+  SHOOTER_MOA: 1 / 3600
+});
+const UNITS = Object.freeze(Object.keys(RAD_PER_UNIT));
+
+// APP_DECISION (see PROVENANCE.cfBounds, clickBounds): application validation limits, NOT Applied Ballistics specifications. No Applied Ballistics document read gives a valid range.
+const LIMITS = Object.freeze({ clickMax: 10, cfMin: 0.5, cfMax: 2 });
+
+// Applied Ballistics Quantum manual, section 9.0: constant for "expected POI shift = dialed x range x constant" (shift in inches).
+const AB_TEST_CONSTANT = Object.freeze({
+  yd: Object.freeze({ TRUE_MOA: 0.01047, MIL: 0.03599 }),
+  m: Object.freeze({ TRUE_MOA: 0.01145, MIL: 0.03936 })
+});
+// The test itself asks for at least 30 MOA or 10 MIL of elevation.
+const AB_TEST_MIN_DIAL = Object.freeze({ TRUE_MOA: 30, MIL: 10 });
+
+
+// ---- Provenance: which rules come from Applied Ballistics documentation and which are this application's own decisions ----
+// DOCUMENTED         stated in an Applied Ballistics document (reference in `refs`)
+// DOCUMENTED_PARTLY  Applied Ballistics documents part of it; `note` says which part and what is missing
+// STANDARD           a standard definition that the Applied Ballistics text names but does not state
+// APP_DECISION       this application's own rule. Applied Ballistics documents say nothing about it, or this goes beyond them.
+// Reference keys: Q24 = AB Quantum User Manual (2024 file), Q3 = AB Quantum 3.0 User Guide (2025 file), AN = AB Analytics User Manual (Build 068),
+// AM = AB Mobile User Guide, version 07/2018 (2.2), GA = Garmin Applied Ballistics glossary (secondary source, not followed).
+const PROVENANCE = Object.freeze({
+  cfDefinition:        { status: 'DOCUMENTED', rule: 'CF = expected POI shift / actual POI shift', refs: ['Q24 s9.0 p25', 'Q3 s9.0 p29', 'AM Tall Target Test', 'AN s3.2.4 p12 (dialed / measured, 30/29)'] },
+  cfApplication:       { status: 'DOCUMENTED', rule: 'the raw ballistic prediction is multiplied by CF (drop is scaled by it)', refs: ['Q24 s9.0 p25', 'Q3 s9.0 p29', 'AN s3.2.4 p12'] },
+  testConstants:       { status: 'DOCUMENTED', rule: 'constants 0.01047, 0.03599 (yd) and 0.01145, 0.03936 (m); expected = dialed x range x constant', refs: ['Q24 s9.0 p25'] },
+  testMinimumDial:     { status: 'DOCUMENTED', rule: 'dial at least 30 MOA or 10 MIL for the tall-target test', refs: ['Q24 s9.0 p25', 'Q3 s9.0 p29', 'AN s3.2.4 p12'] },
+  unitNames:           { status: 'DOCUMENTED', rule: 'scope units are MILS, MOA (True MOA) or IPHY (Inches Per Hundred Yards, "Shooters MOA")', refs: ['AN s7.0 p25', 'AM Sight Data > Elevation Unit'] },
+  shooterMoaIsIphy:    { status: 'DOCUMENTED', rule: 'shooter MOA = inches per hundred yards (1 in at 100 yd)', refs: ['AN s7.0 p25', 'AM Sight Data > Elevation Unit'] },
+  trueMoaAngle:        { status: 'STANDARD', rule: 'true MOA = 1/60 degree; the Applied Ballistics text says "True MOA" but does not define it', refs: [] },
+  milAngle:            { status: 'STANDARD', rule: 'MIL = 1/1000 radian; the Applied Ballistics text says MILS but does not define it', refs: [] },
+  separateAxisUnits:   { status: 'DOCUMENTED', rule: 'the elevation and windage knobs each have their own unit', refs: ['AM Sight Data > Elevation Unit, Windage Unit'] },
+  separateTurretGrad:  { status: 'DOCUMENTED_PARTLY', rule: 'elevation and windage turret graduations are separate settings', refs: ['AM Sight Data > Elevation Turret Grad, Windage Turret Grad'], note: 'Only the 2018 AB Mobile guide lists them. The Quantum manuals and the Analytics manual do not cover click values.' },
+  elevationCf:         { status: 'DOCUMENTED', rule: 'an elevation correction factor exists and is found with the tall-target test', refs: ['AM Sight Data > Elevation Correction Factor', 'Q24 s9.0 p25'] },
+  windageCfField:      { status: 'DOCUMENTED_PARTLY', rule: 'a separate windage correction factor input exists', refs: ['AM Sight Data > Windage Correction Factor'], note: 'The field is listed with no description. No manual read gives a windage measurement procedure; Analytics states that the program scales the calculated drop; Quantum applies CF to the raw ballistic prediction and its example is elevation only.' },
+  windageCfExactlyOne: { status: 'APP_DECISION', rule: 'the windage correction factor must be exactly 1 (stated, never assumed) until a horizontal tracking test is designed and validated', refs: [], note: 'Owner decision, Stage 15 review. Applied Ballistics documents a tracking test for elevation only.' },
+  windageCfProcedure:  { status: 'APP_DECISION', rule: 'the module does not measure a windage factor and never applies the elevation factor to windage', refs: [] },
+  noDefaults:          { status: 'APP_DECISION', rule: 'every scope setting is required; CF of 1 is accepted only when stated', refs: [], note: 'AB Mobile 2.2 suggests entering 1.0 when the elevation factor is unknown. This module is stricter by design.' },
+  cfBounds:            { status: 'APP_DECISION', rule: 'CF must be from 0.5 to 2.0', refs: [], note: 'Application validation limit, not an Applied Ballistics specification. No range is stated in any Applied Ballistics document read.' },
+  clickBounds:         { status: 'APP_DECISION', rule: 'click value must be above 0 and at most 10 units', refs: [], note: 'Application validation limit, not an Applied Ballistics specification (owner kept the limit of 10 at the Stage 15 review). No range is stated in any Applied Ballistics document read.' },
+  rounding:            { status: 'APP_DECISION', rule: 'whole clicks, nearest, halves away from zero', refs: [], note: 'No Applied Ballistics document read states a rounding rule.' },
+  strictUnits:         { status: 'APP_DECISION', rule: 'bare "MOA" is rejected; units are never mixed or converted implicitly', refs: [] },
+  shooterMoaTest:      { status: 'APP_DECISION', rule: 'the tracking-test helper rejects SHOOTER_MOA', refs: [], note: 'The published constants are for MOA and MIL only.' },
+  outputLabelling:     { status: 'APP_DECISION', rule: 'ballistic correction and scope adjustment are separate tagged, frozen objects', refs: [] }
+});
+
+class ScopeAdjustError extends Error {
+  constructor(problems) {
+    super(problems.join('; '));
+    this.name = 'ScopeAdjustError';
+    this.problems = problems;
+  }
+}
+
+const isNum = (x) => typeof x === 'number' && Number.isFinite(x);
+const unitProblem = (u, where) => {
+  if (u === 'MOA' || (typeof u === 'string' && /^(moa|mrad|mil|mils|true ?moa|shooter ?moa|smoa|iphy)$/i.test(u) && !UNITS.includes(u)))
+    return where + ' unit "' + u + '" is not an exact unit. Use one of ' + UNITS.join(', ') + ' (plain "MOA" is ambiguous: true MOA and shooter MOA differ by about 4.7%).';
+  if (!UNITS.includes(u)) return where + ' unit must be one of ' + UNITS.join(', ') + (u === undefined ? ' (missing)' : ' (got ' + JSON.stringify(u) + ')');
+  return null;
+};
+
+// ---- unit conversion (explicit only) ----
+function convertAngle(value, from, to) {
+  const p = [];
+  if (!isNum(value)) p.push('value must be a finite number');
+  const a = unitProblem(from, 'from'), b = unitProblem(to, 'to');
+  if (a) p.push(a); if (b) p.push(b);
+  if (p.length) throw new ScopeAdjustError(p);
+  return value * RAD_PER_UNIT[from] / RAD_PER_UNIT[to];
+}
+
+// A ballistic correction as produced by a calculation. The "kind" tag keeps it apart from a scope adjustment, and a correction cannot
+// be created without an exact unit.
+function ballisticCorrection(value, unit) {
+  const p = [];
+  if (!isNum(value)) p.push('ballistic correction value must be a finite number');
+  const u = unitProblem(unit, 'ballistic correction'); if (u) p.push(u);
+  if (p.length) throw new ScopeAdjustError(p);
+  return Object.freeze({ kind: 'ballistic-correction', value, unit });
+}
+
+// ---- scope configuration ----
+// scope = { elevation: { unit, clickValue, trackingCorrectionFactor }, windage: { unit, clickValue, trackingCorrectionFactor } }
+// Every field is required, for both axes. Nothing is defaulted.
+function validateScopeAxis(axis, name) {
+  const p = [];
+  if (axis === null || typeof axis !== 'object' || Array.isArray(axis)) return [name + ' settings are missing'];
+  const u = unitProblem(axis.unit, name); if (u) p.push(u);
+  if (!isNum(axis.clickValue)) p.push(name + ' clickValue is missing or not a finite number');
+  else if (!(axis.clickValue > 0)) p.push(name + ' clickValue must be greater than 0');
+  else if (axis.clickValue > LIMITS.clickMax) p.push(name + ' clickValue ' + axis.clickValue + ' is above the limit of ' + LIMITS.clickMax + ' ' + (UNITS.includes(axis.unit) ? axis.unit : 'units') + ' per click');
+  if (!isNum(axis.trackingCorrectionFactor)) p.push(name + ' trackingCorrectionFactor is missing or not a finite number (enter 1 explicitly if the scope tracks true)');
+  else if (axis.trackingCorrectionFactor < LIMITS.cfMin || axis.trackingCorrectionFactor > LIMITS.cfMax)
+    p.push(name + ' trackingCorrectionFactor ' + axis.trackingCorrectionFactor + ' is outside ' + LIMITS.cfMin + ' to ' + LIMITS.cfMax);
+  return p;
+}
+function validateScopeConfig(scope) {
+  if (scope === null || typeof scope !== 'object' || Array.isArray(scope)) return ['scope settings are missing'];
+  const w = validateScopeAxis(scope.windage, 'windage');
+  // APP_DECISION (PROVENANCE.windageCfExactlyOne): no documented windage tracking test exists, so a windage factor other than 1 is refused.
+  if (scope.windage && typeof scope.windage === 'object' && isNum(scope.windage.trackingCorrectionFactor) && scope.windage.trackingCorrectionFactor !== 1 && !w.some(x => /trackingCorrectionFactor/.test(x)))
+    w.push('windage trackingCorrectionFactor must be exactly 1 for now (got ' + scope.windage.trackingCorrectionFactor + '): Applied Ballistics documents a tracking test for elevation only, and no horizontal test has been validated');
+  return validateScopeAxis(scope.elevation, 'elevation').concat(w);
+}
+
+// APP_DECISION (PROVENANCE.rounding): nearest whole click, halves away from zero. No Applied Ballistics document read states a rounding rule.
+const roundClicks = (x) => (x < 0 ? -Math.round(-x) : Math.round(x)) + 0;
+
+// Scope adjustment for ONE axis. The input is a ballistic correction in the same unit as that axis's turret.
+function adjustAxis(correction, axis, name) {
+  const p = [];
+  if (correction === null || typeof correction !== 'object' || correction.kind !== 'ballistic-correction')
+    p.push(name + ' input must be a ballistic correction made with ballisticCorrection(value, unit)');
+  else {
+    if (!isNum(correction.value)) p.push(name + ' ballistic correction value must be a finite number');
+    const cu = unitProblem(correction.unit, name + ' ballistic correction'); if (cu) p.push(cu);
+  }
+  const ap = validateScopeAxis(axis, name); p.push(...ap);
+  if (name === 'windage' && axis && isNum(axis.trackingCorrectionFactor) && axis.trackingCorrectionFactor !== 1 && !ap.some(x => /trackingCorrectionFactor/.test(x)))
+    p.push('windage trackingCorrectionFactor must be exactly 1 for now (got ' + axis.trackingCorrectionFactor + ')');
+  if (!p.length && correction.unit !== axis.unit)
+    p.push(name + ' ballistic correction is in ' + correction.unit + ' but the turret is ' + axis.unit + '. Units are never mixed implicitly: convert on purpose with convertAngle().');
+  if (p.length) throw new ScopeAdjustError(p);
+  const corrected = correction.value * axis.trackingCorrectionFactor;
+  const exact = corrected / axis.clickValue;
+  const clicks = roundClicks(exact);
+  return Object.freeze({
+    kind: 'scope-adjustment',
+    axis: name,
+    calculated: Object.freeze({ value: correction.value, unit: correction.unit }),   // the ballistic correction, unchanged
+    trackingCorrectionFactor: axis.trackingCorrectionFactor,
+    corrected: Object.freeze({ value: corrected, unit: axis.unit }),                 // calculated x CF
+    clickValue: axis.clickValue,
+    clicksExact: exact,
+    clicks: clicks,                                                                   // whole clicks to dial
+    dialed: Object.freeze({ value: clicks * axis.clickValue, unit: axis.unit }),      // what those clicks actually dial
+    remainder: Object.freeze({ value: corrected - clicks * axis.clickValue, unit: axis.unit })   // left over after rounding
+  });
+}
+
+// Elevation and windage together. Each axis has its own unit, click value and tracking factor.
+function scopeAdjustment(elevationCorrection, windageCorrection, scope) {
+  const bad = validateScopeConfig(scope);
+  if (bad.length) throw new ScopeAdjustError(bad);
+  return Object.freeze({
+    elevation: adjustAxis(elevationCorrection, scope.elevation, 'elevation'),
+    windage: adjustAxis(windageCorrection, scope.windage, 'windage')
+  });
+}
+
+// ---- Applied Ballistics tracking test (Quantum manual section 9.0 and Analytics manual section 3.2.4) ----
+// Quantum form: CF = expected shift / actual shift, expected = dialed x range x constant. Shift is in inches; range is in yd or m.
+function trackingCorrectionFactorFromTest(t) {
+  const p = [];
+  if (t === null || typeof t !== 'object') throw new ScopeAdjustError(['test data is missing']);
+  const table = AB_TEST_CONSTANT[t.rangeUnit];
+  if (!table) p.push('rangeUnit must be "yd" or "m"');
+  if (t.unit === 'SHOOTER_MOA') p.push('the Applied Ballistics tracking test constants are published for MOA and MIL only; SHOOTER_MOA is not supported');
+  else { const u = unitProblem(t.unit, 'test'); if (u) p.push(u); else if (!table || table[t.unit] === undefined) { if (table) p.push('test unit must be TRUE_MOA or MIL'); } }
+  if (!isNum(t.dialed) || !(t.dialed > 0)) p.push('dialed must be a number greater than 0');
+  else if (AB_TEST_MIN_DIAL[t.unit] !== undefined && t.dialed < AB_TEST_MIN_DIAL[t.unit]) p.push('dialed ' + t.dialed + ' is below the ' + AB_TEST_MIN_DIAL[t.unit] + ' ' + t.unit + ' the test calls for');
+  if (!isNum(t.range) || !(t.range > 0)) p.push('range must be a number greater than 0');
+  if (!isNum(t.actualShiftIn) || !(t.actualShiftIn > 0)) p.push('actualShiftIn (measured shift in inches) must be a number greater than 0');
+  if (p.length) throw new ScopeAdjustError(p);
+  const expectedShiftIn = t.dialed * t.range * table[t.unit];
+  const cf = expectedShiftIn / t.actualShiftIn;
+  if (cf < LIMITS.cfMin || cf > LIMITS.cfMax) throw new ScopeAdjustError(['the test gives a factor of ' + cf.toFixed(4) + ', outside ' + LIMITS.cfMin + ' to ' + LIMITS.cfMax + '. Check the measurement.']);
+  return Object.freeze({ expectedShiftIn, actualShiftIn: t.actualShiftIn, trackingCorrectionFactor: cf });
+}
+// Analytics manual form of the same quantity: dialed amount / measured movement, both in the same unit (30 / 29 = 1.035).
+function trackingCorrectionFactorFromMovement(dialed, measured) {
+  const p = [];
+  if (!isNum(dialed) || !(dialed > 0)) p.push('dialed must be a number greater than 0');
+  if (!isNum(measured) || !(measured > 0)) p.push('measured movement must be a number greater than 0');
+  if (p.length) throw new ScopeAdjustError(p);
+  const cf = dialed / measured;
+  if (cf < LIMITS.cfMin || cf > LIMITS.cfMax) throw new ScopeAdjustError(['the result ' + cf.toFixed(4) + ' is outside ' + LIMITS.cfMin + ' to ' + LIMITS.cfMax + '. Check the measurement.']);
+  return cf;
+}
+
+module.exports = Object.freeze({
+  UNITS, RAD_PER_UNIT, LIMITS, PROVENANCE, AB_TEST_CONSTANT, AB_TEST_MIN_DIAL, ScopeAdjustError,
+  convertAngle, ballisticCorrection, validateScopeConfig, adjustAxis, scopeAdjustment,
+  trackingCorrectionFactorFromTest, trackingCorrectionFactorFromMovement
+});
+return module.exports;
+})({ exports: {} });
+/*SCOPE_END*/
 /*ASSESS_START*/
 // Safety and transparency (Stage 6). Advisory text only. Nothing here feeds the calculation, and it never calls a result
 // accurate or verified. VALIDATED is the span of conditions the reference comparisons covered (manufacturer
@@ -843,7 +1074,7 @@ function assessResult(inp, ctx){
     const v = Number(t);
     return isFinite(v) && v >= RANGES.wt[0] && v <= RANGES.wt[1];
   }
-  const PKEYS = ['pname','preset','cname','model','bc','wt','diam','v0','v0src','bcsrc','bcwt','vref','vsens','zero','h','twist','tdir','click','temp','press','humidity','alt','lat'];
+  const PKEYS = ['pname','preset','cname','model','bc','wt','diam','v0','v0src','bcsrc','bcwt','vref','vsens','zero','h','twist','tdir','click','eUnit','eClick','eCf','wUnit','wClick','wCf','temp','press','humidity','alt','lat'];
   const CHIP_DISTS = [100,200,300,400,500,600,800,1000];
   const CARD = ['N','NE','E','SE','S','SW','W','NW'];
 
@@ -854,7 +1085,7 @@ function assessResult(inp, ctx){
   function profileDefaults(pid){
     const p = PRESETS.find(x => x.id === pid) || PRESETS[4];
     return { pname:'My rifle', preset:p.id, cname:'', model:'G1', bc:String(p.bc), wt:String(p.wt), diam:String(p.d), v0:String(p.v0), v0src:'factory', bcsrc:'factory', bcwt:String(p.wt),
-      vref:'59', vsens:'0', zero:'100', h:'1.5', twist:String(p.tw), tdir:'R', click:'MOA:0.25', temp:'59', press:'', humidity:'50', alt:'0', lat:'' };
+      vref:'59', vsens:'0', zero:'100', h:'1.5', twist:String(p.tw), tdir:'R', click:'', eUnit:'', eClick:'', eCf:'', wUnit:'', wClick:'', wCf:'', temp:'59', press:'', humidity:'50', alt:'0', lat:'' };
   }
   const sessionDefaults = () => ({ dist:'400', wind:'10', windHr:'3', angle:'0', az:'0', cStart:'100', cEnd:'1000', cStep:'50' });
 
@@ -1065,9 +1296,10 @@ function assessResult(inp, ctx){
     if (i === store.active) p = all[i];
     const base = p.pname || ('Rifle ' + (i + 1));
     const dup = all.some((q, j) => j !== i && (q.pname || ('Rifle ' + (j + 1))) === base);
-    if (!dup) return base;
+    const mark = scopeFrom(k => p[k]).complete ? '' : ' (scope not set)';
+    if (!dup) return base + mark;
     const pr = PRESETS.find(x => x.id === p.preset);
-    return base + ' · ' + (pr ? pr.name : (p.cname || 'Custom load')) + ' ' + (p.wt || '?') + ' gr';
+    return base + ' · ' + (pr ? pr.name : (p.cname || 'Custom load')) + ' ' + (p.wt || '?') + ' gr' + mark;
   }
   function rebuildProfiles(){
     const s = $('profSel'); s.innerHTML = '';
@@ -1105,6 +1337,53 @@ function assessResult(inp, ctx){
   }
   const FIX_LINE = 'Fix the highlighted fields to see this.';
 
+  /* Scope settings (Stage 16). Nothing is defaulted. A rifle with any scope setting missing or invalid is "incomplete", and shows calculated
+     corrections but no clicks. The legacy single "click" value of an older saved rifle is kept as saved and never converted on its own. */
+  const UNIT_LABEL = { MIL:'mil', TRUE_MOA:'true MOA', SHOOTER_MOA:'shooter MOA' };
+  const SCOPE_FIELDS = { eUnit:['elevation','unit','Elevation unit'], eClick:['elevation','clickValue','Elevation click value'], eCf:['elevation','trackingCorrectionFactor','Elevation tracking correction factor'],
+    wUnit:['windage','unit','Windage unit'], wClick:['windage','clickValue','Windage click value'], wCf:['windage','trackingCorrectionFactor','Windage correction factor'] };
+  function scopeFrom(get){
+    const n = (k) => { const raw = String(get(k) == null ? '' : get(k)).trim(); return raw === '' ? null : (NUM_RE.test(raw) ? Number(raw) : NaN); };
+    const u = (k) => { const raw = String(get(k) == null ? '' : get(k)); return raw === '' ? null : raw; };
+    const cfg = { elevation: { unit: u('eUnit'), clickValue: n('eClick'), trackingCorrectionFactor: n('eCf') },
+                  windage:   { unit: u('wUnit'), clickValue: n('wClick'), trackingCorrectionFactor: n('wCf') } };
+    const raw = ScopeAdjust.validateScopeConfig(cfg), problems = [];
+    for (const id of Object.keys(SCOPE_FIELDS)){
+      const [axis, field, label] = SCOPE_FIELDS[id];
+      const msg = raw.find(x => x.indexOf(axis + ' ' + field) === 0);
+      if (!msg) continue;
+      const blank = cfg[axis][field] === null;
+      problems.push({ id: id, blank: blank, text: blank ? label + ' is not set.' : label + ': ' + msg.replace(/^\w+ \w+ /, '') });
+    }
+    return { cfg: cfg, problems: problems, complete: raw.length === 0 };
+  }
+  function readScope(){
+    const sc = scopeFrom(k => $(k).value);
+    Object.keys(SCOPE_FIELDS).forEach(id => {
+      const p = sc.problems.find(x => x.id === id);
+      $(id).classList.toggle('needs', !!p);
+      $(id).setAttribute('aria-invalid', p && !p.blank ? 'true' : 'false');
+    });
+    return sc;
+  }
+  function legacyClick(str){
+    const m = /^(MOA|MRAD):(\d*\.?\d+)$/.exec(String(str || ''));
+    return m ? { unit: m[1] === 'MOA' ? 'TRUE_MOA' : 'MIL', size: m[2], text: m[2] + ' ' + (m[1] === 'MOA' ? 'MOA' : 'MRAD') } : null;
+  }
+  // The calculated correction (from the solver, unchanged) in a scope unit, then the scope adjustment from it. Two separate objects.
+  function scopeFor(d, inp){
+    if (!inp.scope || !inp.scope.complete) return null;
+    const c = inp.scope.cfg;
+    const pick = (mil, moa, unit) => unit === 'MIL' ? mil : unit === 'TRUE_MOA' ? moa : ScopeAdjust.convertAngle(mil, 'MIL', unit);
+    try {
+      return {
+        e: ScopeAdjust.adjustAxis(ScopeAdjust.ballisticCorrection(pick(d.elevMil, d.elevMoa, c.elevation.unit), c.elevation.unit), c.elevation, 'elevation'),
+        w: ScopeAdjust.adjustAxis(ScopeAdjust.ballisticCorrection(pick(d.windMil, d.windMoa, c.windage.unit), c.windage.unit), c.windage, 'windage')
+      };
+    } catch (e) { return null; }
+  }
+  const unitDec = (u) => u === 'MIL' ? 2 : 1;
+
   function bcPending(){
     const nw = parseFloat($('wt').value), bw = parseFloat($('bcwt').value), bc = $('bc').value.trim();
     return ($('bcsrc').value !== 'factory' && isFinite(nw) && isFinite(bw) && isFinite(parseFloat(bc)) && nw !== bw) ? { nw: nw, bw: bw, bc: bc } : null;
@@ -1134,7 +1413,7 @@ function assessResult(inp, ctx){
     };
     const pressInHg = opt('press', PRESS_RANGE[0], PRESS_RANGE[1]);   // station pressure: 15 inHg covers the top of the 15,000 ft altitude limit
     const latDeg = opt('lat', -90, 90);
-    const parts = $('click').value.split(':');
+    const scope = readScope();
     const spd = num('wind');
     const rad = windHr * Math.PI / 6;
     const cross = Math.round(spd * Math.sin(rad) * 1000) / 1000;
@@ -1154,7 +1433,7 @@ function assessResult(inp, ctx){
       v0nom: v0nom, v0src: $('v0src').value, bcsrc: $('bcsrc').value, v0: v0, bc: num('bc'), wt: num('wt'), h: num('h'), zero: num('zero'),
       diam: num('diam'), twist: num('twist'), model: $('model').value === 'G7' ? 'G7' : 'G1',
       twistDir: $('tdir').value === 'L' ? 'L' : 'R',
-      click: { unit: parts[0], size: parseFloat(parts[1]) }, problems: problems,
+      scope: scope, problems: problems,
       bad: 0
     };
     // A typed, fitted or saved coefficient belongs to the weight it was set for. A different weight needs your confirmation.
@@ -1182,15 +1461,6 @@ function assessResult(inp, ctx){
     if (cache.key !== key){ cache = { key, M: buildModel(inp, maxYd) }; }
     return cache.M;
   }
-  function clicksFor(d, inp){
-    const clk = inp.click;
-    const mil = clk.unit !== 'MOA';
-    return {
-      elev: Math.round((mil ? d.elevMil : d.elevMoa) / clk.size),
-      wind: Math.round((mil ? d.windMil : d.windMoa) / clk.size)
-    };
-  }
-
   function renderPanel(M, inp){
     const d = inp.bad ? null : dopeAt(M, inp, inp.distYd);
     const notes = [];
@@ -1206,25 +1476,40 @@ function assessResult(inp, ctx){
       ['elevDir','windDir'].forEach(i => { $(i).textContent = 'No solution'; $(i).className = 'dir off'; });
       notes.push('The bullet does not reach this distance with these inputs. Check the velocity and coefficient.');
     } else {
-      const c = clicksFor(d, inp);
-      const mil = inp.click.unit !== 'MOA';
-      const dec = mil ? 2 : 1, un = mil ? 'mil' : 'MOA';
-      $('elevClicks').textContent = fx(Math.abs(mil ? d.elevMil : d.elevMoa), dec);
-      $('windClicks').textContent = fx(Math.abs(mil ? d.windMil : d.windMoa), dec);
-      document.querySelectorAll('.dial-unit').forEach(u => { u.textContent = un; });
-      const ed = $('elevDir');
-      if (c.elev === 0){ ed.textContent = 'On zero'; ed.className = 'dir off'; }
-      else { ed.textContent = c.elev > 0 ? '↑ Up' : '↓ Down'; ed.className = 'dir'; }
-      const wd = $('windDir');
-      if (c.wind === 0){ wd.textContent = 'No wind'; wd.className = 'dir off'; }
-      else { wd.textContent = c.wind < 0 ? '← Left' : '→ Right'; wd.className = 'dir'; }
-      let es = Math.abs(c.elev) + ' clicks';
-      if (inp.latDeg != null && Math.abs(d.corVIn) >= 0.05) es += ', Coriolis ' + fx(-d.corVIn, 1) + ' in';
-      $('elevSub').textContent = es;
-      let ws = Math.abs(c.wind) + ' clicks';
-      if (d.spinIn >= 0.05) ws += ', spin ' + fx(d.spinIn, 1) + ' in';
-      if (inp.latDeg != null && Math.abs(d.corHIn) >= 0.05) ws += ', Coriolis ' + fx(d.corHIn, 1) + ' in';
-      $('windSub').textContent = ws;
+      const sc = scopeFor(d, inp);
+      const units = document.querySelectorAll('.dial-unit');
+      const ed = $('elevDir'), wd = $('windDir');
+      if (sc){
+        const ue = sc.e.corrected.unit, uw = sc.w.corrected.unit;
+        $('elevClicks').textContent = fx(Math.abs(sc.e.corrected.value), unitDec(ue));
+        $('windClicks').textContent = fx(Math.abs(sc.w.corrected.value), unitDec(uw));
+        units[0].textContent = UNIT_LABEL[ue]; units[1].textContent = UNIT_LABEL[uw];
+        if (sc.e.clicks === 0){ ed.textContent = 'On zero'; ed.className = 'dir off'; }
+        else { ed.textContent = sc.e.clicks > 0 ? '↑ Up' : '↓ Down'; ed.className = 'dir'; }
+        if (sc.w.clicks === 0){ wd.textContent = 'No wind'; wd.className = 'dir off'; }
+        else { wd.textContent = sc.w.clicks < 0 ? '← Left' : '→ Right'; wd.className = 'dir'; }
+        let es = Math.abs(sc.e.clicks) + ' clicks · calculated ' + fx(Math.abs(sc.e.calculated.value), unitDec(ue)) + ' ' + UNIT_LABEL[ue];
+        if (sc.e.trackingCorrectionFactor !== 1) es += ' × tracking ' + sc.e.trackingCorrectionFactor;
+        if (inp.latDeg != null && Math.abs(d.corVIn) >= 0.05) es += ', Coriolis ' + fx(-d.corVIn, 1) + ' in';
+        $('elevSub').textContent = es;
+        let ws = Math.abs(sc.w.clicks) + ' clicks · calculated ' + fx(Math.abs(sc.w.calculated.value), unitDec(uw)) + ' ' + UNIT_LABEL[uw];
+        if (d.spinIn >= 0.05) ws += ', spin ' + fx(d.spinIn, 1) + ' in';
+        if (inp.latDeg != null && Math.abs(d.corHIn) >= 0.05) ws += ', Coriolis ' + fx(d.corHIn, 1) + ' in';
+        $('windSub').textContent = ws;
+      } else {
+        // Scope settings missing or invalid: show the calculated correction only, clearly not a scope adjustment, and no clicks.
+        $('elevClicks').textContent = '—'; $('windClicks').textContent = '—';
+        units[0].textContent = 'scope not set'; units[1].textContent = 'scope not set';
+        ed.textContent = 'Set scope'; ed.className = 'dir off'; wd.textContent = 'Set scope'; wd.className = 'dir off';
+        let es = 'Calculated ' + fx(Math.abs(d.elevMil), 2) + ' mil, ' + fx(Math.abs(d.elevMoa), 1) + ' true MOA';
+        if (inp.latDeg != null && Math.abs(d.corVIn) >= 0.05) es += ', Coriolis ' + fx(-d.corVIn, 1) + ' in';
+        $('elevSub').textContent = es;
+        let ws = 'Calculated ' + fx(Math.abs(d.windMil), 2) + ' mil, ' + fx(Math.abs(d.windMoa), 1) + ' true MOA';
+        if (d.spinIn >= 0.05) ws += ', spin ' + fx(d.spinIn, 1) + ' in';
+        if (inp.latDeg != null && Math.abs(d.corHIn) >= 0.05) ws += ', Coriolis ' + fx(d.corHIn, 1) + ' in';
+        $('windSub').textContent = ws;
+        notes.push('Scope settings are incomplete for this rifle, so no clicks are shown. The calculated corrections above are not scope adjustments. Open the Rifle tab and enter the elevation and windage settings.');
+      }
       $('sDrop').textContent = fx(d.dropIn, 1);
       $('sVel').textContent = fint(d.vFps);
       $('sEn').textContent = fint(d.energy);
@@ -1314,7 +1599,6 @@ function assessResult(inp, ctx){
     return { a: v.cStart, b: v.cEnd, st: v.cStep, problems: problems };
   }
   function renderTable(M, inp){
-    const mil = inp.click.unit !== 'MOA';
     const rg = readRange();
     if (rg.problems.length){
       lastRows = []; $('tbody').innerHTML = '';
@@ -1325,7 +1609,12 @@ function assessResult(inp, ctx){
     const msgs = [];
     let n = Math.floor((b - a) / st) + 1;
     if (n > 120){ n = 120; msgs.push('Showing the first 120 rows. Raise Every to see further.'); }
-    const cols = ['Yd','Drop in','Up MOA','Up mil','Up clicks','Wind MOA','Wind clicks'].concat(['fps','ft·lb','Time s','Mach']);
+    const scp = inp.scope.complete ? inp.scope.cfg : null;
+    // Calculated corrections (from the solver) are labelled "Calc"; scope adjustments (calculated x tracking factor, in scope units) are labelled "Dial".
+    const cols = ['Yd','Drop in','Calc up mil','Calc up true MOA','Calc wind mil','Calc wind true MOA']
+      .concat(scp ? ['Dial up (' + UNIT_LABEL[scp.elevation.unit] + ')','Up clicks','Dial wind (' + UNIT_LABEL[scp.windage.unit] + ')','Wind clicks'] : [])
+      .concat(['fps','ft·lb','Time s','Mach']);
+    if (!scp) msgs.push('Scope settings are incomplete for this rifle, so the range card shows calculated corrections only and no clicks. Enter them on the Rifle tab.');
     $('thead').innerHTML = '<tr>' + cols.map(c => '<th>' + c + '</th>').join('') + '</tr>';
     const dists = [inp.distYd];
     for (let i = 0; i < n; i++){ const y = a + i * st; if (y !== inp.distYd) dists.push(y); }
@@ -1335,9 +1624,12 @@ function assessResult(inp, ctx){
       const d = dopeAt(M, inp, yd);
       const tag = now ? '<span class="tag">Now</span>' : '';
       if (!d) return '<tr' + (now ? ' class="now"' : '') + '><td>' + fx(yd, 0) + tag + '</td><td colspan="' + (cols.length - 1) + '">out of range</td></tr>';
-      const c = clicksFor(d, inp);
-      const wl = c.wind === 0 ? '0' : Math.abs(c.wind) + ' ' + (c.wind < 0 ? 'L' : 'R');
-      const row = [fx(yd, 0), fx(d.dropIn, 1), fx(d.elevMoa, 1), fx(d.elevMil, 2), fx(c.elev, 0), fx(d.windMoa, 1), wl];
+      const row = [fx(yd, 0), fx(d.dropIn, 1), fx(d.elevMil, 2), fx(d.elevMoa, 1), fx(d.windMil, 2), fx(d.windMoa, 1)];
+      if (scp){
+        const sc = scopeFor(d, inp);
+        const wl = !sc ? '—' : sc.w.clicks === 0 ? '0' : Math.abs(sc.w.clicks) + ' ' + (sc.w.clicks < 0 ? 'L' : 'R');
+        row.push(sc ? fx(sc.e.corrected.value, unitDec(sc.e.corrected.unit)) : '—', sc ? fx(sc.e.clicks, 0) : '—', sc ? fx(sc.w.corrected.value, unitDec(sc.w.corrected.unit)) : '—', wl);
+      }
       row.push(fint(d.vFps), fint(d.energy), d.t.toFixed(2), d.mach.toFixed(2));
       lastRows.push({ now: now, cells: row });
       return '<tr' + (now ? ' class="now"' : '') + '>' + row.map((v, i) => '<td>' + (i === 0 ? v + tag : v) + '</td>').join('') + '</tr>';
@@ -1362,7 +1654,10 @@ function assessResult(inp, ctx){
     if (last){
       const i = last.inp;
       lines.push(q(Math.round(i.tempF) + 'F, ' + (i.pressInHg != null ? i.pressInHg + ' inHg' : 'pressure from altitude') + ', ' + i.humidity + '% humidity, ' + i.altFt + ' ft'));
-      lines.push(q('Velocity ' + Math.round(i.v0) + ' fps, ' + i.model + ' ' + i.bc + ', zero ' + i.zero + ' yd, scope height ' + i.h + ' in, click ' + $('click').selectedOptions[0].textContent));
+      lines.push(q('Velocity ' + Math.round(i.v0) + ' fps, ' + i.model + ' ' + i.bc + ', zero ' + i.zero + ' yd, scope height ' + i.h + ' in'));
+      lines.push(q(i.scope.complete
+        ? 'Scope: elevation ' + UNIT_LABEL[i.scope.cfg.elevation.unit] + ' ' + i.scope.cfg.elevation.clickValue + ' per click, tracking correction factor ' + i.scope.cfg.elevation.trackingCorrectionFactor + '; windage ' + UNIT_LABEL[i.scope.cfg.windage.unit] + ' ' + i.scope.cfg.windage.clickValue + ' per click, correction factor ' + i.scope.cfg.windage.trackingCorrectionFactor + '. Calc columns are calculated corrections; Dial columns are scope adjustments.'
+        : 'Scope settings not set for this rifle: calculated corrections only, no clicks.'));
     }
     lines.push('');
     lines.push(lastRows.header.map(q).join(','));
@@ -1519,9 +1814,25 @@ function assessResult(inp, ctx){
 
   $('assess').addEventListener('toggle', () => { $('assess').dataset.touched = '1'; });
 
+  function renderScopeStatus(inp){
+    const sc = inp.scope, el = $('scopeStatus'), btn = $('scopeLegacy'), leg = legacyClick($('click').value);
+    if (sc.complete) el.textContent = 'Scope settings are complete for this rifle. Clicks are calculated from the elevation and windage settings above.';
+    else {
+      el.textContent = 'Scope settings are incomplete for this rifle, so no clicks are shown. ' + sc.problems.map(p => p.text).join(' ') +
+        (leg ? ' This rifle was saved with one click setting (' + leg.text + ', true MOA). It has not been applied.' : '');
+    }
+    btn.hidden = !(leg && !sc.complete);
+  }
+  $('scopeLegacy').addEventListener('click', () => {
+    const leg = legacyClick($('click').value); if (!leg) return;
+    $('eUnit').value = leg.unit; $('wUnit').value = leg.unit; $('eClick').value = leg.size; $('wClick').value = leg.size;
+    update();
+    $('scopeStatus').textContent += ' Units and click values were filled from the old setting because you asked. The tracking correction factors were left empty: enter them yourself.';
+  });
   function update(){
     readRange();  // keeps the From / To / Every flags current even when the table is not on screen
     const inp = readInputs();
+    renderScopeStatus(inp);
     if (inp.bad){
       // Invalid input: show no result and no range card built from placeholder values. Typed values are still saved as typed.
       clearTimeout(tableTimer); last = null; lastRows = [];
@@ -1612,7 +1923,7 @@ function assessResult(inp, ctx){
     const out = $('fitMsg');
     const dist = parseFloat($('fitDist').value), moa = parseFloat($('fitMoa').value);
     if (!(dist >= 50 && dist <= 1500) || !(moa > 0)){
-      out.textContent = 'Enter a distance from 50 to 1500 yd and the up adjustment in MOA.';
+      out.textContent = 'Enter a distance from 50 to 1500 yd and the up adjustment in true MOA.';
       return;
     }
     const inp = readInputs();
@@ -1652,7 +1963,7 @@ function assessResult(inp, ctx){
       msg = 'Muzzle velocity set to ' + Math.round(nominal) + ' fps. ';
       if (Math.abs(nominal - inp.v0nom) / inp.v0nom > 0.08) msg += 'That is far from the ' + Math.round(inp.v0nom) + ' fps you had. ';
     }
-    msg += 'The card now shows ' + moa + ' MOA up at ' + dist + ' yd. This is a fitted value, not a measured one, and matching one observation can absorb errors in the ballistic coefficient, the drag model or the air into it.';
+    msg += 'The card now shows ' + moa + ' true MOA up at ' + dist + ' yd. This is a fitted value, not a measured one, and matching one observation can absorb errors in the ballistic coefficient, the drag model or the air into it.';
     out.textContent = msg;
     update();
   }
