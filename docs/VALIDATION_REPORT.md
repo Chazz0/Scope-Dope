@@ -150,9 +150,9 @@ All 10 comparisons that are outside tolerance were investigated with `node tests
 
 | # | Data set | Atmosphere | Range | Published | Calculated | Difference | Tolerance | Cause (status) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Hornady round nose 180 gr G1 .241 | ICAO | 400 yd velocity | 1639 fps | 1620.5 fps | -1.13% | 1% | atmosphere assumption (explained, hypothesis) |
-| 2 | Hornady round nose 180 gr G1 .241 | ICAO | 500 yd velocity | 1385 fps | 1365.9 fps | -1.38% | 1% | atmosphere assumption (explained, hypothesis) |
-| 3 | Hornady correction test 3, G1 .322 | ICAO | 500 yd velocity | 1641 fps | 1623.6 fps | -1.06% | 1% | atmosphere assumption (explained, hypothesis) |
+| 1 | Hornady round nose 180 gr G1 .241 | ICAO | 400 yd velocity | 1639 fps | 1620.5 fps | -1.13% | 1% | consistent with the atmosphere hypothesis (supported, not confirmed) |
+| 2 | Hornady round nose 180 gr G1 .241 | ICAO | 500 yd velocity | 1385 fps | 1365.9 fps | -1.38% | 1% | consistent with the atmosphere hypothesis (supported, not confirmed) |
+| 3 | Hornady correction test 3, G1 .322 | ICAO | 500 yd velocity | 1641 fps | 1623.6 fps | -1.06% | 1% | consistent with the atmosphere hypothesis (supported, not confirmed) |
 | 4 | Federal .308 168 gr, stated G7 .224, average range | ICAO | 300 yd velocity | 2103 fps | 2075.4 fps | -1.31% | 1% | stated G7 BC does not match the table (source data) |
 | 5 | same | ICAO | 400 yd velocity | 1936 fps | 1901.4 fps | -1.79% | 1% | same |
 | 6 | same | ICAO | 500 yd velocity | 1778 fps | 1734.7 fps | -2.44% | 1% | same |
@@ -161,11 +161,11 @@ All 10 comparisons that are outside tolerance were investigated with `node tests
 | 9 | Federal .308 168 gr, stated G7 .224, long range | ICAO | 400 yd drop | -25.5 in | -26.07 in | -0.57 in (2.2%) | 0.51 in | same |
 | 10 | same | ICAO | 500 yd drop | -51.5 in | -52.79 in | -1.29 in (2.5%) | 1.03 in | same |
 
-**Failures 1 to 3 (Hornady, ICAO).** Velocity misses by 1.06% to 1.38%. The drops for those same rows are inside tolerance. The same BCs and the same solver pass every comparison for these sets under the Aberdeen atmosphere (round nose 6 of 6, test 3 5 of 5) and test 3 also passes under its own printed conditions (5 of 5). The BC that would match the published velocities under ICAO is 1.68% above the stated one, close to the 1.80% difference in air density between Aberdeen and ICAO. This points to the atmosphere assumption, not the solver. It does not establish which atmosphere Hornady used for those tables, so the Aberdeen explanation stays a hypothesis and neither atmosphere is selected.
+**Failures 1 to 3 (Hornady, ICAO).** Velocity misses by 1.06% to 1.38%. The drops for those same rows are inside tolerance. The same BCs and the same solver pass every comparison for these sets under the Aberdeen atmosphere (round nose 6 of 6, test 3 5 of 5) and test 3 also passes under its own printed conditions (5 of 5). The BC that would match the published velocities under ICAO is 1.68% above the stated one, close to the 1.80% difference in air density between Aberdeen and ICAO. This supports the atmosphere hypothesis over a solver fault. It does not establish which atmosphere Hornady used for those tables, so the Aberdeen explanation stays a **supported hypothesis, not a confirmed explanation**, and neither atmosphere is selected.
 
 **Failures 4 to 10 (Federal .308 168 gr, stated G7 BC .224).** These are not an atmosphere effect. Fitting a G7 BC to the published velocities needs .2363 under ICAO and .2323 under Aberdeen, which is 5.5% and 3.7% above the stated .224, more than the 1.8% density difference can explain. A G1 BC fitted to the same rows is .4695 (ICAO) and .4615 (Aberdeen), with residual velocity error of 0.02% or less at every row. Federal prints a G1-like .462 for this load (R5, R6 and the R8 PDF, where it is the only BC printed). The same ammunition run with its .462 BC passes 24 of 24 comparisons, and the Federal 6.5 CM 130 gr G7 .287 sets pass 24 of 24 through the same G7 code path. So the solver's G7 handling is not the problem for this load: Federal's published table was calculated with a G1-style BC near .462, and the stated G7 .224 does not reproduce it. Why Federal prints a G7 .224 next to a table that does not follow it is **unresolved**. The long-range drops (failures 9 and 10) have no velocity rows and share the same BC; their Aberdeen pass should not be read as support, because the BC mismatch is unchanged.
 
-Classification summary: 3 explained by the atmosphere assumption (hypothesis); 7 traced to the stated BC not matching the published table (source data), cause of the printed G7 value unresolved; 0 attributed to a calculation error. "Calculation error" is not ruled out in general. It is not indicated by anything here, because the same code reproduces 24 of 24 Federal G7 6.5 CM comparisons and 24 of 24 G1 .308 comparisons.
+Classification summary: 3 consistent with the atmosphere hypothesis (a supported hypothesis, not a confirmed explanation); 7 traced to the stated BC not matching the published table (source data), cause of the printed G7 value unresolved; 0 attributed to a calculation error. "Calculation error" is not ruled out in general. It is not indicated by anything here, because the same code reproduces 24 of 24 Federal G7 6.5 CM comparisons and 24 of 24 G1 .308 comparisons.
 
 The diagnostic output, verbatim:
 
@@ -196,3 +196,24 @@ Same ammunition, G1 BC .462 variants: 24 of 24 comparisons within tolerance (ICA
 
 The fit shows what BC would match the numbers. It is not a correction and was not applied.
 ```
+
+## Federal .308 168 gr: which BC and drag model the comparison uses
+
+Checked in the close-out (nothing changed):
+
+| Item | Value |
+| --- | --- |
+| Data sets | FEDERAL-GM308M-168-G1-AVG (100 yd zero) and FEDERAL-GM308M-168-G1-LONG (200 yd zero), registered in round 2 before any run |
+| Drag model | `G1` (the engine's 79-point G1 table; the G7 table has 83 points and a different Cd, 0.298 against 0.593 at Mach 2) |
+| BC | .462, the value Federal prints for this load (R5, R6, and the R8 PDF where it is the only BC printed) |
+| Muzzle velocity, weight | 2650 fps, 168 gr |
+| Where .462 came from | the manufacturer's printed number. It was **not fitted** to the table, so a pass is not circular |
+| Results | 24 of 24 comparisons within tolerance: AVG ICAO 6/6 (largest velocity difference 0.7%), AVG Aberdeen 6/6 (0.04%), LONG ICAO 6/6 and Aberdeen 6/6 (velocity not published; largest drop difference 0.45 in and 0.07 in) |
+
+Important limit: Federal does not label .462 as G1 or G7. That it is a G1 BC is an **inference** from the fit: a G1 BC fitted to the published velocities comes out at .4695 (ICAO) and .4615 (Aberdeen), within 0.02% velocity at every row, and the stated .462 sits inside that. It is consistent with Sierra's convention for this bullet, but the Sierra page itself gave no BC when read, so it is not cited as proof.
+
+Why the earlier G7 .224 comparison is unsupported by the manufacturer source, and what it is not:
+
+- It was run faithfully: .224 is the BC the Federal page (R5) labels G7, and the comparison was registered before it was run. It stays in the results as 7 of the 10 failures. Nothing was removed or reclassified to improve the pass rate.
+- It does not test the solver. The published table does not follow that BC: the G7 BC that fits the velocities is .2363 (ICAO) or .2323 (Aberdeen), 5.5% and 3.7% above .224, more than the 1.8% atmosphere difference explains, while the .462 value reproduces the table without any fitting. The Federal PDF (R8) prints only .462 for this load.
+- So the G7 .224 value is not what Federal's table was computed from, or is a figure on a different basis. Why Federal prints it is unresolved. The result is a finding about Federal's published numbers, not a fault in the calculation: the same G7 code path passes 24 of 24 on the Federal 6.5 CM G7 .287 data.

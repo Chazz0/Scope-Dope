@@ -473,5 +473,37 @@ test('close-out round: the 10 failures are classified, diagnostic is reproducibl
   assert.match(c, /\*\*Stage 5 status: NOT COMPLETE\*\*/);
   assert.match(c, /Physical accuracy: NOT DEMONSTRATED/);
   const vr = fs.readFileSync(path.join(root, 'docs', 'VALIDATION_REPORT.md'), 'utf8');
-  assert.match(vr, /3 explained by the atmosphere assumption/); assert.match(vr, /0 attributed to a calculation error/);
+  assert.match(vr, /3 consistent with the atmosphere hypothesis \(a supported hypothesis, not a confirmed explanation\)/); assert.match(vr, /0 attributed to a calculation error/);
+});
+
+test('Federal .308 comparison: the G1 sets use G1 and .462, the G7 .224 sets stay registered and counted, nothing was changed', () => {
+  const g1 = refs.datasets.filter(d => /^FEDERAL-GM308M-168-G1/.test(d.id));
+  assert.strictEqual(g1.length, 2);
+  for (const d of g1) { assert.strictEqual(d.model, 'G1'); assert.strictEqual(d.bc, 0.462); assert.strictEqual(d.registeredRound, 2); }
+  const g7 = refs.datasets.filter(d => /^FEDERAL-GM308M-168-G7/.test(d.id));
+  assert.strictEqual(g7.length, 2); for (const d of g7) assert.strictEqual(d.bc, 0.224);
+  const out = runJson().filter(x => x.kind === 'dataset' && /^FEDERAL-GM308M-168-G1/.test(x.id));
+  assert.strictEqual(out.length, 24); assert.ok(out.every(x => x.pass));
+  const vr = fs.readFileSync(path.join(root, 'docs', 'VALIDATION_REPORT.md'), 'utf8');
+  assert.match(vr, /Federal does not label \.462 as G1 or G7/); assert.match(vr, /It was \*\*not fitted\*\*/);
+  assert.match(vr, /Nothing was removed or reclassified/);
+});
+
+test('close-out record keeps the status NOT COMPLETE, labels the hypothesis, and proposes (does not apply) a waiver', () => {
+  const c = fs.readFileSync(path.join(root, 'docs', 'STAGE5_CLOSEOUT.md'), 'utf8');
+  assert.match(c, /\*\*NOT COMPLETE\*\*/); assert.match(c, /1 complete, 1 waived, 6 open/);
+  assert.match(c, /supported hypothesis, not a confirmed explanation/);
+  assert.match(c, /Proposed waiver wording[^\n]*not in effect/);
+  assert.match(c, /Physical accuracy: \*\*NOT DEMONSTRATED\*\*/);
+  assert.match(c, /does not require checking any data/);
+  assert.doesNotMatch(c, /trajectory accuracy (is|was) (shown|demonstrated)/i);
+});
+
+test('frozen inputs: tolerances, table points, atmospheres and every round 1 data set value equal the base commit', () => {
+  const base = JSON.parse(execFileSync('git', ['show', '9f37df7:tests/validation/references.json'], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 }));
+  assert.deepStrictEqual(refs.tolerances, base.tolerances);
+  assert.deepStrictEqual(refs.tablePoints, base.tablePoints);
+  assert.deepStrictEqual(refs.atmospheres, base.atmospheres);
+  assert.deepStrictEqual(refs.trajectoryCases, base.trajectoryCases);
+  for (const d of base.datasets) { const n = { ...refs.datasets.find(x => x.id === d.id) }; delete n.registeredRound; assert.deepStrictEqual(n, d, d.id); }
 });
