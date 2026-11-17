@@ -184,6 +184,41 @@ tr.now td{background:var(--hl); font-weight:600}
 .tag{font:600 9px var(--body); letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-left:6px}
 .foot{margin:0; font-size:12.5px; color:var(--muted); line-height:1.55}
 
+/* Reloading tab: a separate record-keeping log. It reads nothing from the solver and changes no calculation. */
+#viewReload .rlnote{margin:0; padding:12px 14px; border:1px solid var(--line); border-left:4px solid var(--warn); border-radius:12px; background:var(--surface); font-size:13px; line-height:1.45}
+.rlseg{display:flex; border:1px solid var(--line); border-radius:8px; overflow:hidden}
+.rlseg button{flex:1; min-height:44px; border:0; background:var(--bg); color:var(--ink); font:600 13px/1 var(--body); letter-spacing:.04em; cursor:pointer}
+.rlseg button + button{border-left:1px solid var(--line)}
+.rlseg button[aria-pressed="true"]{background:var(--panel-accent); color:#1A0E05}
+.rlseg button:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+.btn.rlgo{background:var(--panel-accent); border-color:var(--panel-accent); color:#1A0E05}
+/* Rifle tab (cosmetic only): the filled buttons use the same HUD orange. Outlined and warning buttons are unchanged. */
+#viewRifle .btn:not(.ghost):not(.warn){background:var(--panel-accent); border-color:var(--panel-accent); color:#1A0E05}
+#viewReload input[type=text],#viewReload input[type=date],#viewReload select{height:44px}
+#viewReload input[type=date]{font:500 16px/1.2 var(--body); padding:10px 11px; width:100%; min-width:0; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--ink); -webkit-appearance:none; appearance:none; display:block; text-align:left}
+#viewReload input[type=date]::-webkit-date-and-time-value{text-align:left; min-height:1.2em; margin:0}
+#viewReload input[type=date]::-webkit-datetime-edit{padding:0}
+#viewReload input.n{font-family:var(--mono)}
+#viewReload input[aria-invalid="true"],#viewReload textarea[aria-invalid="true"]{border-color:var(--warn)}
+#viewReload .rlstack{display:flex; flex-direction:column; gap:14px; min-width:0}
+.rlitem{border:1px solid var(--line); border-radius:8px; background:var(--bg); padding:10px 12px; display:flex; flex-direction:column; gap:4px; min-width:0}
+.rlitem.sel{border-left:4px solid var(--accent)}
+.rlrow{display:flex; justify-content:space-between; align-items:baseline; gap:8px; flex-wrap:wrap}
+.rlname{font-weight:600; font-size:15px}
+.rlsub{font:12px/1.5 var(--mono); color:var(--muted); overflow-wrap:anywhere}
+.rlstats{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px}
+.rlstat{background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:8px; text-align:center; font-family:var(--mono); min-width:0}
+.rlstat span{display:block; font-size:11px; color:var(--muted); text-transform:uppercase}
+.rlstat b{display:block; font-size:16px; font-weight:500; font-variant-numeric:tabular-nums}
+.rlrate{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px}
+.rlrate button{min-height:44px; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--ink); font:600 15px/1 var(--mono); cursor:pointer}
+.rlrate button[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.rlerr{margin:0; font-size:13px; line-height:1.4; color:var(--warn)}
+.rlok{margin:0; font-size:13px; line-height:1.4; color:var(--ink)}
+.rlconfirm{border:1px solid var(--accent); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:10px; background:var(--bg)}
+.btn.sm{padding:8px 10px; font-size:13px}
+@media (max-width:380px){ .tab{padding-left:2px; padding-right:2px; letter-spacing:.04em} }
+
 /* Bottom tabs */
 .tabs{position:fixed; left:0; right:0; bottom:0; display:flex; background:var(--surface); border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom, 0px); padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); z-index:5}
 .tabs-in{display:flex; width:100%; max-width:1080px; margin:0 auto}
@@ -548,6 +583,28 @@ input[type=range]{height:20px}
       </div>
       <p class="foot" style="margin-top:14px">Dial directions move your point of impact. Follow the arrows on your turrets. These are estimates from a point-mass model with G1 or G7 drag, plus spin drift, Coriolis effect when you enter a latitude, and wind from any clock position. They leave out aerodynamic jump and powder temperature unless you set a velocity change per degree. Fire a few rounds at known distances and true your velocity or coefficient until the card matches your groups. The model has not been shown to be physically accurate, manufacturer comparisons are not proof of real-world accuracy, and truing can absorb errors in the coefficient, the drag model and the air inputs. <span id="modelTag">Calculation model: unverified estimates.</span></p>
     </section>
+    <section id="viewReload" aria-label="Reloading" hidden>
+      <div class="groups">
+        <div class="rlseg" role="group" aria-label="Reloading sections">
+          <button type="button" id="rlSegRecipes" aria-pressed="true">Recipes</button>
+          <button type="button" id="rlSegInv" aria-pressed="false">Inventory</button>
+          <button type="button" id="rlSegRange" aria-pressed="false">Range</button>
+        </div>
+        <div id="rlRecipes" class="rlstack"></div>
+        <div id="rlInv" class="rlstack" hidden></div>
+        <div id="rlRange" class="rlstack" hidden></div>
+        <section class="card" aria-labelledby="h-rlbak">
+          <h2 id="h-rlbak">Back up this log</h2>
+          <p class="sub">Your reloading log is stored only in this browser, separately from your rifles. Copy a code and keep it somewhere safe. Restoring only adds entries. It never replaces or deletes what you have.</p>
+          <div class="btnrow"><button type="button" class="btn rlgo" id="rlExportBtn">Show backup code</button></div>
+          <div class="field"><label for="rlExportCode">Backup code</label><textarea id="rlExportCode" rows="4" readonly spellcheck="false"></textarea></div>
+          <div class="field"><label for="rlImportCode">Restore from a code</label><textarea id="rlImportCode" rows="4" spellcheck="false" placeholder="Paste a reloading backup code here"></textarea></div>
+          <div class="btnrow"><button type="button" class="btn ghost" id="rlImportBtn">Add entries from code</button></div>
+          <p class="hint" id="rlBackupMsg" aria-live="polite"></p>
+        </section>
+        <p class="rlnote"><strong>Record keeping only.</strong> Nothing here is load data, a safety check or a recommendation, and nothing here changes a calculation. Use a current published load manual for your own components, start low and work up.</p>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -564,6 +621,10 @@ input[type=range]{height:20px}
     <a class="tab" id="tabRifle" href="#rifle">
       <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h10M17 6h4M3 12h4M11 12h10M3 18h12M19 18h2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="15" cy="6" r="2.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="12" r="2.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17" cy="18" r="2.2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
       Rifle
+    </a>
+    <a class="tab" id="tabReload" href="#reloading">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v4l2 3v10H7V10l2-3zM7 17h10M9 7h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      Reloading
     </a>
   </div>
 </nav>
@@ -2057,14 +2118,15 @@ function assessResult(inp, ctx){
 
   /* Views */
   function currentView(){
-    return location.hash === '#rifle' ? 'rifle' : location.hash === '#chart' ? 'chart' : 'hud';
+    return location.hash === '#rifle' ? 'rifle' : location.hash === '#reloading' ? 'reloading' : location.hash === '#chart' ? 'chart' : 'hud';
   }
   function route(){
     const v = currentView();
     $('viewHud').hidden = v !== 'hud';
     $('viewChart').hidden = v !== 'chart';
     $('viewRifle').hidden = v !== 'rifle';
-    [['hud','tabHud'],['chart','tabChart'],['rifle','tabRifle']].forEach(([name, id]) => {
+    $('viewReload').hidden = v !== 'reloading';
+    [['hud','tabHud'],['chart','tabChart'],['rifle','tabRifle'],['reloading','tabReload']].forEach(([name, id]) => {
       if (name === v) $(id).setAttribute('aria-current', 'page'); else $(id).removeAttribute('aria-current');
     });
     if (v === 'chart' && last) renderTable(last.M, last.inp);
@@ -2157,6 +2219,241 @@ function assessResult(inp, ctx){
   $('modelTag').textContent = 'Calculation model ' + MODEL_VERSION + ': tested, not independently verified.';
   initDownloads();
 })();
+</script>
+
+<script>
+/*RELOAD_START*/
+/* Reloading tab. A separate record-keeping log (recipes, inventory, range sessions) kept under its own storage key.
+   It does not read or write the solver, the scope module or the rifle profiles. The one link to a rifle is the muzzle-velocity
+   button, which asks first and only fills the Rifle tab's velocity box the way typing there would. */
+(function () {
+  var KEY = 'scopedope.reload.v1', BAK = 'scopedope.reload.backup';
+  var $ = function (id) { return document.getElementById(id); };
+  var uid = function () { return 'x' + Math.random().toString(36).slice(2, 10); };
+  var today = function () { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  var VMIN = 100, VMAX = 5000;                 // shot velocities outside this are treated as typing mistakes
+  var RFIELDS = [['name', 'Recipe name', 't', 'e.g. Load A'], ['cartridge', 'Cartridge', 't', 'e.g. .300 Win Mag'], ['bw', 'Bullet weight (gr)', 'n', 'e.g. 200'], ['bm', 'Bullet manufacturer', 't', 'maker'], ['bt', 'Bullet type', 't', 'e.g. hollow point boat tail'], ['powder', 'Powder', 't', 'name / lot'], ['charge', 'Charge (gr)', 'n', 'from your manual'], ['primer', 'Primer (maker / lot)', 't', 'maker / lot'], ['ptype', 'Primer type', 't', 'e.g. large rifle magnum'], ['brass', 'Brass', 't', 'maker / lot'], ['coal', 'COAL (in)', 'n', 'e.g. 3.340']];
+  var NUMERIC = { bw: 1, charge: 1, coal: 1 }, CATS = ['Powder', 'Primers', 'Bullets', 'Brass', 'Equipment'];
+  var storeOk = true, S, ui = { sub: 'recipes', sel: '', delAsk: false, rating: 0 };
+
+  function blank() { return { v: 1, recipes: [], inv: [], sessions: [] }; }
+  function load() {
+    var o = null;
+    try { var raw = localStorage.getItem(KEY); o = raw ? JSON.parse(raw) : null; } catch (e) { o = null; }
+    if (!o || typeof o !== 'object' || !Array.isArray(o.recipes) || !Array.isArray(o.inv) || !Array.isArray(o.sessions)) return blank();
+    return o;
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); storeOk = true; } catch (e) { storeOk = false; } }
+  S = load();
+  var recipe = function (id) { return S.recipes.filter(function (r) { return r.id === id; })[0]; };
+
+  /* Statistics from the shots the user typed. Nothing is assumed or filled in. */
+  function parseShots(txt) {
+    var parts = String(txt || '').split(/[\s,;]+/).filter(Boolean), nums = [], bad = [];
+    parts.forEach(function (p) { var v = Number(p); if (isFinite(v) && v >= VMIN && v <= VMAX) nums.push(v); else bad.push(p); });
+    return { nums: nums, bad: bad };
+  }
+  function stats(nums) {
+    var n = nums.length; if (!n) return { n: 0, avg: null, sd: null, es: null };
+    var avg = nums.reduce(function (a, b) { return a + b; }, 0) / n;
+    var sd = n > 1 ? Math.sqrt(nums.reduce(function (a, b) { return a + (b - avg) * (b - avg); }, 0) / (n - 1)) : null;
+    return { n: n, avg: avg, sd: sd, es: Math.max.apply(null, nums) - Math.min.apply(null, nums) };
+  }
+  var fmt = function (v, d) { return v == null ? '—' : v.toFixed(d == null ? 1 : d); };
+
+  function showSub(sub) {
+    ui.sub = sub;
+    [['recipes', 'rlSegRecipes', 'rlRecipes'], ['inv', 'rlSegInv', 'rlInv'], ['range', 'rlSegRange', 'rlRange']].forEach(function (t) {
+      $(t[1]).setAttribute('aria-pressed', String(t[0] === sub)); $(t[2]).hidden = t[0] !== sub;
+    });
+    if (sub === 'recipes') renderRecipes(); if (sub === 'inv') renderInv(); if (sub === 'range') renderRange();
+  }
+  $('rlSegRecipes').onclick = function () { showSub('recipes'); };
+  $('rlSegInv').onclick = function () { showSub('inv'); };
+  $('rlSegRange').onclick = function () { showSub('range'); };
+
+  /* Recipes */
+  function renderRecipes() {
+    if (!ui.sel || (ui.sel !== 'new' && !recipe(ui.sel))) ui.sel = S.recipes.length ? S.recipes[0].id : 'new';
+    var isNew = ui.sel === 'new', r = isNew ? {} : recipe(ui.sel);
+    var opts = S.recipes.map(function (x) { return '<option value="' + esc(x.id) + '"' + (x.id === ui.sel ? ' selected' : '') + '>' + esc(x.name || 'Untitled recipe') + '</option>'; }).join('') + '<option value="new"' + (isNew ? ' selected' : '') + '>+ New recipe</option>';
+    var ss = isNew ? [] : S.sessions.filter(function (x) { return x.rid === r.id; }), all = []; ss.forEach(function (x) { all = all.concat(x.shots); });
+    var st = stats(all);
+    var summary = isNew ? '' : '<div class="rlitem sel"><div class="rlrow"><span class="rlname">' + esc(r.name) + '</span></div>' +
+      '<div class="rlsub">' + esc([r.bw ? r.bw + ' gr' : '', r.bm, r.bt, r.powder ? 'powder ' + r.powder : '', r.charge ? 'charge ' + r.charge + ' gr' : '', r.primer ? 'primer ' + r.primer : ''].filter(Boolean).join(' · ') || 'No components entered yet') + '</div>' +
+      '<div class="rlsub">' + ss.length + ' range session' + (ss.length === 1 ? '' : 's') + ' · ' + st.n + ' shots · avg ' + fmt(st.avg) + ' fps · SD ' + fmt(st.sd) + '</div></div>';
+    var fields = RFIELDS.map(function (f) {
+      return '<div class="field"' + (f[0] === 'name' ? ' style="grid-column:1/-1"' : '') + '><label for="rlf_' + f[0] + '">' + f[1] + '</label><input id="rlf_' + f[0] + '" class="' + (f[2] === 'n' ? 'n' : '') + '" type="text" maxlength="80" autocomplete="off"' + (f[2] === 'n' ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(f[3]) + '" value="' + esc(r[f[0]] || '') + '"></div>';
+    }).join('');
+    $('rlRecipes').innerHTML =
+      '<section class="card"><h2>Recipes</h2><div class="field"><label for="rlRecSel">Recipe</label><select id="rlRecSel">' + opts + '</select></div>' + summary +
+      (S.recipes.length ? '' : '<p class="hint">No recipes yet. Fill in the form below and save your first one.</p>') + '</section>' +
+      '<section class="card"><h2>' + (isNew ? 'New recipe' : 'Recipe details') + '</h2><div class="grid2">' + fields + '</div>' +
+      '<div class="field"><label for="rlf_notes">Notes</label><input id="rlf_notes" type="text" maxlength="200" autocomplete="off" placeholder="neck tension, annealing, lot changes" value="' + esc(r.notes || '') + '"></div>' +
+      '<p id="rlRecMsg" role="status" class="hint"></p><div class="btnrow"><button type="button" class="btn rlgo" id="rlRecSave">Save recipe</button>' +
+      (isNew ? '' : '<button type="button" class="btn ghost" id="rlRecDel">Delete recipe</button>') + '</div>' +
+      (ui.delAsk && !isNew ? '<div class="rlconfirm"><div>Delete "' + esc(r.name) + '" and its ' + ss.length + ' range session' + (ss.length === 1 ? '' : 's') + '? This cannot be undone.</div><div class="btnrow"><button type="button" class="btn warn" id="rlRecDelYes">Yes, delete</button><button type="button" class="btn ghost" id="rlRecDelNo">Keep it</button></div></div>' : '') +
+      '</section>';
+    $('rlRecSel').onchange = function () { ui.sel = this.value; ui.delAsk = false; renderRecipes(); };
+    $('rlRecSave').onclick = saveRecipe;
+    if ($('rlRecDel')) $('rlRecDel').onclick = function () { ui.delAsk = true; renderRecipes(); };
+    if ($('rlRecDelNo')) $('rlRecDelNo').onclick = function () { ui.delAsk = false; renderRecipes(); };
+    if ($('rlRecDelYes')) $('rlRecDelYes').onclick = function () {
+      S.sessions = S.sessions.filter(function (x) { return x.rid !== r.id; });
+      S.recipes = S.recipes.filter(function (x) { return x.id !== r.id; }); ui.sel = ''; ui.delAsk = false; save(); renderRecipes();
+    };
+  }
+  function saveRecipe() {
+    var rec = { notes: $('rlf_notes').value.trim() }, bad = [];
+    RFIELDS.forEach(function (f) {
+      var el = $('rlf_' + f[0]), v = el.value.trim(), invalid = false;
+      if (NUMERIC[f[0]] && v) { var num = Number(v); if (!isFinite(num) || num <= 0) invalid = true; }
+      if (f[0] === 'name' && !v) invalid = true;
+      el.setAttribute('aria-invalid', String(invalid)); if (invalid) bad.push(f[1]);
+      rec[f[0]] = v;
+    });
+    var msg = $('rlRecMsg');
+    if (bad.length) { msg.className = 'rlerr'; msg.textContent = 'Fix these fields: ' + bad.join(', ') + '. Numbers must be above zero and the recipe needs a name.'; return; }
+    if (ui.sel === 'new') { rec.id = uid(); S.recipes.push(rec); ui.sel = rec.id; }
+    else { var cur = recipe(ui.sel); Object.keys(rec).forEach(function (k) { cur[k] = rec[k]; }); }
+    save(); renderRecipes();
+    $('rlRecMsg').className = storeOk ? 'rlok' : 'rlerr';
+    $('rlRecMsg').textContent = storeOk ? 'Saved.' : 'Saved for now, but this browser would not store it. It will be lost when you close the page.';
+  }
+
+  /* Inventory */
+  function renderInv() {
+    var groups = CATS.map(function (c) {
+      var items = S.inv.filter(function (i) { return i.cat === c; });
+      return '<section class="card"><h2>' + c + '</h2>' + (items.length ? items.map(function (i) {
+        return '<div class="rlitem"><div class="rlrow"><span class="rlname">' + esc(i.name) + '</span><span class="rlsub">' + esc(i.qty || '') + '</span></div><div class="rlrow"><span class="rlsub">' + (i.lot ? 'Lot / notes: ' + esc(i.lot) : '') + '</span><button type="button" class="btn ghost sm" data-del="' + esc(i.id) + '" aria-label="Remove ' + esc(i.name) + '">Remove</button></div></div>';
+      }).join('') : '<p class="hint">Nothing recorded yet.</p>') + '</section>';
+    }).join('');
+    $('rlInv').innerHTML = '<section class="card"><h2>Add to inventory</h2><div class="grid2">' +
+      '<div class="field"><label for="rlIvCat">Type</label><select id="rlIvCat">' + CATS.map(function (c) { return '<option>' + c + '</option>'; }).join('') + '</select></div>' +
+      '<div class="field"><label for="rlIvName">Name</label><input id="rlIvName" type="text" maxlength="80" autocomplete="off" placeholder="name / maker"></div>' +
+      '<div class="field"><label for="rlIvQty">On hand</label><input id="rlIvQty" type="text" maxlength="80" autocomplete="off" placeholder="e.g. 250 or 1 lb"></div>' +
+      '<div class="field"><label for="rlIvLot">Lot / notes</label><input id="rlIvLot" type="text" maxlength="80" autocomplete="off" placeholder="lot number"></div></div>' +
+      '<p id="rlIvMsg" role="status" class="hint"></p><div class="btnrow"><button type="button" class="btn" id="rlIvAdd">Add</button></div></section>' + groups;
+    $('rlIvAdd').onclick = function () {
+      var name = $('rlIvName').value.trim();
+      if (!name) { $('rlIvName').setAttribute('aria-invalid', 'true'); $('rlIvMsg').className = 'rlerr'; $('rlIvMsg').textContent = 'Enter a name first.'; return; }
+      S.inv.push({ id: uid(), cat: $('rlIvCat').value, name: name, qty: $('rlIvQty').value.trim(), lot: $('rlIvLot').value.trim() }); save(); renderInv();
+    };
+    $('rlInv').querySelectorAll('[data-del]').forEach(function (b) { b.onclick = function () { S.inv = S.inv.filter(function (i) { return i.id !== b.getAttribute('data-del'); }); save(); renderInv(); }; });
+  }
+
+  /* Range sessions */
+  function rifleNow() { var n = $('pname'), v = $('v0'); return { name: (n && n.value.trim()) || 'your rifle', v0: v ? v.value.trim() : '' }; }
+  function renderRange() {
+    var ropts = S.recipes.map(function (r) { return '<option value="' + esc(r.id) + '"' + (r.id === ui.sel ? ' selected' : '') + '>' + esc(r.name) + '</option>'; }).join('');
+    var list = S.sessions.slice().reverse().map(function (x) {
+      var r = recipe(x.rid), st = stats(x.shots);
+      return '<div class="rlitem"><div class="rlrow"><span class="rlname">' + esc(r ? r.name : 'Deleted recipe') + ' · ' + esc(x.date) + '</span><span class="rlsub">' + st.n + ' shots</span></div>' +
+        '<div class="rlsub">' + (x.dist ? esc(x.dist) + ' yd · ' : '') + 'avg ' + fmt(st.avg) + ' fps · SD ' + fmt(st.sd) + ' · ES ' + fmt(st.es, 0) + ' · group ' + (x.group ? esc(x.group) + ' MOA' : '—') + ' · impression ' + (x.rating || '—') + '</div>' +
+        (x.notes ? '<p class="hint">' + esc(x.notes) + '</p>' : '') +
+        '<div class="rlrow"><span></span><button type="button" class="btn ghost sm" data-sdel="' + esc(x.id) + '">Delete session</button></div></div>';
+    }).join('') || '<p class="hint">No sessions saved yet.</p>';
+    $('rlRange').innerHTML = '<section class="card"><h2>New session</h2>' +
+      (S.recipes.length ? '' : '<p class="rlerr">Add a recipe on the Recipes screen first.</p>') +
+      '<div class="grid2"><div class="field"><label for="rlSRec">Recipe</label><select id="rlSRec">' + ropts + '</select></div>' +
+      '<div class="field"><label for="rlSDate">Date</label><input id="rlSDate" type="date" value="' + today() + '"></div>' +
+      '<div class="field"><label for="rlSDist">Distance (yd)</label><input id="rlSDist" class="n" type="text" inputmode="decimal" maxlength="12" autocomplete="off" placeholder="e.g. 100"></div>' +
+      '<div class="field"><label for="rlSGroup">Group size (MOA)</label><input id="rlSGroup" class="n" type="text" inputmode="decimal" maxlength="12" autocomplete="off" placeholder="measured by you"></div></div>' +
+      '<div class="field"><label for="rlSShots">Shot velocities (fps), separated by spaces, commas or new lines</label><textarea id="rlSShots" placeholder="type or paste, one per shot" spellcheck="false"></textarea></div>' +
+      '<p id="rlShotMsg" role="status" class="hint"></p>' +
+      '<div class="rlstats"><div class="rlstat"><span>Shots</span><b id="rlStN">—</b></div><div class="rlstat"><span>Avg</span><b id="rlStAvg">—</b></div><div class="rlstat"><span>SD</span><b id="rlStSd">—</b></div><div class="rlstat"><span>ES</span><b id="rlStEs">—</b></div></div>' +
+      '<p class="hint">Average, SD (sample) and ES are worked out from the shots you enter. SD needs at least two shots.</p>' +
+      '<div class="field"><span class="subh" id="rlRateLbl">Impression (1 to 5, your own rating)</span><div class="rlrate" role="group" aria-labelledby="rlRateLbl">' + [1, 2, 3, 4, 5].map(function (n) { return '<button type="button" data-rate="' + n + '" aria-pressed="' + (ui.rating === n) + '">' + n + '</button>'; }).join('') + '</div></div>' +
+      '<div class="field"><label for="rlSNotes">Notes</label><input id="rlSNotes" type="text" maxlength="200" autocomplete="off" placeholder="how it felt, pressure signs you saw, wind"></div>' +
+      '<p id="rlSMsg" role="status" class="hint"></p><div class="btnrow"><button type="button" class="btn" id="rlSSave">Save session</button></div></section>' +
+      '<section class="card"><h2>Use in the open rifle</h2><p class="sub">The Rifle tab\'s muzzle velocity box is only filled after you confirm. A velocity you typed or fitted is never replaced without it.</p>' +
+      '<div class="btnrow"><button type="button" class="btn ghost" id="rlUseAvg">Use average as muzzle velocity…</button></div><div id="rlMvBox"></div></section>' +
+      '<section class="card"><h2>Range sessions</h2>' + list + '</section>';
+    var live = function () {
+      var p = parseShots($('rlSShots').value), st = stats(p.nums), sh = p.bad.length ? stats([]) : st;   // no numbers are shown while any entry is invalid
+      $('rlStN').textContent = sh.n || '—'; $('rlStAvg').textContent = fmt(sh.avg); $('rlStSd').textContent = fmt(sh.sd); $('rlStEs').textContent = fmt(sh.es, 0);
+      var m = $('rlShotMsg'); $('rlSShots').setAttribute('aria-invalid', String(p.bad.length > 0));
+      if (p.bad.length) { m.className = 'rlerr'; m.textContent = 'Not a velocity, left out: ' + p.bad.slice(0, 5).join(', ') + (p.bad.length > 5 ? '…' : '') + '. Use plain numbers from ' + VMIN + ' to ' + VMAX + ' fps, for example 2800 and not 2,800.'; } else { m.className = 'hint'; m.textContent = ''; }
+      return { p: p, st: st };
+    };
+    $('rlSShots').oninput = live;
+    $('rlRange').querySelectorAll('[data-rate]').forEach(function (b) { b.onclick = function () { var v = Number(b.getAttribute('data-rate')); ui.rating = ui.rating === v ? 0 : v; $('rlRange').querySelectorAll('[data-rate]').forEach(function (x) { x.setAttribute('aria-pressed', String(Number(x.getAttribute('data-rate')) === ui.rating)); }); }; });
+    $('rlSSave').onclick = function () {
+      var r = live(), msg = $('rlSMsg'), bad = [], g = $('rlSGroup').value.trim(), d = $('rlSDist').value.trim();
+      [['rlSGroup', g, 'Group size'], ['rlSDist', d, 'Distance']].forEach(function (f) { var inv = f[1] && (!isFinite(Number(f[1])) || Number(f[1]) <= 0); $(f[0]).setAttribute('aria-invalid', String(!!inv)); if (inv) bad.push(f[2]); });
+      if (!S.recipes.length) { msg.className = 'rlerr'; msg.textContent = 'Add a recipe first.'; return; }
+      if (!r.st.n) bad.push('Shot velocities (at least one)');
+      if (r.p.bad.length) bad.push('Shot velocities (remove the entries marked above)');
+      if (bad.length) { msg.className = 'rlerr'; msg.textContent = 'Fix: ' + bad.join(', ') + '.'; return; }
+      S.sessions.push({ id: uid(), rid: $('rlSRec').value, date: $('rlSDate').value || today(), dist: d, group: g, shots: r.p.nums, rating: ui.rating, notes: $('rlSNotes').value.trim() }); ui.rating = 0; save(); renderRange();
+      $('rlSMsg').className = storeOk ? 'rlok' : 'rlerr'; $('rlSMsg').textContent = storeOk ? 'Session saved.' : 'Saved for now, but this browser would not store it. It will be lost when you close the page.';
+    };
+    $('rlRange').querySelectorAll('[data-sdel]').forEach(function (b) { b.onclick = function () { S.sessions = S.sessions.filter(function (x) { return x.id !== b.getAttribute('data-sdel'); }); save(); renderRange(); }; });
+    $('rlUseAvg').onclick = function () {
+      var r = live(), box = $('rlMvBox');
+      if (!r.st.n || r.p.bad.length) { box.innerHTML = '<p class="rlerr">' + (r.p.bad.length ? 'Fix the shot velocities marked above first.' : 'Enter at least one shot velocity first.') + '</p>'; return; }
+      var newV = Math.round(r.st.avg), rf = rifleNow();
+      if (newV < 500 || newV > 4500) { box.innerHTML = '<p class="rlerr">' + newV + ' fps is outside the 500 to 4500 fps range the Rifle tab accepts, so it was not offered.</p>'; return; }
+      var n = r.st.n + ' shot' + (r.st.n === 1 ? '' : 's');
+      box.innerHTML = '<div class="rlconfirm"><div>' + (rf.v0 ? 'Replace the muzzle velocity of <b>' + esc(rf.name) + '</b> (<b>' + esc(rf.v0) + ' fps</b>) with <b>' + newV + ' fps</b>, the average of ' + n + '?' : 'Set the muzzle velocity of <b>' + esc(rf.name) + '</b> to <b>' + newV + ' fps</b>, the average of ' + n + '?') + '</div>' +
+        '<div class="btnrow"><button type="button" class="btn" id="rlMvYes">Use ' + newV + ' fps</button><button type="button" class="btn ghost" id="rlMvNo">Keep mine</button></div></div>';
+      $('rlMvYes').onclick = function () {
+        var v0 = $('v0'); if (!v0) { box.innerHTML = '<p class="rlerr">The Rifle tab velocity box was not found, so nothing was changed.</p>'; return; }
+        v0.value = String(newV); v0.dispatchEvent(new Event('input', { bubbles: true }));   // the same path as typing it on the Rifle tab
+        box.innerHTML = '<p class="rlok">Muzzle velocity set to ' + newV + ' fps on the Rifle tab for ' + esc(rf.name) + '. It is now marked as a velocity you entered.</p>';
+      };
+      $('rlMvNo').onclick = function () { box.innerHTML = '<p class="hint">Left as it was.</p>'; };
+    };
+    live();
+  }
+
+  /* Backup: add-only restore with a safety copy of what is there now. */
+  var cap = function (v, n) { return typeof v === 'string' ? v.slice(0, n) : (typeof v === 'number' && isFinite(v)) ? String(v) : ''; };
+  $('rlExportBtn').onclick = function () {
+    var text = JSON.stringify({ app: 'scopedope-reloading', schema: 1, exported: new Date().toISOString(), recipes: S.recipes, inv: S.inv, sessions: S.sessions }, null, 1);
+    var box = $('rlExportCode'); box.value = text; box.focus(); box.select();
+    var what = S.recipes.length + ' recipes, ' + S.sessions.length + ' sessions, ' + S.inv.length + ' inventory items';
+    $('rlBackupMsg').textContent = 'Backup code ready (' + what + '). Select it and copy it, then keep it somewhere safe.';
+    try { navigator.clipboard.writeText(text).then(function () { $('rlBackupMsg').textContent = 'Backup code copied (' + what + '). Keep it somewhere safe.'; }, function () {}); } catch (e) {}
+  };
+  $('rlImportBtn').onclick = function () {
+    var msg = function (t) { $('rlBackupMsg').textContent = t; }, invalid = 'That is not a valid reloading backup code. Nothing was imported.';
+    var text = $('rlImportCode').value.trim();
+    if (!text) return msg('Paste a backup code first. Nothing was imported.');
+    if (text.length > 2000000) return msg(invalid);
+    var o; try { o = JSON.parse(text); } catch (e) { return msg(invalid); }
+    if (!o || o.app !== 'scopedope-reloading' || !Array.isArray(o.recipes)) return msg(invalid);
+    if (typeof o.schema === 'number' && o.schema > 1) return msg('This code was made by a newer version. Nothing was imported.');
+    var map = {}, recs = [], sess = [], inv = [], dropped = 0;
+    o.recipes.slice(0, 500).forEach(function (r) {
+      if (!r || typeof r !== 'object' || Array.isArray(r)) return;
+      var c = { id: uid(), notes: cap(r.notes, 200) }; RFIELDS.forEach(function (f) { c[f[0]] = cap(r[f[0]], 80); });
+      if (!c.name) return; if (typeof r.id === 'string') map[r.id] = c.id; recs.push(c);
+    });
+    (Array.isArray(o.sessions) ? o.sessions : []).slice(0, 5000).forEach(function (x) {
+      if (!x || typeof x !== 'object' || !map[x.rid] || !Array.isArray(x.shots)) { dropped++; return; }
+      var shots = x.shots.slice(0, 200).filter(function (v) { return typeof v === 'number' && isFinite(v) && v >= VMIN && v <= VMAX; });
+      if (!shots.length) { dropped++; return; }
+      sess.push({ id: uid(), rid: map[x.rid], date: /^\d{4}-\d{2}-\d{2}$/.test(x.date) ? x.date : today(), dist: cap(x.dist, 12), group: cap(x.group, 12), shots: shots, rating: (x.rating >= 1 && x.rating <= 5) ? Math.floor(x.rating) : 0, notes: cap(x.notes, 200) });
+    });
+    (Array.isArray(o.inv) ? o.inv : []).slice(0, 2000).forEach(function (i) {
+      if (!i || typeof i !== 'object' || CATS.indexOf(i.cat) < 0 || !cap(i.name, 80)) return;
+      inv.push({ id: uid(), cat: i.cat, name: cap(i.name, 80), qty: cap(i.qty, 80), lot: cap(i.lot, 80) });
+    });
+    if (!recs.length && !sess.length && !inv.length) return msg('No entries were found in that code. Nothing was imported.');
+    try { localStorage.setItem(BAK, JSON.stringify(S)); } catch (e) { return msg('A safety copy of your current log could not be made, so nothing was imported.'); }
+    S.recipes = S.recipes.concat(recs); S.sessions = S.sessions.concat(sess); S.inv = S.inv.concat(inv); save(); ui.sel = ''; showSub(ui.sub);
+    $('rlImportCode').value = '';
+    msg('Added ' + recs.length + ' recipes, ' + sess.length + ' sessions and ' + inv.length + ' inventory items.' + (dropped ? ' ' + dropped + ' sessions were skipped because their recipe or shots were missing.' : '') + ' Nothing you already had was changed.');
+  };
+
+  function onRoute() { if (location.hash === '#reloading') showSub(ui.sub); }
+  window.addEventListener('hashchange', onRoute);
+  onRoute();
+})();
+/*RELOAD_END*/
 </script>
 
 <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){try{navigator.serviceWorker.register("sw.js").catch(function(){});}catch(e){}});}</script>
