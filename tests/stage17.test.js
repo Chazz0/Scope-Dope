@@ -34,6 +34,7 @@ test('removing only the Reloading additions gives back the Stage 16 file exactly
   cut('    <section id="viewReload"', '  </main>');
   cut('<script>\n/*RELOAD_START*/', '<script>if("serviceWorker"');
   t = t.replace("location.hash === '#reloading' ? 'reloading' : ", '').replace("    $('viewReload').hidden = v !== 'reloading';\n", '').replace(",['reloading','tabReload']]", ']');
+  cut('/* iOS home-screen apps anchor the fixed tab bar', '.app{max-width');   // later cosmetic fix (HUD tab-bar gap), not a Reloading addition
   t = t.replace("\n\n<script>if(\"serviceWorker\"", "\n\n<script>if(\"serviceWorker\"");
   assert.strictEqual(t.replace(/\n{3,}/g, '\n\n'), pre.replace(/\n{3,}/g, '\n\n'));
 });
